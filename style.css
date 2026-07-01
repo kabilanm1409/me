@@ -1521,6 +1521,83 @@ body[data-theme='dark'] .contact-form textarea {
 }
 
 /* =====================================================
+   PROJECT SEARCH BAR
+   ===================================================== */
+.projects-controls-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.search-container {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 1rem;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+#projectSearch {
+  width: 100%;
+  padding: 13px 18px 13px 46px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.92rem;
+  font-family: inherit;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  box-shadow: var(--shadow-sm);
+  /* Make sure search input permits text selection */
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+#projectSearch:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background: var(--surface);
+}
+
+#projectSearch:focus + .search-icon {
+  color: var(--primary);
+}
+
+@media (min-width: 768px) {
+  .projects-controls-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+  }
+  
+  .projects-controls-row .search-container {
+    margin: 0;
+    max-width: 360px;
+  }
+  
+  .projects-controls-row .filter-bar {
+    margin-bottom: 0;
+  }
+}
+
+/* =====================================================
    LIGHTBOX MODAL (Image Viewer)
    ===================================================== */
 .lightbox-modal {
@@ -1603,4 +1680,209 @@ body[data-theme='dark'] .contact-form textarea {
 .project-card img,
 .carousel-img {
   cursor: zoom-in;
+}
+
+/* =====================================================
+   HEADER GLOBAL SEARCH (EASTER EGG)
+   ===================================================== */
+.header-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 140px;
+  transition: max-width 0.3s ease;
+}
+
+.header-search i {
+  position: absolute;
+  left: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+#headerSearch {
+  width: 100%;
+  padding: 8px 12px 8px 28px;
+  border-radius: 99px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-family: inherit;
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#headerSearch:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+#headerSearch:focus + i {
+  color: var(--primary);
+}
+
+@media (min-width: 768px) {
+  .header-search:focus-within {
+    max-width: 180px;
+  }
+}
+
+/* =====================================================
+   INTERACTIVE CYBER TERMINAL
+   ===================================================== */
+.terminal-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #0f172a; /* Slate 900 */
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-theme='light'] .terminal-container {
+  background: #0a0e17; /* Keep it dark even in light theme for terminal aesthetic! */
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  background: #0b0f19;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+
+.terminal-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.t-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.t-red { background: #ef4444; }
+.t-yellow { background: #f59e0b; }
+.t-green { background: #10b981; }
+
+.terminal-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #94a3b8;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+}
+
+.terminal-badge {
+  margin-left: auto;
+  color: #10b981;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-family: monospace;
+}
+
+.terminal-body {
+  height: 350px;
+  padding: 20px;
+  overflow-y: auto;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #06090f;
+}
+
+/* Custom scrollbar for terminal */
+.terminal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.terminal-body::-webkit-scrollbar-track {
+  background: #06090f;
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+.t-line {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.t-green { color: #10b981; }
+.t-yellow { color: #f59e0b; }
+.t-red { color: #ef4444; }
+.t-cyan { color: #06b6d4; }
+.t-prompt { color: #38bdf8; font-weight: 700; margin-right: 8px; }
+.t-log { color: #64748b; }
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: #080b12;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+}
+
+#terminalInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  caret-color: #38bdf8;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.terminal-hint {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.cmd-chip {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin: 0 2px;
+}
+
+.cmd-chip:hover {
+  background: var(--primary);
+  color: white;
 }

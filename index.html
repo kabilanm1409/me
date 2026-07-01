@@ -58,9 +58,14 @@
       <a href="#" data-target="projects" data-nav-link>Projects</a>
       <a href="#" data-target="education" data-nav-link>Education</a>
       <a href="#" data-target="achievements" data-nav-link>Achievements</a>
+      <a href="#" data-target="terminal" data-nav-link id="nav-terminal" style="display: none;">Terminal</a>
       <a href="#" data-target="contact" data-nav-link>Contact</a>
     </nav>
     <div class="header-actions">
+      <div class="header-search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="text" id="headerSearch" placeholder="Search..." aria-label="Search" autocomplete="off" spellcheck="false" />
+      </div>
       <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode">
         <i class="fa-solid fa-moon"></i>
         <span>Dark mode</span>
@@ -358,11 +363,6 @@
           <p>Penetration Testing Course (6 Days)</p>
           <a class="cert-link" href="assets/cerificates/IMG_20260701_185137413.jpg" aria-label="Advanced Cyber Security through Penetration Testing Certificate" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-image"></i> View Certificate</a>
         </article>
-        <article class="achievement-card card" role="listitem">
-          <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
-          <h3>AI &amp; DS Hackathon</h3>
-          <p>1st Prize Winner</p>
-        </article>
       </div>
 
       <div class="publications-heading">
@@ -389,6 +389,36 @@
           <a class="btn btn-secondary" href="assets/publications/wireless detect model.pdf" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Model Doc</a>
         </article>
       </div>
+    </section>
+
+    <!-- SECURITY TERMINAL -->
+    <section class="section terminal-section" id="terminal" data-section="terminal" hidden>
+      <div class="section-heading">
+        <p>Security &amp; Network Lab</p>
+        <h2>Interactive Shell</h2>
+      </div>
+      <div class="terminal-container card" data-aos="fade-up">
+        <div class="terminal-bar">
+          <div class="terminal-buttons">
+            <span class="t-dot t-red"></span>
+            <span class="t-dot t-yellow"></span>
+            <span class="t-dot t-green"></span>
+          </div>
+          <div class="terminal-title">security@kabilan:~/monitor</div>
+          <div class="terminal-badge"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Active Monitor</div>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <div class="t-line">Welcome to Kabilan's Interactive Lab Terminal [Sniffer v1.0.4]</div>
+          <div class="t-line">System status: <span class="t-green">ONLINE</span> | Packet Sniffing Node: <span class="t-green">ESP32-WROOM-32</span></div>
+          <div class="t-line">Type <span class="t-cyan">help</span> to list available commands.</div>
+          <div class="t-line t-log">--------------------------------------------------</div>
+        </div>
+        <div class="terminal-input-row">
+          <span class="t-prompt">security@kabilan:~$</span>
+          <input type="text" id="terminalInput" placeholder="Type a command..." autocomplete="off" spellcheck="false" aria-label="Terminal Input" />
+        </div>
+      </div>
+      <p class="terminal-hint">Try typing or clicking: <span class="cmd-chip">help</span> <span class="cmd-chip">skills</span> <span class="cmd-chip">projects</span> <span class="cmd-chip">publications</span> <span class="cmd-chip">sniff</span> <span class="cmd-chip">clear</span></p>
     </section>
 
     <!-- CONTACT -->

@@ -34,12 +34,19 @@
       <a href="../index.html#about">About</a>
       <a href="../index.html#skills">Skills</a>
       <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#terminal" id="nav-terminal" style="display: none;">Terminal</a>
       <a href="../index.html#contact">Contact</a>
     </nav>
-    <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode">
-      <i class="fa-solid fa-moon"></i>
-      <span>Dark mode</span>
-    </button>
+    <div class="header-actions">
+      <div class="header-search">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="text" id="headerSearch" placeholder="Search..." aria-label="Search" autocomplete="off" spellcheck="false" />
+      </div>
+      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+        <span>Dark mode</span>
+      </button>
+    </div>
   </header>
 
   <main>
@@ -48,10 +55,16 @@
         <p>Featured Projects</p>
         <h2>Selected Work</h2>
       </div>
-      <div class="filter-bar" aria-label="Project filters">
-        <button class="filter-btn is-active" type="button" data-filter="all">All</button>
-        <button class="filter-btn" type="button" data-filter="security">Security</button>
-        <button class="filter-btn" type="button" data-filter="software">Software</button>
+      <div class="projects-controls-row">
+        <div class="filter-bar" aria-label="Project filters">
+          <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+          <button class="filter-btn" type="button" data-filter="security">Security</button>
+          <button class="filter-btn" type="button" data-filter="software">Software</button>
+        </div>
+        <div class="search-container">
+          <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+          <input type="text" id="projectSearch" placeholder="Search projects by name, tag, or tech..." aria-label="Search projects" />
+        </div>
       </div>
       <div class="project-grid">
         <article class="project-card card" data-category="security">

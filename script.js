@@ -31,13 +31,23 @@ const typedPhrases = [
 ];
 
 // Track which section is currently visible
-let currentSection = 'home';
+let currentSection = '';
 // Track which sections have had their animations triggered
 const animatedSections = new Set(['home']);
 
 // ── Section Switcher ─────────────────────────────────────────
 function showSection(targetId) {
   if (targetId === currentSection) return;
+
+  // Toggle Terminal tab visibility in navbar based on target section
+  const navTerminal = document.getElementById('nav-terminal');
+  if (navTerminal) {
+    if (targetId === 'terminal') {
+      navTerminal.style.display = 'inline-flex';
+    } else {
+      navTerminal.style.display = 'none';
+    }
+  }
 
   // Hide all sections
   allSections.forEach(sec => sec.hidden = true);
@@ -108,25 +118,9 @@ function initSectionNav() {
   // On load, check URL hash
   const hash = location.hash.replace('#', '');
   if (hash && document.querySelector(`[data-section="${hash}"]`)) {
-    // Show the requested section
-    allSections.forEach(sec => sec.hidden = true);
-    const target = document.querySelector(`[data-section="${hash}"]`);
-    if (target) {
-      target.hidden = false;
-      currentSection = hash;
-    }
-    navLinks.forEach(link => {
-      const isActive = link.dataset.target === hash;
-      link.classList.toggle('active', isActive);
-      if (isActive) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    });
+    showSection(hash);
   } else {
-    // Default: show home only
-    allSections.forEach(sec => {
-      sec.hidden = sec.dataset.section !== 'home';
-    });
-    currentSection = 'home';
+    showSection('home');
   }
 
   // Handle browser back/forward buttons
@@ -283,23 +277,52 @@ function animateCounters() {
   });
 }
 
-// ── Project Filters ──────────────────────────────────────────
+// ── Project Filters & Search ─────────────────────────────────
 function initProjectFilters() {
-  if (!filterButtons.length || !projectCards.length) return;
-  const setFilter = (filter) => {
+  const searchInput = document.getElementById('projectSearch');
+  if (!filterButtons.length && !searchInput) return;
+  
+  let currentFilter = 'all';
+  let searchQuery = '';
+  
+  const applyFilterAndSearch = () => {
     projectCards.forEach(card => {
+      // Category filter check
       const cats = String(card.dataset.category || '').split(',').map(c => c.trim());
-      card.classList.toggle('is-hidden', filter !== 'all' && !cats.includes(filter));
+      const matchesCategory = (currentFilter === 'all' || cats.includes(currentFilter));
+      
+      // Search query text check (matches title, description, and list items/technologies tags)
+      const title = String(card.querySelector('h3')?.textContent || '').toLowerCase();
+      const desc = String(card.querySelector('p')?.textContent || '').toLowerCase();
+      const tags = String(card.querySelector('.tag-row')?.textContent || '').toLowerCase();
+      const listItems = Array.from(card.querySelectorAll('ul li')).map(li => li.textContent.toLowerCase()).join(' ');
+      
+      const textToSearch = `${title} ${desc} ${tags} ${listItems}`;
+      const matchesSearch = !searchQuery || textToSearch.includes(searchQuery);
+      
+      card.classList.toggle('is-hidden', !(matchesCategory && matchesSearch));
     });
   };
+  
+  // Filter buttons listeners
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       filterButtons.forEach(b => b.classList.remove('is-active'));
       btn.classList.add('is-active');
-      setFilter(btn.dataset.filter || 'all');
+      currentFilter = btn.dataset.filter || 'all';
+      applyFilterAndSearch();
     });
   });
-  setFilter('all');
+  
+  // Search input listener
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      applyFilterAndSearch();
+    });
+  }
+  
+  applyFilterAndSearch();
 }
 
 // ── Toast Notification ───────────────────────────────────────
@@ -405,6 +428,8 @@ function initPortfolio() {
   initHeroCanvas();
   initProjectCarousels(); // Start project image sliders
   initLightbox();         // Start full-screen image viewer modal
+  initTerminal();         // Start interactive security/networking shell
+  initHeaderSearch();     // Start global header search and Easter Egg check
   protectInformation();   // Protect text and media from copy/saving
   setYear();
 }
@@ -538,6 +563,191 @@ function protectInformation() {
     ) {
       e.preventDefault();
     }
+  });
+}
+
+// ── Cyber Terminal Simulation ─────────────────────────────────
+let sniffInterval = null;
+
+function initTerminal() {
+  const tInput = document.getElementById('terminalInput');
+  const tBody = document.getElementById('terminalBody');
+  const chips = document.querySelectorAll('.cmd-chip');
+  
+  if (!tInput || !tBody) return;
+
+  const appendLine = (text, type = '') => {
+    const line = document.createElement('div');
+    line.className = 't-line';
+    if (type) line.classList.add(type);
+    line.innerHTML = text;
+    tBody.appendChild(line);
+    tBody.scrollTop = tBody.scrollHeight; // Auto-scroll to bottom
+  };
+
+  const handleCommand = (cmd) => {
+    const cleanCmd = cmd.toLowerCase().trim();
+    appendLine(`<span class="t-prompt">security@kabilan:~$</span> ${cmd}`);
+
+    // If active sniffing is running and user types something else, pause it
+    if (sniffInterval && cleanCmd !== 'sniff' && cleanCmd !== 'stop') {
+      clearInterval(sniffInterval);
+      sniffInterval = null;
+      appendLine(`[i] Packet sniffing paused.`, 't-yellow');
+    }
+
+    switch(cleanCmd) {
+      case '':
+        break;
+      case 'help':
+        appendLine(`Available commands:
+  <span class="t-cyan">skills</span>       - Print core technical skills list
+  <span class="t-cyan">projects</span>     - Display technical projects info
+  <span class="t-cyan">publications</span> - List research publications
+  <span class="t-cyan">sniff</span>        - Toggle live Wi-Fi packet monitoring simulation
+  <span class="t-cyan">contact</span>      - Show email and phone details
+  <span class="t-cyan">clear</span>        - Clear terminal history`, 't-log');
+        break;
+      case 'clear':
+        tBody.innerHTML = '';
+        appendLine(`Welcome to Kabilan's Interactive Lab Terminal [Sniffer v1.0.4]`, 't-log');
+        appendLine(`System status: <span class="t-green">ONLINE</span>`, 't-log');
+        break;
+      case 'skills':
+        appendLine(`<b>[Kabilan's Skills Profile]</b>
+  - <b>Languages:</b> Java, HTML5, CSS3
+  - <b>Databases:</b> MySQL, MongoDB, Apache HDFS, Apache Pig
+  - <b>Tools:</b> Wireshark, Git/GitHub, Arduino IDE
+  - <b>Core Competence:</b> Computer Networks, DBMS, Packet Sniffing`, 't-green');
+        break;
+      case 'projects':
+        appendLine(`<b>[Featured Project Portfolio]</b>
+  1. <b>Wi-Fi De-authentication Device</b> (ESP8266, C++)
+     Real-time wireless network monitor logging frames on OLED.
+  2. <b>De-authentication Detection System</b> (ESP32, C++)
+     Wired sniffer logging deauth loops and firing Gmail notifications.
+  3. <b>Forest Fire Prediction System</b> (React, Python, Node.js)
+     AI prediction model showing environmental heatmap alerts.`, 't-cyan');
+        break;
+      case 'publications':
+        appendLine(`<b>[Research Publications]</b>
+  1. <b>"Detecting Deauthentication Attacks in Wireless Networks" (2026)</b>
+     Published research examining frame signatures and detection mitigations.
+  2. <b>"Wireless Detection Model & Analysis"</b>
+     Model ruleset detailing frame capturing structures.`, 't-yellow');
+        break;
+      case 'contact':
+        appendLine(`<b>[Contact Channels]</b>
+  - <b>Email:</b> <a href="mailto:mkabilan1409@gmail.com" class="t-cyan" style="color: #06b6d4; text-decoration: underline;">mkabilan1409@gmail.com</a>
+  - <b>Phone:</b> +91 76049 59955
+  - <b>LinkedIn:</b> linkedin.com/in/kabilan-m-790801330/
+  - <b>GitHub:</b> github.com/kabilanm1409`, 't-prompt');
+        break;
+      case 'sniff':
+        if (sniffInterval) {
+          clearInterval(sniffInterval);
+          sniffInterval = null;
+          appendLine(`[i] Packet sniffing halted.`, 't-yellow');
+        } else {
+          appendLine(`[+] Starting live packet capture on interface wlan0...`, 't-green');
+          appendLine(`[+] Filtering for Beacon and Deauth frames...`, 't-green');
+          
+          const macs = ['E4:95:6E:A4:12:02', 'C0:49:EF:2C:99:A1', 'F8:1A:67:8B:D0:E2', 'AA:04:95:C2:F1:55'];
+          const networks = ['Home_WiFi', 'Kongunadu_Guest', 'HackNet_AP', 'Target_Guest'];
+          
+          sniffInterval = setInterval(() => {
+            const randMacSrc = macs[Math.floor(Math.random() * macs.length)];
+            const randMacDst = macs[Math.floor(Math.random() * macs.length)];
+            const randSSID = networks[Math.floor(Math.random() * networks.length)];
+            
+            // Randomly trigger a normal log or a critical deauth alert
+            if (Math.random() > 0.35) {
+              appendLine(`[INFO] Sniffed Frame: BEACON | SSID: "${randSSID}" | Ch: ${Math.floor(Math.random()*11)+1} | RSSI: -${Math.floor(Math.random()*40)+40}dBm`, 't-log');
+            } else {
+              appendLine(`[ALERT] CRITICAL: DEAUTH FRAME DETECTED! Source: ${randMacSrc} ➔ Dest: ${randMacDst} | Packets: 12`, 't-red');
+              appendLine(`[Gmail-API] Sending spoofing alert email to: mkabilan1409@gmail.com...`, 't-cyan');
+            }
+          }, 1500);
+        }
+        break;
+      default:
+        appendLine(`bash: ${cleanCmd}: command not found. Type <span class="t-cyan">help</span> to list commands.`, 't-red');
+    }
+  };
+
+  tInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const val = tInput.value;
+      tInput.value = '';
+      handleCommand(val);
+    }
+  });
+
+  // Keep focus on input when clicking terminal body
+  tBody.addEventListener('click', () => {
+    tInput.focus();
+  });
+
+  // Hook up chip click actions
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const cmd = chip.textContent.trim();
+      tInput.focus();
+      handleCommand(cmd);
+    });
+  });
+}
+
+// ── Global Header Search Easter Egg & Navigation ──────────────
+function initHeaderSearch() {
+  const hSearch = document.getElementById('headerSearch');
+  const navTerminal = document.getElementById('nav-terminal');
+  
+  if (!hSearch) return;
+
+  const isHomepage = !!document.getElementById('terminal');
+
+  // Mapping of search keywords to section IDs
+  const searchRoutes = {
+    'home': 'home',
+    'about': 'about',
+    'skills': 'skills',
+    'projects': 'projects',
+    'education': 'education',
+    'achievements': 'achievements',
+    'contact': 'contact',
+    'terminal': 'terminal',
+    'lab': 'terminal',
+    'shell': 'terminal'
+  };
+
+  const checkQuery = (val) => {
+    const query = val.toLowerCase().trim();
+    
+    // Check if the query matches one of our routes
+    if (searchRoutes.hasOwnProperty(query)) {
+      const targetSection = searchRoutes[query];
+      
+      if (isHomepage) {
+        // Switch section on the homepage
+        showSection(targetSection);
+      } else {
+        // Redirect to homepage with section hash
+        window.location.href = `../index.html#${targetSection}`;
+      }
+      
+      // Visual feedback: brief green glow border
+      hSearch.style.borderColor = '#10b981';
+      hSearch.style.boxShadow = '0 0 0 2px rgba(16, 185, 129, 0.2)';
+      setTimeout(() => {
+        hSearch.style.borderColor = '';
+        hSearch.style.boxShadow = '';
+      }, 1500);
+    }
+  };
+
+  hSearch.addEventListener('input', (e) => {
+    checkQuery(e.target.value);
   });
 }
 

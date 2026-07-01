@@ -26,7 +26,7 @@ Follow this guide to deploy your portfolio live at:
    * Change "None" to **`main`** (or `master`).
    * Click **Save**.
 8. Wait 1-2 minutes. Refresh the settings page, and your live URL will appear at the top:
-   👉 **`https://kabilanm1409.github.com/me/`**
+   👉 **`https://kabilanm1409.github.io/me/`**
 
 ---
 
@@ -58,4 +58,4 @@ git push -u origin main
 1. Go to your repository on GitHub: `https://github.com/kabilanm1409/me`
 2. Go to **Settings** ➔ **Pages**.
 3. Set source branch to **`main`** and click **Save**.
-4. Your site will go live at: **`https://kabilanm1409.github.com/me/`**
+4. Your site will go live at: **`https://kabilanm1409.github.io/me/`**

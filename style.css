@@ -595,6 +595,7 @@ body[data-theme='dark'] .btn-secondary {
 
 .profile-photo {
   width: 100%;
+  max-width: 220px;
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
@@ -604,6 +605,7 @@ body[data-theme='dark'] .btn-secondary {
   background-clip: padding-box;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
   background-color: #fff;
+  margin: 0 auto;
 }
 
 .profile-points {

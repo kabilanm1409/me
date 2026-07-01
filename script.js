@@ -431,6 +431,7 @@ function initPortfolio() {
   initTerminal();         // Start interactive security/networking shell
   initHeaderSearch();     // Start global header search and Easter Egg check
   protectInformation();   // Protect text and media from copy/saving
+  initScreenshotShield(); // Enable screen capture shield
   setYear();
 }
 
@@ -748,6 +749,45 @@ function initHeaderSearch() {
 
   hSearch.addEventListener('input', (e) => {
     checkQuery(e.target.value);
+  });
+}
+
+// ── Screenshot Shield (Anti-Screen Capture) ───────────────────
+function initScreenshotShield() {
+  const shield = document.getElementById('screenshotShield');
+  if (!shield) return;
+
+  // Turn screen black when tab loses focus (e.g. Snipping tool or system screenshots capture)
+  window.addEventListener('blur', () => {
+    shield.classList.add('active');
+  });
+
+  // Restore screen visibility when tab regains focus
+  window.addEventListener('focus', () => {
+    shield.classList.remove('active');
+  });
+
+  // Handle standard PrintScreen (PrtScn) keyup events to clear clipboard
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'PrintScreen' || e.keyCode === 44) {
+      shield.classList.add('active');
+      navigator.clipboard.writeText('').catch(() => {});
+      setTimeout(() => {
+        shield.classList.remove('active');
+      }, 1200);
+    }
+  });
+
+  // Block PrintScreen keydown triggers
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'PrintScreen' || e.keyCode === 44) {
+      e.preventDefault();
+      shield.classList.add('active');
+      navigator.clipboard.writeText('').catch(() => {});
+      setTimeout(() => {
+        shield.classList.remove('active');
+      }, 1200);
+    }
   });
 }
 

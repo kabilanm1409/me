@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Kabilan M's modern portfolio for software development, networking, and cybersecurity." />
+  <meta name="keywords" content="Kabilan M, portfolio, software developer, information technology, cybersecurity, web development" />
+  <meta name="author" content="Kabilan M" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#F8FAFC" />
+  <meta property="og:title" content="Kabilan M | Information Technology Portfolio" />
+  <meta property="og:description" content="A clean, modern portfolio showcasing skills, projects, education, and achievements." />
+  <meta property="og:type" content="website" />
+  <title>Kabilan M | Information Technology Portfolio</title>
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop stop-color=%22%232563eb%22/><stop offset=%221%22 stop-color=%22%2314b8a6%22/></linearGradient></defs><rect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22url(%23g)%22/><path d=%22M18 34h28M32 18v28%22 stroke=%22white%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script defer src="script.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Kabilan M",
+    "jobTitle": "B.Tech Information Technology Student",
+    "sameAs": [
+      "https://github.com/",
+      "https://www.linkedin.com/"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <noscript><p class="noscript-banner">Please enable JavaScript for the best experience.</p></noscript>
+
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#" data-target="home" aria-label="Kabilan M home">
+      <span class="brand-mark">KM</span>
+      <span class="brand-text">Kabilan M</span>
+    </a>
+    <button class="nav-toggle" type="button" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+      <a href="#" data-target="home" data-nav-link class="active" aria-current="page">Home</a>
+      <a href="#" data-target="about" data-nav-link>About</a>
+      <a href="#" data-target="skills" data-nav-link>Skills</a>
+      <a href="#" data-target="projects" data-nav-link>Projects</a>
+      <a href="#" data-target="education" data-nav-link>Education</a>
+      <a href="#" data-target="achievements" data-nav-link>Achievements</a>
+      <a href="#" data-target="contact" data-nav-link>Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+        <span>Dark mode</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero section" id="home" data-section="home">
+      <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-copy" data-aos="fade-up">
+        <p class="eyebrow">B.Tech Information Technology Student</p>
+        <h1>Kabilan M</h1>
+        <p class="hero-subtitle">I build clean, responsive web experiences and practical security-focused projects with a strong interest in software development, networking, and cybersecurity.</p>
+        <div class="hero-typing">
+          <span class="hero-typing-label">Focused on</span>
+          <span id="typed-text"></span>
+        </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="assets/resume/Kabilan M Resume IT.pdf" download id="downloadResumeBtn">
+            <i class="fa-solid fa-file-arrow-down"></i> Download Resume
+          </a>
+          <a class="btn btn-secondary" href="#" data-target="contact" id="contactHeroBtn">
+            <i class="fa-solid fa-paper-plane"></i> Contact Me
+          </a>
+        </div>
+        <div class="social-links" aria-label="Social links">
+          <a href="https://github.com/kabilanm1409/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" id="heroGithubLink">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/kabilan-m-790801330/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" id="heroLinkedinLink">
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+          <a href="mailto:mkabilan1409@gmail.com" aria-label="Email" id="heroEmailLink">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+        <div class="hero-stats" aria-label="Key statistics">
+          <article class="stat-pill card" data-counter="7.0" data-suffix=""><strong id="stat-cgpa">7.0</strong><span>CGPA</span></article>
+          <article class="stat-pill card" data-counter="3" data-suffix="+"><strong id="stat-projects">3+</strong><span>Projects</span></article>
+          <article class="stat-pill card" data-counter="4" data-suffix="+"><strong id="stat-achievements">4+</strong><span>Achievements</span></article>
+        </div>
+      </div>
+
+      <div class="hero-panel" data-aos="fade-left">
+        <article class="profile-card card">
+          <img class="profile-photo" alt="Kabilan M profile photo" loading="lazy" src="assets/my photo/profile.jpg" />
+          <div>
+            <p class="card-label">Professional profile</p>
+            <h2>Information Technology Student</h2>
+            <p>Passionate about creating polished interfaces, dependable tools, and projects that demonstrate technical depth.</p>
+          </div>
+          <div class="profile-points">
+            <span><i class="fa-solid fa-shield-halved"></i> Cybersecurity</span>
+            <span><i class="fa-solid fa-code"></i> Web Development</span>
+            <span><i class="fa-solid fa-network-wired"></i> Networking</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section overview" id="about" data-section="about" hidden>
+      <div class="section-heading">
+        <p>About Me</p>
+        <h2>Professional Introduction</h2>
+      </div>
+      <div class="overview-grid">
+        <article class="overview-card card">
+          <i class="fa-solid fa-user" aria-hidden="true"></i>
+          <h3>Who I Am</h3>
+          <p>A motivated IT student who enjoys software development, clean UI design, and security-focused problem solving.</p>
+        </article>
+        <article class="overview-card card">
+          <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+          <h3>Career Objective</h3>
+          <p>To contribute as a software or cybersecurity intern while building reliable solutions and learning from experienced teams.</p>
+        </article>
+        <article class="overview-card card">
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+          <h3>Work Style</h3>
+          <p>Organized, curious, and focused on clarity, practical outcomes, and continuous improvement.</p>
+        </article>
+        <article class="overview-card card">
+          <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+          <h3>Internship</h3>
+          <p>Full Stack Trainee at e-soft IT Solutions (June 2025). <a class="cert-link" href="assets/cerificates/internship/IMG_20260701_185232887.jpg" aria-label="e-soft IT Solutions Full Stack Developer Internship Certificate" style="color: var(--primary); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px;"><i class="fa-solid fa-image"></i> View Certificate</a></p>
+        </article>
+        <article class="overview-card card">
+          <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+          <h3>Quick Access</h3>
+          <p><a href="pages/about.html">View full about page</a> for education, skills, achievements, and learning goals.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="section skills" id="skills" data-section="skills" hidden>
+      <div class="section-heading">
+        <p>Skills</p>
+        <h2>Technical Skills</h2>
+      </div>
+      <div class="skills-grid">
+        <article class="skill-list card">
+          <h3>Programming &amp; Web</h3>
+          <div class="tag-row">
+            <span><i class="fa-brands fa-java" aria-hidden="true"></i> Java</span>
+            <span><i class="fa-brands fa-html5" aria-hidden="true"></i> HTML</span>
+            <span><i class="fa-brands fa-css3-alt" aria-hidden="true"></i> CSS</span>
+          </div>
+        </article>
+        <article class="skill-list card">
+          <h3>Databases &amp; Big Data</h3>
+          <div class="tag-row">
+            <span><i class="fa-solid fa-database" aria-hidden="true"></i> MySQL</span>
+            <span>MongoDB</span>
+            <span>HDFS</span>
+            <span>Pig</span>
+          </div>
+        </article>
+        <article class="skill-list card">
+          <h3>Operating Systems &amp; Tools</h3>
+          <div class="tag-row">
+            <span><i class="fa-brands fa-windows" aria-hidden="true"></i> Windows</span>
+            <span><i class="fa-brands fa-linux" aria-hidden="true"></i> Linux (Ubuntu, Kali Linux)</span>
+            <span><i class="fa-brands fa-git-alt" aria-hidden="true"></i> Git</span>
+            <span><i class="fa-brands fa-github" aria-hidden="true"></i> GitHub</span>
+            <span>Wireshark</span>
+            <span>Arduino IDE</span>
+          </div>
+        </article>
+        <article class="skill-list card">
+          <h3>Concepts &amp; Soft Skills</h3>
+          <div class="tag-row">
+            <span>DBMS</span>
+            <span>Computer Networks</span>
+            <span>REST APIs</span>
+            <span>Wi-Fi Packet Sniffing</span>
+            <span>Problem Solving</span>
+            <span>Teamwork</span>
+            <span>Communication</span>
+            <span>Critical Thinking</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="section projects" id="projects" data-section="projects" hidden>
+      <div class="section-heading">
+        <p>Projects</p>
+        <h2>Technical Builds</h2>
+      </div>
+      <div class="project-grid">
+        <article class="project-card card">
+          <div class="project-image-wrap">
+            <img alt="WiFi Deauthentication Device project screenshot" loading="lazy" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 600%22><rect width=%22900%22 height=%22600%22 rx=%2240%22 fill=%22%23090909%22/><rect x=%2240%22 y=%2240%22 width=%22820%22 height=%22520%22 rx=%2230%22 fill=%22%230c1a0d%22 stroke=%22%230f0%22 stroke-width=%224%22 stroke-dasharray=%2210 12%22/><text x=%2250%25%22 y=%2244%25%22 text-anchor=%22middle%22 fill=%22%230f0%22 font-size=%2248%22 font-family=%22monospace%22>Project Screenshot</text><text x=%2250%25%22 y=%2256%25%22 text-anchor=%22middle%22 fill=%22%23b7ffbf%22 font-size=%2226%22 font-family=%22monospace%22>WiFi Deauthentication Device</text></svg>" />
+          </div>
+          <div class="project-content">
+            <h3>Wi-Fi De-authentication Device</h3>
+            <p>An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.</p>
+            <div class="project-meta"><span>Technologies: ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display</span></div>
+            <ul>
+              <li>Real-time wireless frame analysis</li>
+              <li>Identifies suspicious wireless activities</li>
+              <li>OLED display integrations for live alerts</li>
+            </ul>
+            <div class="project-actions">
+              <a class="btn btn-secondary" href="pages/projects.html" id="wifiDeauthDetails"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Details</a>
+              <a class="btn btn-primary" href="#" data-target="contact" id="wifiDeauthContact"><i class="fa-solid fa-paper-plane"></i> Ask About It</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card card">
+          <div class="project-image-wrap">
+            <div class="project-carousel" id="detectionCarouselIndex">
+              <div class="carousel-track">
+                <img class="carousel-img active fit-contain" alt="Deauthentication Detection System email alert output" loading="lazy" src="assets/projects/deauth_email_alert.jpg" />
+                <img class="carousel-img fit-cover" alt="Deauthentication Detection System hardware setup" loading="lazy" src="assets/projects/deauth_hardware.jpg" />
+              </div>
+              <button class="carousel-control prev" type="button" aria-label="Previous slide"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+              <button class="carousel-control next" type="button" aria-label="Next slide"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+              <div class="carousel-indicators">
+                <span class="carousel-dot active" data-slide="0" aria-label="Slide 1"></span>
+                <span class="carousel-dot" data-slide="1" aria-label="Slide 2"></span>
+              </div>
+            </div>
+          </div>
+          <div class="project-content">
+            <h3>De-authentication Detection System</h3>
+            <p>An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.</p>
+            <div class="project-meta"><span>Technologies: ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display</span></div>
+            <ul>
+              <li>Real-time packet capture for IEEE 802.11 frames</li>
+              <li>Generates live alerts for network monitoring</li>
+              <li>Improves defensive wireless security awareness</li>
+            </ul>
+            <div class="project-actions">
+              <a class="btn btn-secondary" href="pages/projects.html" id="detectionDetails"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Details</a>
+              <a class="btn btn-primary" href="#" data-target="contact" id="detectionContact"><i class="fa-solid fa-paper-plane"></i> Ask About It</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card card">
+          <div class="project-image-wrap">
+            <img alt="Forest Fire Prediction System screenshot" loading="lazy" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 600%22><rect width=%22900%22 height=%22600%22 rx=%2240%22 fill=%22%23090909%22/><rect x=%2240%22 y=%2240%22 width=%22820%22 height=%22520%22 rx=%2230%22 fill=%22%232c1a0d%22 stroke=%22%23f90%22 stroke-width=%224%22 stroke-dasharray=%2210 12%22/><text x=%2250%25%22 y=%2244%25%22 text-anchor=%22middle%22 fill=%22%23f90%22 font-size=%2248%22 font-family=%22monospace%22>Project Screenshot</text><text x=%2250%25%22 y=%2256%25%22 text-anchor=%22middle%22 fill=%22%23ffb78f%22 font-size=%2226%22 font-family=%22monospace%22>Forest Fire Prediction</text></svg>" />
+          </div>
+          <div class="project-content">
+            <h3>Forest Fire Prediction System</h3>
+            <p>An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.</p>
+            <div class="project-meta"><span>Technologies: React, Node.js, Python, REST APIs, Google Maps</span></div>
+            <ul>
+              <li>Heatmap visualization for real-time risk assessment</li>
+              <li>Integrated WhatsApp and Email notification alerts</li>
+              <li>Combines historical and environmental datasets</li>
+            </ul>
+            <div class="project-actions">
+              <a class="btn btn-secondary" href="pages/projects.html" id="firePredictionDetails"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Details</a>
+              <a class="btn btn-primary" href="#" data-target="contact" id="firePredictionContact"><i class="fa-solid fa-paper-plane"></i> Ask About It</a>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="projects-more">
+        <a class="btn btn-secondary" href="pages/projects.html" id="allProjectsBtn"><i class="fa-solid fa-layer-group"></i> View All Projects</a>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="section education" id="education" data-section="education" hidden>
+      <div class="section-heading">
+        <p>Education</p>
+        <h2>Academic Timeline</h2>
+      </div>
+      <div class="timeline">
+        <article class="timeline-item card">
+          <span class="timeline-dot" aria-hidden="true"></span>
+          <div>
+            <p class="timeline-year">2024 - 2027</p>
+            <h3>B.Tech Information Technology</h3>
+            <p class="timeline-institution">Kongunadu College of Engineering and Technology, Thottiyam, Trichy</p>
+            <p>CGPA: 7.0 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.</p>
+          </div>
+        </article>
+        <article class="timeline-item card">
+          <span class="timeline-dot" aria-hidden="true"></span>
+          <div>
+            <p class="timeline-year">2022 - 2024</p>
+            <h3>Diploma in Mechanical Engineering</h3>
+            <p class="timeline-institution">Kongunadu Polytechnic College, Thottiyam, Trichy</p>
+            <p>Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT.</p>
+          </div>
+        </article>
+        <article class="timeline-item card">
+          <span class="timeline-dot" aria-hidden="true"></span>
+          <div>
+            <p class="timeline-year">2021 - 2022</p>
+            <h3>Higher Secondary Certificate (HSC)</h3>
+            <p class="timeline-institution">Government Higher Secondary School, Pappapatti, Trichy</p>
+            <p>Completed higher secondary education with a 50% aggregate score.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ACHIEVEMENTS -->
+    <section class="section achievements" id="achievements" data-section="achievements" hidden>
+      <div class="section-heading">
+        <p>Achievements &amp; Certifications</p>
+        <h2>Recognition Snapshot</h2>
+      </div>
+      <div class="achievement-grid" role="list">
+        <article class="achievement-card card" role="listitem">
+          <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+          <h3>Artivers 3.0 Hackathon</h3>
+          <p>1st Place (College Level)</p>
+          <a class="cert-link" href="assets/cerificates/IMG_20260701_185332433.jpg" aria-label="Artiverse 3.0 Intra-College Hackathon Certificate - 1st Place" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-image"></i> View Certificate</a>
+        </article>
+        <article class="achievement-card card" role="listitem">
+          <i class="fa-solid fa-medal" aria-hidden="true"></i>
+          <h3>Tezario 3.0 Project Expo</h3>
+          <p>2nd Place (College Level)</p>
+        </article>
+        <article class="achievement-card card" role="listitem">
+          <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+          <h3>Infosys Springboard</h3>
+          <p>Front End Developer Certification</p>
+        </article>
+        <article class="achievement-card card" role="listitem">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <h3>Advanced Cyber Security</h3>
+          <p>Penetration Testing Course (6 Days)</p>
+          <a class="cert-link" href="assets/cerificates/IMG_20260701_185137413.jpg" aria-label="Advanced Cyber Security through Penetration Testing Certificate" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-image"></i> View Certificate</a>
+        </article>
+        <article class="achievement-card card" role="listitem">
+          <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+          <h3>AI &amp; DS Hackathon</h3>
+          <p>1st Prize Winner</p>
+        </article>
+      </div>
+
+      <div class="publications-heading">
+        <h3>Research Publications</h3>
+        <p>Published papers and wireless security analysis models</p>
+      </div>
+      <div class="publications-grid">
+        <article class="publication-card card">
+          <div class="publication-tag">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>2026 Paper</span>
+          </div>
+          <h4>Detecting Deauthentication Attacks in Wireless Networks</h4>
+          <p>Published academic research paper analyzing deauthentication attack vectors, packet capture logs, and real-time mitigation rulesets.</p>
+          <a class="btn btn-secondary" href="assets/publications/69d600f9a94a4P10-issue 1-2026 Detecting Deauthentication.pdf" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> Read Publication</a>
+        </article>
+        <article class="publication-card card">
+          <div class="publication-tag">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>Research Model</span>
+          </div>
+          <h4>Wireless Detection Model &amp; Analysis</h4>
+          <p>Detailed technical documentation introducing frame sniffing signatures and building responsive alerting systems for open Wi-Fi infrastructures.</p>
+          <a class="btn btn-secondary" href="assets/publications/wireless detect model.pdf" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Model Doc</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section contact" id="contact" data-section="contact" hidden>
+      <div class="section-heading">
+        <p>Contact</p>
+        <h2>Let's Build Something Secure</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info card">
+          <h3>Reach Out</h3>
+          <a href="mailto:mkabilan1409@gmail.com" id="contactEmail"><i class="fa-solid fa-envelope" aria-hidden="true"></i> mkabilan1409@gmail.com</a>
+          <a href="tel:+917604959955" id="contactPhone"><i class="fa-solid fa-phone" aria-hidden="true"></i> +91 76049 59955</a>
+          <a href="https://www.linkedin.com/in/kabilan-m-790801330/" target="_blank" rel="noopener noreferrer" id="contactLinkedin"><i class="fa-brands fa-linkedin" aria-hidden="true"></i> LinkedIn Profile</a>
+          <a href="https://github.com/kabilanm1409/" target="_blank" rel="noopener noreferrer" id="contactGithub"><i class="fa-brands fa-github" aria-hidden="true"></i> GitHub Profile</a>
+        </div>
+        <form class="contact-form card" id="contactForm" novalidate>
+          <div class="field-row">
+            <input type="text" id="formName" name="name" placeholder="Your Name" autocomplete="name" required aria-required="true" />
+            <input type="email" id="formEmail" name="email" placeholder="Your Email" autocomplete="email" required aria-required="true" />
+          </div>
+          <input type="text" id="formSubject" name="subject" placeholder="Subject" required aria-required="true" />
+          <textarea id="formMessage" name="message" rows="6" placeholder="Tell me about your project or opportunity..." required aria-required="true"></textarea>
+          <button class="btn btn-primary" type="submit" id="contactSubmitBtn"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Message</button>
+          <p class="form-note">This form opens your email client with the message pre-filled.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <button id="scrollTopBtn" class="scroll-top" type="button" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Kabilan M. Built with a clean modern portfolio style.</p>
+    <p>
+      <a href="pages/about.html">About</a> ·
+      <a href="pages/projects.html">Projects</a> ·
+      <a href="pages/contact.html">Contact</a>
+    </p>
+  </footer>
+
+  <!-- Lightbox Modal -->
+  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-label="Image viewer">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
+    <div class="lightbox-content">
+      <img id="lightboxImage" src="" alt="Full screen preview" />
+    </div>
+    <div id="lightboxCaption" class="lightbox-caption"></div>
+  </div>
+</body>
+</html>

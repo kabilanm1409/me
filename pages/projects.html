@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Featured projects page for Kabilan M's portfolio." />
+  <meta name="author" content="Kabilan M" />
+  <meta name="theme-color" content="#F8FAFC" />
+  <title>Projects | Kabilan M</title>
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop stop-color=%22%232563eb%22/><stop offset=%221%22 stop-color=%22%2314b8a6%22/></linearGradient></defs><rect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22url(%23g)%22/><path d=%22M18 34h28M32 18v28%22 stroke=%22white%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script defer src="../script.js"></script>
+</head>
+<body>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header">
+    <a class="brand" href="../index.html#home" aria-label="Kabilan M home">
+      <span class="brand-mark">KM</span>
+      <span class="brand-text">Kabilan M</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="site-nav">
+      <a href="../index.html#home">Home</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode">
+      <i class="fa-solid fa-moon"></i>
+      <span>Dark mode</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="section projects-section" data-aos="fade-up">
+      <div class="section-heading">
+        <p>Featured Projects</p>
+        <h2>Selected Work</h2>
+      </div>
+      <div class="filter-bar" aria-label="Project filters">
+        <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+        <button class="filter-btn" type="button" data-filter="security">Security</button>
+        <button class="filter-btn" type="button" data-filter="software">Software</button>
+      </div>
+      <div class="project-grid">
+        <article class="project-card card" data-category="security">
+          <div class="project-image-wrap">
+            <img alt="WiFi Deauthentication Device preview" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 600%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop stop-color=%22%23dbeafe%22/><stop offset=%221%22 stop-color=%22%232563eb%22/></linearGradient></defs><rect width=%22900%22 height=%22600%22 rx=%2240%22 fill=%22%23eef2ff%22/><rect x=%2252%22 y=%2252%22 width=%22796%22 height=%22496%22 rx=%2230%22 fill=%22white%22 stroke=%22url(%23g)%22 stroke-width=%225%22/><text x=%2250%25%22 y=%2244%25%22 text-anchor=%22middle%22 fill=%22%232563eb%22 font-size=%2248%22 font-family=%22Arial%22 font-weight=%22700%22>Hardware Build</text><text x=%2250%25%22 y=%2256%25%22 text-anchor=%22middle%22 fill=%22%2314b8a6%22 font-size=%2226%22 font-family=%22Arial%22>WiFi Deauthentication Device</text></svg>" />
+          </div>
+          <div class="project-content">
+            <p class="card-label">Project 1</p>
+            <h3>Wi-Fi De-authentication Device</h3>
+            <p>An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.</p>
+            <div class="tag-row"><span>ESP8266</span><span>Arduino IDE</span><span>C++</span><span>Packet Sniffing</span><span>OLED Display</span></div>
+            <ul>
+              <li>Developed wireless frame sniffer targeting Wi-Fi vulnerabilities.</li>
+              <li>Supports detection of deauthentication and probe frames.</li>
+              <li>OLED notifications for real-time traffic updates.</li>
+            </ul>
+            <div class="project-actions">
+              <a class="btn btn-secondary" href="https://github.com/kabilanm1409/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+              <a class="btn btn-primary" href="../index.html#contact"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card card" data-category="security,software">
+          <div class="project-image-wrap">
+            <div class="project-carousel" id="detectionCarouselPages">
+              <div class="carousel-track">
+                <img class="carousel-img active fit-contain" alt="Deauthentication Detection System email alert output" src="../assets/projects/deauth_email_alert.jpg" />
+                <img class="carousel-img fit-cover" alt="Deauthentication Detection System hardware setup" src="../assets/projects/deauth_hardware.jpg" />
+              </div>
+              <button class="carousel-control prev" type="button" aria-label="Previous slide"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+              <button class="carousel-control next" type="button" aria-label="Next slide"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+              <div class="carousel-indicators">
+                <span class="carousel-dot active" data-slide="0" aria-label="Slide 1"></span>
+                <span class="carousel-dot" data-slide="1" aria-label="Slide 2"></span>
+              </div>
+            </div>
+          </div>
+          <div class="project-content">
+            <p class="card-label">Project 2</p>
+            <h3>De-authentication Detection System</h3>
+            <p>An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.</p>
+            <div class="tag-row"><span>ESP32</span><span>Arduino IDE</span><span>C++</span><span>Wi-Fi Packet Sniffing</span><span>OLED Display</span></div>
+            <ul>
+              <li>Implements real-time packet capture for IEEE 802.11 frames.</li>
+              <li>Generates live alerts for fast security response.</li>
+              <li>Increases defense posture awareness in open networks.</li>
+            </ul>
+            <div class="project-actions">
+              <a class="btn btn-secondary" href="https://github.com/kabilanm1409/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+              <a class="btn btn-primary" href="../index.html#contact"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card card" data-category="software">
+          <div class="project-image-wrap">
+            <img alt="Forest Fire Prediction System preview" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 600%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop stop-color=%22%23dbeafe%22/><stop offset=%221%22 stop-color=%22%232563eb%22/></linearGradient></defs><rect width=%22900%22 height=%22600%22 rx=%2240%22 fill=%22%23eff6ff%22/><rect x=%2252%22 y=%2252%22 width=%22796%22 height=%22496%22 rx=%2230%22 fill=%22white%22 stroke=%22url(%23g)%22 stroke-width=%225%22/><text x=%2250%25%22 y=%2244%25%22 text-anchor=%22middle%22 fill=%22%232563eb%22 font-size=%2248%22 font-family=%22Arial%22 font-weight=%22700%22>AI Application</text><text x=%2250%25%22 y=%2256%25%22 text-anchor=%22middle%22 fill=%22%2314b8a6%22 font-size=%2226%22 font-family=%22Arial%22>Forest Fire Prediction</text></svg>" />
+          </div>
+          <div class="project-content">
+            <p class="card-label">Project 3</p>
+            <h3>Forest Fire Prediction System</h3>
+            <p>An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.</p>
+            <div class="tag-row"><span>React</span><span>Node.js</span><span>Python</span><span>REST APIs</span><span>Google Maps</span></div>
+            <ul>
+              <li>Visualizes environmental risk dynamically via Heatmaps.</li>
+              <li>Sends alerts directly using WhatsApp and Email integrations.</li>
+              <li>Utilizes location services on Google Maps for fast responses.</li>
+            </ul>
+            <div class="project-actions">
+              <a class="btn btn-secondary" href="https://github.com/kabilanm1409/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+              <a class="btn btn-primary" href="../index.html#contact"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <button id="scrollTopBtn" class="scroll-top" type="button" aria-label="Scroll to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Kabilan M. Clean, modern, and recruiter-friendly.</p>
+    <p><a href="about.html">About</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+
+  <!-- Lightbox Modal -->
+  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-label="Image viewer">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
+    <div class="lightbox-content">
+      <img id="lightboxImage" src="" alt="Full screen preview" />
+    </div>
+    <div id="lightboxCaption" class="lightbox-caption"></div>
+  </div>
+</body>
+</html>

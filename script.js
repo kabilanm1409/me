@@ -569,6 +569,7 @@ function protectInformation() {
 
 // ── Cyber Terminal Simulation ─────────────────────────────────
 let sniffInterval = null;
+let cmdHistory = [];
 
 function initTerminal() {
   const tInput = document.getElementById('terminalInput');
@@ -576,6 +577,12 @@ function initTerminal() {
   const chips = document.querySelectorAll('.cmd-chip');
   
   if (!tInput || !tBody) return;
+
+  const getResumeNoPhotoPath = () => {
+    const isSubpage = window.location.pathname.includes('/pages/');
+    const prefix = isSubpage ? '../' : '';
+    return prefix + 'assets/resume/kabilanm_resume.pdf?v=3.0';
+  };
 
   const appendLine = (text, type = '') => {
     const line = document.createElement('div');
@@ -587,7 +594,11 @@ function initTerminal() {
   };
 
   const handleCommand = (cmd) => {
-    const cleanCmd = cmd.toLowerCase().trim();
+    const rawCmd = cmd.trim();
+    const cleanCmd = rawCmd.toLowerCase();
+    if (!cleanCmd) return;
+
+    cmdHistory.push(rawCmd);
     appendLine(`<span class="t-prompt">security@kabilan:~$</span> ${cmd}`);
 
     // If active sniffing is running and user types something else, pause it
@@ -597,30 +608,150 @@ function initTerminal() {
       appendLine(`[i] Packet sniffing paused.`, 't-yellow');
     }
 
-    switch(cleanCmd) {
-      case '':
-        break;
+    const parts = cleanCmd.split(/\s+/);
+    const mainCmd = parts[0];
+    const arg = parts.slice(1).join(' ');
+
+    switch(mainCmd) {
       case 'help':
-        appendLine(`Available commands:
-  <span class="t-cyan">skills</span>       - Print core technical skills list
-  <span class="t-cyan">projects</span>     - Display technical projects info
-  <span class="t-cyan">publications</span> - List research publications
+        appendLine(`Available Linux & System Commands:
+  <span class="t-cyan">resume</span>       - Display text resume &amp; open Resume (No Photo version)
+  <span class="t-cyan">ls</span>           - List directory files (resume.pdf, projects/, certs/)
+  <span class="t-cyan">cat &lt;file&gt;</span>   - View file content (cat resume.pdf, cat skills.txt)
+  <span class="t-cyan">whoami</span>       - Display current active user identity
+  <span class="t-cyan">pwd</span>          - Print working directory
+  <span class="t-cyan">uname</span>        - Print system architecture details (-a for full)
+  <span class="t-cyan">ping &lt;host&gt;</span>  - Simulate ICMP ping network diagnostics
+  <span class="t-cyan">ifconfig</span>     - Display network interfaces (ip a)
   <span class="t-cyan">sniff</span>        - Toggle live Wi-Fi packet monitoring simulation
-  <span class="t-cyan">contact</span>      - Show email and phone details
+  <span class="t-cyan">skills</span>       - Print core technical skills breakdown
+  <span class="t-cyan">projects</span>     - Display technical projects &amp; hardware builds
+  <span class="t-cyan">publications</span> - List research publications
+  <span class="t-cyan">contact</span>      - Show direct contact channels
+  <span class="t-cyan">date</span>         - Print current system timestamp
+  <span class="t-cyan">history</span>      - View command input history
   <span class="t-cyan">clear</span>        - Clear terminal history`, 't-log');
         break;
+
+      case 'resume':
+      case 'cv':
+        const rUrl = getResumeNoPhotoPath();
+        appendLine(`<b>[KABILAN M - RESUME (TEXT VERSION / NO PHOTO)]</b>
+  - <b>Target Role:</b> Security &amp; Networking Engineer / Java Developer
+  - <b>Education:</b> B.Tech IT (CGPA: 7.08) | Diploma Mech (92%)
+  - <b>Internship:</b> Full Stack Trainee @ e-soft IT Solutions (June 2025)
+  - <b>Key Projects:</b> ESP32 Deauth Detector, ESP8266 Wi-Fi Sniffer
+  - <b>Certifications:</b> Infosys Springboard (HTML5, CSS3, JS), Cyber Security
+  [+] Opening Text Resume (No Photo) in new tab: <a href="${rUrl}" target="_blank" class="t-cyan" style="text-decoration: underline;">kabilanm_resume.pdf</a>`, 't-green');
+        window.open(rUrl, '_blank');
+        break;
+
+      case 'ls':
+      case 'dir':
+        appendLine(`drwxr-xr-x 4 kabilan kabilan 4096 Jul 26 15:10 .
+drwxr-xr-x 8 kabilan kabilan 4096 Jul 26 15:10 ..
+-rw-r--r-- 1 kabilan kabilan 113K Jul 26 15:10 <a href="${getResumeNoPhotoPath()}" target="_blank" class="t-green">resume.pdf</a> (No Photo version)
+-rw-r--r-- 1 kabilan kabilan  30K Jul 26 15:10 index.html
+-rw-r--r-- 1 kabilan kabilan  28K Jul 26 15:10 script.js
+-rw-r--r-- 1 kabilan kabilan  41K Jul 26 15:10 style.css
+-rw-r--r-- 1 kabilan kabilan  1.2K Jul 26 15:10 skills.txt
+-rw-r--r-- 1 kabilan kabilan  1.5K Jul 26 15:10 about.txt
+drwxr-xr-x 2 kabilan kabilan 4096 Jul 26 15:10 projects/
+drwxr-xr-x 3 kabilan kabilan 4096 Jul 26 15:10 certs/`, 't-log');
+        break;
+
+      case 'cat':
+        if (!arg || arg === 'resume.pdf' || arg === 'resume') {
+          const rPath = getResumeNoPhotoPath();
+          appendLine(`<b>[cat resume.pdf]</b>
+KABILAN M | Security &amp; Networking Engineer
+B.Tech Information Technology | Kongunadu College of Engineering (CGPA: 7.08)
+Full Stack Trainee @ e-soft IT Solutions (June 2025)
+Skills: Java, HTML5, CSS3, MySQL, MongoDB, HDFS, Pig, Wireshark, Linux, Git
+[+] Opened: <a href="${rPath}" target="_blank" class="t-cyan">kabilanm_resume.pdf</a> (No Photo)`, 't-green');
+          window.open(rPath, '_blank');
+        } else if (arg === 'skills.txt' || arg === 'skills') {
+          handleCommand('skills');
+        } else if (arg === 'about.txt' || arg === 'about') {
+          appendLine(`Kabilan M - B.Tech IT student at Kongunadu College of Engineering &amp; Technology. Passionate about cybersecurity, Java coding, networking, and software development.`, 't-cyan');
+        } else if (arg === 'readme.md') {
+          appendLine(`# Kabilan M Portfolio\nSecurity &amp; Networking Portfolio with Interactive Terminal Shell`, 't-log');
+        } else {
+          appendLine(`cat: ${arg}: No such file or directory`, 't-red');
+        }
+        break;
+
+      case 'whoami':
+        appendLine(`kabilan_m (Security &amp; Networking Engineer | B.Tech IT Student)`, 't-green');
+        break;
+
+      case 'pwd':
+        appendLine(`/home/kabilan/portfolio`, 't-cyan');
+        break;
+
+      case 'uname':
+        if (arg === '-a' || arg === '-all') {
+          appendLine(`Linux kabilan-sec-node 6.8.0-kali-amd64 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux`, 't-log');
+        } else {
+          appendLine(`Linux`, 't-log');
+        }
+        break;
+
+      case 'date':
+        appendLine(new Date().toString(), 't-log');
+        break;
+
+      case 'history':
+        if (cmdHistory.length === 0) {
+          appendLine(`No commands in history.`, 't-log');
+        } else {
+          cmdHistory.forEach((hCmd, idx) => {
+            appendLine(`  ${idx + 1}  ${hCmd}`, 't-log');
+          });
+        }
+        break;
+
+      case 'echo':
+        appendLine(arg || '', 't-log');
+        break;
+
+      case 'ping':
+        const targetHost = arg || '8.8.8.8';
+        appendLine(`PING ${targetHost} (${targetHost}) 56(84) bytes of data.`, 't-log');
+        setTimeout(() => appendLine(`64 bytes from ${targetHost}: icmp_seq=1 ttl=117 time=14.2 ms`, 't-green'), 300);
+        setTimeout(() => appendLine(`64 bytes from ${targetHost}: icmp_seq=2 ttl=117 time=13.8 ms`, 't-green'), 600);
+        setTimeout(() => appendLine(`--- ${targetHost} ping statistics --- 2 packets transmitted, 2 received, 0% packet loss`, 't-cyan'), 900);
+        break;
+
+      case 'ifconfig':
+      case 'ip':
+        appendLine(`wlan0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.1.14  netmask 255.255.255.0  broadcast 192.168.1.255
+        ether E4:95:6E:A4:12:02  txqueuelen 1000  (Ethernet)
+
+eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
+        ether C0:49:EF:2C:99:A1  txqueuelen 1000  (Ethernet)`, 't-cyan');
+        break;
+
+      case 'sudo':
+        appendLine(`[sudo] password for kabilan: `, 't-red');
+        setTimeout(() => appendLine(`kabilan is not in the sudoers file. This incident will be reported.`, 't-red'), 600);
+        break;
+
       case 'clear':
         tBody.innerHTML = '';
-        appendLine(`Welcome to Kabilan's Interactive Lab Terminal [Sniffer v1.0.4]`, 't-log');
-        appendLine(`System status: <span class="t-green">ONLINE</span>`, 't-log');
+        appendLine(`Welcome to Kabilan's Interactive Lab Terminal [Kali-Linux v6.8]`, 't-log');
+        appendLine(`System status: <span class="t-green">ONLINE</span> | Type <span class="t-cyan">help</span> or <span class="t-cyan">resume</span>`, 't-log');
         break;
+
       case 'skills':
         appendLine(`<b>[Kabilan's Skills Profile]</b>
-  - <b>Languages:</b> Java, HTML5, CSS3
+  - <b>Languages:</b> Java, HTML5, CSS3, Bootstrap
   - <b>Databases:</b> MySQL, MongoDB, Apache HDFS, Apache Pig
-  - <b>Tools:</b> Wireshark, Git/GitHub, Arduino IDE
-  - <b>Core Competence:</b> Computer Networks, DBMS, Packet Sniffing`, 't-green');
+  - <b>Tools:</b> Wireshark, Burp Suite, VS Code, Git/GitHub, Arduino IDE
+  - <b>Core Competence:</b> Computer Networks, DBMS, Packet Sniffing, Linux Security`, 't-green');
         break;
+
       case 'projects':
         appendLine(`<b>[Featured Project Portfolio]</b>
   1. <b>Wi-Fi De-authentication Device</b> (ESP8266, C++)
@@ -630,13 +761,15 @@ function initTerminal() {
   3. <b>Forest Fire Prediction System</b> (React, Python, Node.js)
      AI prediction model showing environmental heatmap alerts.`, 't-cyan');
         break;
+
       case 'publications':
         appendLine(`<b>[Research Publications]</b>
   1. <b>"Detecting Deauthentication Attacks in Wireless Networks" (2026)</b>
      Published research examining frame signatures and detection mitigations.
-  2. <b>"Wireless Detection Model & Analysis"</b>
+  2. <b>"Wireless Detection Model &amp; Analysis"</b>
      Model ruleset detailing frame capturing structures.`, 't-yellow');
         break;
+
       case 'contact':
         appendLine(`<b>[Contact Channels]</b>
   - <b>Email:</b> <a href="mailto:mkabilan1409@gmail.com" class="t-cyan" style="color: #06b6d4; text-decoration: underline;">mkabilan1409@gmail.com</a>
@@ -644,6 +777,7 @@ function initTerminal() {
   - <b>LinkedIn:</b> linkedin.com/in/kabilan-m-790801330/
   - <b>GitHub:</b> github.com/kabilanm1409`, 't-prompt');
         break;
+
       case 'sniff':
         if (sniffInterval) {
           clearInterval(sniffInterval);
@@ -661,7 +795,6 @@ function initTerminal() {
             const randMacDst = macs[Math.floor(Math.random() * macs.length)];
             const randSSID = networks[Math.floor(Math.random() * networks.length)];
             
-            // Randomly trigger a normal log or a critical deauth alert
             if (Math.random() > 0.35) {
               appendLine(`[INFO] Sniffed Frame: BEACON | SSID: "${randSSID}" | Ch: ${Math.floor(Math.random()*11)+1} | RSSI: -${Math.floor(Math.random()*40)+40}dBm`, 't-log');
             } else {
@@ -671,8 +804,9 @@ function initTerminal() {
           }, 1500);
         }
         break;
+
       default:
-        appendLine(`bash: ${cleanCmd}: command not found. Type <span class="t-cyan">help</span> to list commands.`, 't-red');
+        appendLine(`bash: ${cleanCmd}: command not found. Type <span class="t-cyan">help</span> or <span class="t-cyan">resume</span> to list commands.`, 't-red');
     }
   };
 

@@ -581,7 +581,7 @@ function initTerminal() {
   const getResumeNoPhotoPath = () => {
     const isSubpage = window.location.pathname.includes('/pages/');
     const prefix = isSubpage ? '../' : '';
-    return prefix + 'assets/resume/kabilanm_resume.pdf?v=3.0';
+    return prefix + 'assets/resume/kabilanm_resume without photo.pdf?v=4.0';
   };
 
   const appendLine = (text, type = '') => {
@@ -642,7 +642,7 @@ function initTerminal() {
   - <b>Internship:</b> Full Stack Trainee @ e-soft IT Solutions (June 2025)
   - <b>Key Projects:</b> ESP32 Deauth Detector, ESP8266 Wi-Fi Sniffer
   - <b>Certifications:</b> Infosys Springboard (HTML5, CSS3, JS), Cyber Security
-  [+] Opening Text Resume (No Photo) in new tab: <a href="${rUrl}" target="_blank" class="t-cyan" style="text-decoration: underline;">kabilanm_resume.pdf</a>`, 't-green');
+  [+] Opening Text Resume (No Photo) in new tab: <a href="${rUrl}" target="_blank" class="t-cyan" style="text-decoration: underline;">kabilanm_resume without photo.pdf</a>`, 't-green');
         window.open(rUrl, '_blank');
         break;
 
@@ -650,14 +650,14 @@ function initTerminal() {
       case 'dir':
         appendLine(`drwxr-xr-x 4 kabilan kabilan 4096 Jul 26 15:10 .
 drwxr-xr-x 8 kabilan kabilan 4096 Jul 26 15:10 ..
--rw-r--r-- 1 kabilan kabilan 113K Jul 26 15:10 <a href="${getResumeNoPhotoPath()}" target="_blank" class="t-green">resume.pdf</a> (No Photo version)
--rw-r--r-- 1 kabilan kabilan  30K Jul 26 15:10 index.html
--rw-r--r-- 1 kabilan kabilan  28K Jul 26 15:10 script.js
--rw-r--r-- 1 kabilan kabilan  41K Jul 26 15:10 style.css
--rw-r--r-- 1 kabilan kabilan  1.2K Jul 26 15:10 skills.txt
--rw-r--r-- 1 kabilan kabilan  1.5K Jul 26 15:10 about.txt
-drwxr-xr-x 2 kabilan kabilan 4096 Jul 26 15:10 projects/
-drwxr-xr-x 3 kabilan kabilan 4096 Jul 26 15:10 certs/`, 't-log');
+-rw-r--r-- 1 kabilan kabilan 106K Aug 11 12:25 <a href="${getResumeNoPhotoPath()}" target="_blank" class="t-green">resume.pdf</a> (No Photo version)
+-rw-r--r-- 1 kabilan kabilan  30K Aug 11 12:25 index.html
+-rw-r--r-- 1 kabilan kabilan  28K Aug 11 12:25 script.js
+-rw-r--r-- 1 kabilan kabilan  41K Aug 11 12:25 style.css
+-rw-r--r-- 1 kabilan kabilan  1.2K Aug 11 12:25 skills.txt
+-rw-r--r-- 1 kabilan kabilan  1.5K Aug 11 12:25 about.txt
+drwxr-xr-x 2 kabilan kabilan 4096 Aug 11 12:25 projects/
+drwxr-xr-x 3 kabilan kabilan 4096 Aug 11 12:25 certs/`, 't-log');
         break;
 
       case 'cat':
@@ -668,7 +668,7 @@ KABILAN M | Security &amp; Networking Engineer
 B.Tech Information Technology | Kongunadu College of Engineering (CGPA: 7.08)
 Full Stack Trainee @ e-soft IT Solutions (June 2025)
 Skills: Java, HTML5, CSS3, MySQL, MongoDB, HDFS, Pig, Wireshark, Linux, Git
-[+] Opened: <a href="${rPath}" target="_blank" class="t-cyan">kabilanm_resume.pdf</a> (No Photo)`, 't-green');
+[+] Opened: <a href="${rPath}" target="_blank" class="t-cyan">kabilanm_resume without photo.pdf</a> (No Photo)`, 't-green');
           window.open(rPath, '_blank');
         } else if (arg === 'skills.txt' || arg === 'skills') {
           handleCommand('skills');

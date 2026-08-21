@@ -432,6 +432,8 @@ function initPortfolio() {
   initHeaderSearch();     // Start global header search and Easter Egg check
   protectInformation();   // Protect text and media from copy/saving
   initScreenshotShield(); // Enable screen capture shield
+  applyDynamicPortfolioData(); // Load custom admin overrides from LocalStorage
+  initAdminPanel();       // Initialize Admin Dashboard if on admin.html
   setYear();
 }
 
@@ -615,6 +617,7 @@ function initTerminal() {
     switch(mainCmd) {
       case 'help':
         appendLine(`Available Linux & System Commands:
+  <span class="t-cyan">admin</span>        - Access Admin Control Panel Login
   <span class="t-cyan">resume</span>       - Display text resume &amp; open Resume (No Photo version)
   <span class="t-cyan">ls</span>           - List directory files (resume.pdf, projects/, certs/)
   <span class="t-cyan">cat &lt;file&gt;</span>   - View file content (cat resume.pdf, cat skills.txt)
@@ -631,6 +634,14 @@ function initTerminal() {
   <span class="t-cyan">date</span>         - Print current system timestamp
   <span class="t-cyan">history</span>      - View command input history
   <span class="t-cyan">clear</span>        - Clear terminal history`, 't-log');
+        break;
+
+      case 'admin':
+      case 'login':
+        const isSub = window.location.pathname.includes('/pages/');
+        const aUrl = isSub ? 'admin.html' : 'pages/admin.html';
+        appendLine(`[+] Launching Security Authentication Portal...`, 't-cyan');
+        setTimeout(() => window.location.href = aUrl, 500);
         break;
 
       case 'resume':
@@ -925,4 +936,290 @@ function initScreenshotShield() {
   });
 }
 
+// ── Admin Panel & Dynamic Portfolio Data Synchronization ────────
+function applyDynamicPortfolioData() {
+  const dataRaw = localStorage.getItem('kabilan_portfolio_data');
+  if (!dataRaw) return;
+  try {
+    const data = JSON.parse(dataRaw);
+
+    // Profile & Bio Overrides
+    if (data.profile) {
+      if (data.profile.role) {
+        document.querySelectorAll('.hero-subtitle').forEach(el => el.textContent = data.profile.role);
+      }
+      if (data.profile.objective) {
+        const objEl = document.getElementById('careerObjectiveText');
+        if (objEl) objEl.textContent = data.profile.objective;
+      }
+      if (data.profile.email) {
+        document.querySelectorAll('a[href^="mailto:"]').forEach(el => {
+          el.href = `mailto:${data.profile.email}`;
+          if (el.textContent.includes('@')) {
+            const nodes = Array.from(el.childNodes);
+            const textNode = nodes.find(n => n.nodeType === Node.TEXT_NODE);
+            if (textNode) textNode.nodeValue = ` ${data.profile.email}`;
+          }
+        });
+      }
+      if (data.profile.phone) {
+        document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+          const rawPhone = data.profile.phone.replace(/\s+/g, '');
+          el.href = `tel:${rawPhone}`;
+          const nodes = Array.from(el.childNodes);
+          const textNode = nodes.find(n => n.nodeType === Node.TEXT_NODE);
+          if (textNode) textNode.nodeValue = ` ${data.profile.phone}`;
+        });
+      }
+    }
+
+    // Resume PDF Overrides
+    if (data.resumes) {
+      const isSubpage = window.location.pathname.includes('/pages/');
+      const prefix = isSubpage ? '../' : '';
+
+      if (data.resumes.c2c) {
+        const c2cUrl = prefix + data.resumes.c2c;
+        document.querySelectorAll('a[href*="resume_c2c.pdf"], a[href*="resume photo.pdf"], a#downloadResumeBtn, a#viewResumeBtn').forEach(el => {
+          if (!el.closest('#terminalBody')) {
+            el.href = c2cUrl;
+          }
+        });
+      }
+    }
+
+    // Education & CGPA Overrides
+    if (data.education) {
+      if (data.education.cgpa) {
+        const cgpaEl = document.getElementById('stat-cgpa');
+        if (cgpaEl) {
+          cgpaEl.textContent = data.education.cgpa;
+          const parent = cgpaEl.closest('.stat-pill');
+          if (parent) parent.setAttribute('data-counter', data.education.cgpa);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Error rendering dynamic portfolio data:', err);
+  }
+}
+
+function initAdminPanel() {
+  const loginForm = document.getElementById('adminLoginForm');
+  if (!loginForm) return; // Not on admin.html page
+
+  const loginSection = document.getElementById('adminLoginSection');
+  const dashSection = document.getElementById('adminDashboardSection');
+  const loginAlert = document.getElementById('loginAlert');
+  const dashAlert = document.getElementById('dashboardAlert');
+  const logoutBtn = document.getElementById('adminLogoutBtn');
+
+  // Password & Auth Helper
+  const getStoredPassword = () => localStorage.getItem('kabilan_admin_pass') || 'kabilan1409';
+  const getStoredUsername = () => localStorage.getItem('kabilan_admin_user') || 'kabilan';
+  const checkAuth = () => sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
+
+  const showAlert = (el, text, isSuccess = false) => {
+    el.textContent = text;
+    el.className = 'alert-box ' + (isSuccess ? 'alert-success' : 'alert-error');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  };
+
+  const renderDashboard = () => {
+    if (checkAuth()) {
+      loginSection.style.display = 'none';
+      dashSection.style.display = 'block';
+      loadFormData();
+    } else {
+      loginSection.style.display = 'block';
+      dashSection.style.display = 'none';
+    }
+  };
+
+  // Load Saved Admin Data into Form Inputs
+  const loadFormData = () => {
+    const dataRaw = localStorage.getItem('kabilan_portfolio_data');
+    const defaultData = {
+      profile: {
+        name: 'Kabilan M',
+        role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
+        objective: 'Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.',
+        email: 'mkabilan1409@gmail.com',
+        phone: '+91 76049 59955',
+        linkedin: 'https://www.linkedin.com/in/kabilan-m-790801330/',
+        github: 'https://github.com/kabilanm1409/'
+      },
+      resumes: {
+        c2c: 'assets/resume/kabilanm_resume_c2c.pdf?v=4.0',
+        terminal: 'assets/resume/kabilanm_resume without photo.pdf?v=4.0'
+      },
+      education: {
+        cgpa: '7.08',
+        sem: 'up to 6th sem',
+        college: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
+        degree: 'B.Tech Information Technology'
+      }
+    };
+
+    const data = dataRaw ? JSON.parse(dataRaw) : defaultData;
+
+    // Set Profile fields
+    if (data.profile) {
+      document.getElementById('admName').value = data.profile.name || '';
+      document.getElementById('admRole').value = data.profile.role || '';
+      document.getElementById('admObjective').value = data.profile.objective || '';
+      document.getElementById('admEmail').value = data.profile.email || '';
+      document.getElementById('admPhone').value = data.profile.phone || '';
+      document.getElementById('admLinkedin').value = data.profile.linkedin || '';
+      document.getElementById('admGithub').value = data.profile.github || '';
+    }
+
+    // Set Resume fields
+    if (data.resumes) {
+      document.getElementById('admC2cResume').value = data.resumes.c2c || '';
+      document.getElementById('admTerminalResume').value = data.resumes.terminal || '';
+    }
+
+    // Set Education fields
+    if (data.education) {
+      document.getElementById('admCgpa').value = data.education.cgpa || '';
+      document.getElementById('admSem').value = data.education.sem || '';
+      document.getElementById('admCollege').value = data.education.college || '';
+      document.getElementById('admDegree').value = data.education.degree || '';
+    }
+  };
+
+  // Login Form Submission
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const userIn = document.getElementById('adminUsername').value.trim();
+    const passIn = document.getElementById('adminPassword').value.trim();
+
+    if (userIn === getStoredUsername() && passIn === getStoredPassword()) {
+      sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+      renderDashboard();
+    } else {
+      showAlert(loginAlert, 'Invalid administrative credentials! Please try again.');
+    }
+  });
+
+  // Logout Action
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('kabilan_admin_authenticated');
+      renderDashboard();
+    });
+  }
+
+  // Tab Switching Logic
+  const tabBtns = document.querySelectorAll('.admin-tab-btn');
+  const tabContents = document.querySelectorAll('.admin-tab-content');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const target = document.getElementById(btn.getAttribute('data-tab'));
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // Save Profile Form
+  const formProfile = document.getElementById('formProfile');
+  if (formProfile) {
+    formProfile.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.profile = {
+        name: document.getElementById('admName').value.trim(),
+        role: document.getElementById('admRole').value.trim(),
+        objective: document.getElementById('admObjective').value.trim(),
+        email: document.getElementById('admEmail').value.trim(),
+        phone: document.getElementById('admPhone').value.trim(),
+        linkedin: document.getElementById('admLinkedin').value.trim(),
+        github: document.getElementById('admGithub').value.trim()
+      };
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      showAlert(dashAlert, 'Profile details saved successfully!', true);
+    });
+  }
+
+  // Save Resumes Form
+  const formResumes = document.getElementById('formResumes');
+  if (formResumes) {
+    formResumes.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.resumes = {
+        c2c: document.getElementById('admC2cResume').value.trim(),
+        terminal: document.getElementById('admTerminalResume').value.trim()
+      };
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      showAlert(dashAlert, 'Resume URLs updated successfully!', true);
+    });
+  }
+
+  // Save Education Form
+  const formEducation = document.getElementById('formEducation');
+  if (formEducation) {
+    formEducation.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.education = {
+        cgpa: document.getElementById('admCgpa').value.trim(),
+        sem: document.getElementById('admSem').value.trim(),
+        college: document.getElementById('admCollege').value.trim(),
+        degree: document.getElementById('admDegree').value.trim()
+      };
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      showAlert(dashAlert, 'Education & CGPA details updated!', true);
+    });
+  }
+
+  // Change Password Form
+  const formPass = document.getElementById('formChangePassword');
+  if (formPass) {
+    formPass.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newPass = document.getElementById('admNewPassword').value.trim();
+      if (newPass) {
+        localStorage.setItem('kabilan_admin_pass', newPass);
+        document.getElementById('admNewPassword').value = '';
+        showAlert(dashAlert, 'Admin password changed successfully!', true);
+      }
+    });
+  }
+
+  // Export JSON
+  const exportBtn = document.getElementById('exportJsonBtn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const dataRaw = localStorage.getItem('kabilan_portfolio_data') || '{}';
+      const blob = new Blob([dataRaw], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'portfolio_data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // Reset Defaults
+  const resetBtn = document.getElementById('resetDefaultsBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset all admin edits back to default site configuration?')) {
+        localStorage.removeItem('kabilan_portfolio_data');
+        loadFormData();
+        showAlert(dashAlert, 'Reset back to default settings.', true);
+      }
+    });
+  }
+
+  renderDashboard();
+}
+
 initPortfolio();
+

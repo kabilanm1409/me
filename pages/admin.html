@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Control Panel | Kabilan M</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    /* Dedicated Admin Styles */
+    .admin-container {
+      max-width: 1050px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .admin-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 16px;
+      padding: 30px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .admin-login-box {
+      max-width: 420px;
+      margin: 80px auto;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .admin-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #06b6d4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
+    .admin-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .admin-tab-btn:hover, .admin-tab-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
+      color: #38bdf8;
+    }
+    .admin-tab-content {
+      display: none;
+    }
+    .admin-tab-content.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-control {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+    }
+    textarea.form-control {
+      resize: vertical;
+      min-height: 90px;
+    }
+    .admin-btn {
+      background: #06b6d4;
+      color: #0f172a;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .admin-btn:hover {
+      background: #22d3ee;
+    }
+    .admin-btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+    }
+    .admin-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .admin-btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+    .admin-btn-danger:hover {
+      background: #f87171;
+    }
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .alert-success {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid #22c55e;
+      color: #4ade80;
+    }
+    .alert-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #f87171;
+    }
+    .project-item-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body class="dark-theme">
+  <!-- HEADER -->
+  <header class="header navbar">
+    <div class="nav-container">
+      <a class="logo" href="../index.html"><span class="logo-accent">KABILAN</span>.M</a>
+      <nav class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <!-- LOGIN SCREEN -->
+    <div id="adminLoginSection" class="admin-card admin-login-box">
+      <div class="admin-header" style="justify-content: center; border-bottom: none; margin-bottom: 15px;">
+        <div class="admin-title"><i class="fa-solid fa-user-shield"></i> Admin Login</div>
+      </div>
+      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">
+        Enter your administrative credentials to manage portfolio content.
+      </p>
+
+      <div id="loginAlert" class="alert-box alert-error"></div>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label for="adminUsername">Username</label>
+          <input type="text" id="adminUsername" class="form-control" placeholder="Default: kabilan" required />
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" class="form-control" placeholder="Default: kabilan1409" required />
+        </div>
+        <button type="submit" class="admin-btn" style="width: 100%; justify-content: center; margin-top: 10px;">
+          <i class="fa-solid fa-right-to-bracket"></i> Authenticate &amp; Access Dashboard
+        </button>
+      </form>
+    </div>
+
+    <!-- DASHBOARD PANEL (HIDDEN BY DEFAULT) -->
+    <div id="adminDashboardSection" class="admin-card" style="display: none;">
+      <div class="admin-header">
+        <div class="admin-title"><i class="fa-solid fa-sliders"></i> Portfolio Management Dashboard</div>
+        <button id="adminLogoutBtn" class="admin-btn admin-btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">
+          <i class="fa-solid fa-lock"></i> Logout
+        </button>
+      </div>
+
+      <div id="dashboardAlert" class="alert-box alert-success"></div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" data-tab="tab-profile"><i class="fa-solid fa-user"></i> Profile &amp; Bio</button>
+        <button class="admin-tab-btn" data-tab="tab-resumes"><i class="fa-solid fa-file-pdf"></i> Resume Links</button>
+        <button class="admin-tab-btn" data-tab="tab-education"><i class="fa-solid fa-graduation-cap"></i> Education &amp; CGPA</button>
+        <button class="admin-tab-btn" data-tab="tab-projects"><i class="fa-solid fa-diagram-project"></i> Projects</button>
+        <button class="admin-tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Settings &amp; Sync</button>
+      </div>
+
+      <!-- TAB 1: PROFILE & BIO -->
+      <div id="tab-profile" class="admin-tab-content active">
+        <form id="formProfile">
+          <div class="form-group">
+            <label for="admName">Full Name</label>
+            <input type="text" id="admName" class="form-control" value="Kabilan M" />
+          </div>
+          <div class="form-group">
+            <label for="admRole">Primary Role / Tagline</label>
+            <input type="text" id="admRole" class="form-control" value="Cybersecurity Enthusiast | Java Developer | Full Stack Developer" />
+          </div>
+          <div class="form-group">
+            <label for="admObjective">Career Objective / Bio</label>
+            <textarea id="admObjective" class="form-control">Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.</textarea>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label for="admEmail">Email Address</label>
+              <input type="email" id="admEmail" class="form-control" value="mkabilan1409@gmail.com" />
+            </div>
+            <div class="form-group">
+              <label for="admPhone">Phone Number</label>
+              <input type="text" id="admPhone" class="form-control" value="+91 76049 59955" />
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label for="admLinkedin">LinkedIn Profile URL</label>
+              <input type="text" id="admLinkedin" class="form-control" value="https://www.linkedin.com/in/kabilan-m-790801330/" />
+            </div>
+            <div class="form-group">
+              <label for="admGithub">GitHub Profile URL</label>
+              <input type="text" id="admGithub" class="form-control" value="https://github.com/kabilanm1409/" />
+            </div>
+          </div>
+          <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Save Profile Details</button>
+        </form>
+      </div>
+
+      <!-- TAB 2: RESUME LINKS -->
+      <div id="tab-resumes" class="admin-tab-content">
+        <form id="formResumes">
+          <div class="form-group">
+            <label for="admC2cResume">Visitor C2C Resume PDF Path / URL</label>
+            <input type="text" id="admC2cResume" class="form-control" value="assets/resume/kabilanm_resume_c2c.pdf?v=4.0" />
+            <span style="font-size: 0.8rem; color: #94a3b8;">Used for all normal website "Download PDF" and "View PDF" buttons across all pages.</span>
+          </div>
+          <div class="form-group" style="margin-top: 20px;">
+            <label for="admTerminalResume">Terminal Resume PDF Path / URL (No-Photo Version)</label>
+            <input type="text" id="admTerminalResume" class="form-control" value="assets/resume/kabilanm_resume without photo.pdf?v=4.0" />
+            <span style="font-size: 0.8rem; color: #94a3b8;">Served exclusively when users type "resume" or "cat resume.pdf" in the cyber terminal shell.</span>
+          </div>
+          <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Save Resume Paths</button>
+        </form>
+      </div>
+
+      <!-- TAB 3: EDUCATION & CGPA -->
+      <div id="tab-education" class="admin-tab-content">
+        <form id="formEducation">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label for="admCgpa">Current CGPA Score</label>
+              <input type="text" id="admCgpa" class="form-control" value="7.08" />
+            </div>
+            <div class="form-group">
+              <label for="admSem">Semesters Completed</label>
+              <input type="text" id="admSem" class="form-control" value="up to 6th sem" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="admCollege">College / Institution Name</label>
+            <input type="text" id="admCollege" class="form-control" value="Kongunadu College of Engineering and Technology, Thottiyam, Trichy" />
+          </div>
+          <div class="form-group">
+            <label for="admDegree">Degree Name</label>
+            <input type="text" id="admDegree" class="form-control" value="B.Tech Information Technology" />
+          </div>
+          <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Save Education Info</button>
+        </form>
+      </div>
+
+      <!-- TAB 4: PROJECTS MANAGER -->
+      <div id="tab-projects" class="admin-tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3 style="color: #f8fafc; font-size: 1.1rem;">Manage Portfolio Projects</h3>
+          <button id="admAddProjectBtn" class="admin-btn admin-btn-secondary" style="font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Add New Project</button>
+        </div>
+        
+        <div id="projectsListContainer">
+          <!-- Dynamic Project Cards Rendered via JS -->
+        </div>
+
+        <button id="saveProjectsBtn" class="admin-btn" style="margin-top: 15px;"><i class="fa-solid fa-floppy-disk"></i> Save All Projects</button>
+      </div>
+
+      <!-- TAB 5: SETTINGS & SYNC -->
+      <div id="tab-settings" class="admin-tab-content">
+        <h3 style="color: #f8fafc; font-size: 1.1rem; margin-bottom: 15px;">Admin Security &amp; Data Options</h3>
+        
+        <form id="formChangePassword" style="margin-bottom: 30px;">
+          <div class="form-group">
+            <label for="admNewPassword">Change Admin Password</label>
+            <input type="password" id="admNewPassword" class="form-control" placeholder="Enter new password" required />
+          </div>
+          <button type="submit" class="admin-btn"><i class="fa-solid fa-key"></i> Update Password</button>
+        </form>
+
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 25px 0;" />
+
+        <h3 style="color: #f8fafc; font-size: 1.1rem; margin-bottom: 15px;">Data Synchronization</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">
+          Export your admin changes as a JSON backup, or reset all dynamic edits back to default site configuration.
+        </p>
+
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <button id="exportJsonBtn" class="admin-btn admin-btn-secondary"><i class="fa-solid fa-download"></i> Export Data JSON</button>
+          <button id="resetDefaultsBtn" class="admin-btn admin-btn-danger"><i class="fa-solid fa-rotate-left"></i> Reset to Default Settings</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 Kabilan M. All rights reserved. <a href="admin.html" style="color: #06b6d4; font-size: 0.8rem; margin-left: 10px;"><i class="fa-solid fa-lock"></i> Admin Panel</a></p>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>

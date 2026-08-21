@@ -1850,6 +1850,7 @@ function initAdminPanel() {
   const addTimelineBtn = document.getElementById('admAddTimelineBtn');
   if (addTimelineBtn) {
     addTimelineBtn.addEventListener('click', () => {
+      adminTimelineList = collectEducationTimelineFromDOM();
       adminTimelineList.push({
         year: '',
         title: '',
@@ -1877,6 +1878,7 @@ function initAdminPanel() {
   const addAchievementBtn = document.getElementById('admAddAchievementBtn');
   if (addAchievementBtn) {
     addAchievementBtn.addEventListener('click', () => {
+      adminAchievementsList = collectAchievementsFromDOM();
       adminAchievementsList.push({
         icon: 'fa-trophy',
         title: '',
@@ -2050,6 +2052,7 @@ function initAdminPanel() {
   const addProjectBtn = document.getElementById('admAddProjectBtn');
   if (addProjectBtn) {
     addProjectBtn.addEventListener('click', () => {
+      adminProjectsList = collectProjectsFromDOM();
       adminProjectsList.push({
         title: '',
         category: '',

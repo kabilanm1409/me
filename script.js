@@ -1639,9 +1639,15 @@ function initAdminPanel() {
   const dashAlert = document.getElementById('dashboardAlert');
   const logoutBtn = document.getElementById('adminLogoutBtn');
 
-  // Password & Auth Helper
-  const getStoredPassword = () => localStorage.getItem('kabilan_admin_pass') || 'kabilan1409';
-  const getStoredUsername = () => localStorage.getItem('kabilan_admin_user') || 'kabilan';
+  // Password & Auth Helper (Synced via Firebase Cloud Database)
+  const getStoredPassword = () => {
+    const data = getPortfolioData();
+    return data.adminPass || 'kabilan1409';
+  };
+  const getStoredUsername = () => {
+    const data = getPortfolioData();
+    return data.adminUser || 'kabilan';
+  };
   const checkAuth = () => sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
 
   const showAlert = (el, text, isSuccess = false) => {
@@ -1872,16 +1878,18 @@ function initAdminPanel() {
     });
   }
 
-  // Change Password Form
+  // Change Password Form (Synced globally to Firebase Cloud Database)
   const formPass = document.getElementById('formChangePassword');
   if (formPass) {
     formPass.addEventListener('submit', (e) => {
       e.preventDefault();
       const newPass = document.getElementById('admNewPassword').value.trim();
       if (newPass) {
-        localStorage.setItem('kabilan_admin_pass', newPass);
+        const currentData = getPortfolioData();
+        currentData.adminPass = newPass;
+        syncPortfolioDataToFirebase(currentData);
         document.getElementById('admNewPassword').value = '';
-        showAlert(dashAlert, 'Admin password changed successfully!', true);
+        showAlert(dashAlert, 'Admin password updated & locked globally on Firebase Cloud!', true);
       }
     });
   }

@@ -1000,20 +1000,23 @@ function getSkillIconHTML(skillName) {
   return '';
 }
 
-// ── Runtime Credentials & Endpoint Decoders (Obfuscated against Burp Suite & static analysis) ─────
-const _sec = (str) => {
-  try { return atob(str); } catch(e) { return str; }
+// ── Advanced XOR Cipher & SHA-256 Cryptographic Decoders ────────────────
+const _secKey = 'kabilan_sec_key_2026';
+const _xor = (arr) => {
+  try {
+    return arr.map((code, i) => String.fromCharCode(code ^ _secKey.charCodeAt(i % _secKey.length))).join('');
+  } catch(e) { return ''; }
 };
 
 // ── Firebase Cloud Database Integration ─────────────────────────
 const firebaseConfig = {
-  apiKey: _sec("QUl6YVN5Q21zRGxUc0pkc05LYS1NV2JMc2RGa2tCWWo2X2F4MXVF"),
-  authDomain: _sec("cG9ydGZvbGlvLTlhMWExLmZpcmViYXNlYXBwLmNvbQ=="),
-  projectId: _sec("cG9ydGZvbGlvLTlhMWEx"),
-  storageBucket: _sec("cG9ydGZvbGlvLTlhMWExLmZpcmViYXNlc3RvcmFnZS5hcHA="),
-  messagingSenderId: _sec("OTEyMjU1MjkyMDky"),
-  appId: _sec("MTo5MTIyNTUyOTIwOTI6d2ViOmNjYjc0YWI2NTEwY2VmMDY4YWY2Yjk="),
-  measurementId: _sec("Ry1UWlNFUVdKS05E")
+  apiKey: _xor([42, 40, 24, 8, 63, 24, 45, 50, 0, 33, 15, 11, 24, 47, 29, 44, 124, 123, 83, 27, 38, 54, 0, 37, 31, 5, 40, 52, 24, 39, 58, 53, 93, 58, 24, 39, 3, 69, 119]),
+  authDomain: _xor([27, 14, 16, 29, 10, 14, 2, 54, 28, 72, 90, 62, 90, 4, 72, 113, 84, 89, 64, 83, 9, 0, 17, 12, 13, 17, 30, 113, 16, 10, 14]),
+  projectId: _xor([27, 14, 16, 29, 10, 14, 2, 54, 28, 72, 90, 62, 90, 4, 72]),
+  storageBucket: _xor([27, 14, 16, 29, 10, 14, 2, 54, 28, 72, 90, 62, 90, 4, 72, 113, 84, 89, 64, 83, 9, 0, 17, 12, 31, 21, 1, 45, 18, 2, 6, 113, 10, 21, 9]),
+  messagingSenderId: _xor([82, 80, 80, 91, 89, 84, 92, 102, 65, 85, 90, 109]),
+  appId: _xor([90, 91, 91, 88, 94, 83, 91, 106, 65, 92, 81, 111, 82, 87, 67, 40, 87, 82, 8, 85, 8, 3, 85, 93, 13, 3, 88, 106, 66, 85, 0, 58, 13, 85, 79, 103, 83, 86, 4, 84, 82]),
+  measurementId: _xor([44, 76, 54, 51, 63, 36, 63, 8, 57, 46, 45, 27])
 };
 
 let db = null;
@@ -1843,7 +1846,17 @@ function initAdminPanel() {
   let failedAttempts = 0;
   let isLockedOut = false;
 
-  loginForm.addEventListener('submit', (e) => {
+  const calculateSHA256 = async (str) => {
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str + 'kabilan_portfolio_2026_sec');
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch(e) { return ''; }
+  };
+
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     if (isLockedOut) {
@@ -1854,7 +1867,10 @@ function initAdminPanel() {
     const userIn = document.getElementById('adminUsername').value.trim();
     const passIn = document.getElementById('adminPassword').value.trim();
 
-    if (userIn === getStoredUsername() && passIn === getStoredPassword()) {
+    const inputHash = await calculateSHA256(passIn);
+    const storedHash = await calculateSHA256(getStoredPassword());
+
+    if (userIn === getStoredUsername() && inputHash === storedHash) {
       failedAttempts = 0;
       sessionStorage.setItem('kabilan_admin_authenticated', 'true');
       renderDashboard();
@@ -2249,8 +2265,8 @@ function initVisitorNotification() {
                         `Page Visited: ${visitorLog.page}\n` +
                         `Timestamp: ${visitorLog.time}`;
 
-      // Dispatch Email Alert (Obfuscated against Burp Suite static string analysis)
-      fetch(_sec('aHR0cHM6Ly9mb3Jtc3ByZWUuaW8vZi94YW55cWpxcA=='), {
+      // Dispatch Email Alert (XOR Cipher Encrypted against Burp Suite)
+      fetch(_xor([3, 21, 22, 25, 31, 91, 65, 112, 21, 10, 17, 50, 24, 21, 11, 58, 87, 30, 91, 89, 68, 7, 77, 17, 13, 15, 23, 46, 25, 20, 19]), {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({

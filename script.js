@@ -1795,16 +1795,36 @@ function initAdminPanel() {
   };
 
   // Login Form Submission
+  let failedAttempts = 0;
+  let isLockedOut = false;
+
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    
+    if (isLockedOut) {
+      showAlert(loginAlert, '🔒 Security Lockout Active! Please wait 60 seconds before trying again.');
+      return;
+    }
+
     const userIn = document.getElementById('adminUsername').value.trim();
     const passIn = document.getElementById('adminPassword').value.trim();
 
     if (userIn === getStoredUsername() && passIn === getStoredPassword()) {
+      failedAttempts = 0;
       sessionStorage.setItem('kabilan_admin_authenticated', 'true');
       renderDashboard();
     } else {
-      showAlert(loginAlert, 'Invalid administrative credentials! Please try again.');
+      failedAttempts++;
+      if (failedAttempts >= 5) {
+        isLockedOut = true;
+        showAlert(loginAlert, '🔒 Account locked out for 60 seconds due to 5 failed login attempts!');
+        setTimeout(() => {
+          isLockedOut = false;
+          failedAttempts = 0;
+        }, 60000);
+      } else {
+        showAlert(loginAlert, `Invalid credentials! Failed attempt ${failedAttempts}/5. Please check username & password.`);
+      }
     }
   });
 

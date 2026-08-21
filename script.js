@@ -1180,15 +1180,29 @@ function getPortfolioDefaultData() {
 }
 
 function getPortfolioData() {
-  if (currentFirebasePortfolioData) return currentFirebasePortfolioData;
-  try {
-    const localRaw = localStorage.getItem('kabilan_portfolio_data');
-    if (localRaw) {
-      const parsed = JSON.parse(localRaw);
-      if (parsed && Object.keys(parsed).length > 0) return parsed;
-    }
-  } catch (e) {}
-  return getPortfolioDefaultData();
+  let data = null;
+  if (currentFirebasePortfolioData) {
+    data = { ...currentFirebasePortfolioData };
+  } else {
+    try {
+      const localRaw = localStorage.getItem('kabilan_portfolio_data');
+      if (localRaw) {
+        data = JSON.parse(localRaw);
+      }
+    } catch (e) {}
+  }
+  
+  const defaultData = getPortfolioDefaultData();
+  if (!data || Object.keys(data).length === 0) {
+    data = defaultData;
+  }
+
+  // Ensure achievements includes all 3 Infosys Springboard certificate cards (HTML5, CSS3, JS)
+  if (!data.achievements || data.achievements.length < 6 || !data.achievements.some(a => a.subtitle && a.subtitle.includes('HTML5'))) {
+    data.achievements = defaultData.achievements;
+  }
+
+  return data;
 }
 
 // ── Admin Panel & Dynamic Portfolio Data Synchronization ────────
@@ -1289,6 +1303,16 @@ function applyDynamicPortfolioData() {
       const grid = document.querySelector('.achievement-grid');
       if (grid) {
         grid.innerHTML = data.achievements.map(a => {
+          let iconClass = 'fa-solid fa-trophy';
+          if (a.icon) {
+            if (a.icon.includes(' ')) {
+              iconClass = a.icon;
+            } else if (a.icon.includes('html5') || a.icon.includes('css3') || a.icon.includes('js') || a.icon.includes('github')) {
+              iconClass = `fa-brands ${a.icon}`;
+            } else {
+              iconClass = `fa-solid ${a.icon}`;
+            }
+          }
           const certLink = a.certUrl ? `
             <a class="cert-link" href="${escapeAttr(a.certUrl)}" target="_blank" rel="noopener noreferrer" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
               <i class="fa-solid ${a.certUrl.endsWith('.pdf') ? 'fa-file-pdf' : 'fa-image'}"></i> ${escapeHTML(a.certText || 'View Certificate')}
@@ -1296,7 +1320,7 @@ function applyDynamicPortfolioData() {
           ` : '';
           return `
             <article class="achievement-card card" role="listitem" data-aos="fade-up">
-              <i class="fa-solid ${escapeAttr(a.icon || 'fa-trophy')}" aria-hidden="true"></i>
+              <i class="${escapeAttr(iconClass)}" aria-hidden="true"></i>
               <h3>${escapeHTML(a.title || '')}</h3>
               <p>${escapeHTML(a.subtitle || '')}</p>
               ${certLink}

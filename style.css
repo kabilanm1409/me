@@ -439,9 +439,10 @@ body[data-theme='dark'] .site-header {
 }
 
 .hero-copy h1 {
-  margin: 10px 0 18px;
-  font-size: clamp(2.8rem, 7vw, 5.4rem);
-  line-height: 0.96;
+  margin: 8px 0 16px;
+  font-size: clamp(2rem, 3.4vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   background: linear-gradient(135deg, var(--text) 40%, var(--primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -455,10 +456,10 @@ body[data-theme='dark'] .hero-copy h1 {
 }
 
 .hero-subtitle {
-  max-width: 60ch;
+  max-width: 58ch;
   color: var(--muted);
-  line-height: 1.85;
-  font-size: 1rem;
+  line-height: 1.7;
+  font-size: clamp(0.92rem, 0.4vw + 0.82rem, 1.02rem);
   margin: 0;
 }
 
@@ -725,8 +726,8 @@ body[data-theme='dark'] .btn-secondary {
    ===================================================== */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+  gap: 22px;
 }
 
 .skill-list {
@@ -1052,8 +1053,8 @@ body[data-theme='dark'] .carousel-control {
    ===================================================== */
 .achievement-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 20px;
 }
 
 .achievement-card {

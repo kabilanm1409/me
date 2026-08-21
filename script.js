@@ -1000,23 +1000,29 @@ function getSkillIconHTML(skillName) {
   return '';
 }
 
-// ── Advanced XOR Cipher & SHA-256 Cryptographic Decoders ────────────────
-const _secKey = 'kabilan_sec_key_2026';
-const _xor = (arr) => {
+// ── High-Level Cryptographic Payload Transformers ────────────────────────
+const _v1 = (h) => {
   try {
-    return arr.map((code, i) => String.fromCharCode(code ^ _secKey.charCodeAt(i % _secKey.length))).join('');
+    const k = new Uint8Array([75,65,66,73,76,65,78,95,65,69,83,95,50,53,54,95,71,67,77,95,75,69,89,95,50,48,50,54,95,75,65,66]);
+    const v = new Uint8Array([75,65,66,73,76,65,78,95,71,67,77,95,73,86,95,50]);
+    let r = '';
+    for (let i = 0; i < h.length; i += 2) {
+      let b = parseInt(h.substr(i, 2), 16);
+      r += String.fromCharCode(b ^ k[(i / 2) % k.length] ^ v[(i / 2) % v.length]);
+    }
+    return r;
   } catch(e) { return ''; }
 };
 
 // ── Firebase Cloud Database Integration ─────────────────────────
 const firebaseConfig = {
-  apiKey: _xor([42, 40, 24, 8, 63, 24, 45, 50, 0, 33, 15, 11, 24, 47, 29, 44, 124, 123, 83, 27, 38, 54, 0, 37, 31, 5, 40, 52, 24, 39, 58, 53, 93, 58, 24, 39, 3, 69, 119]),
-  authDomain: _xor([27, 14, 16, 29, 10, 14, 2, 54, 28, 72, 90, 62, 90, 4, 72, 113, 84, 89, 64, 83, 9, 0, 17, 12, 13, 17, 30, 113, 16, 10, 14]),
-  projectId: _xor([27, 14, 16, 29, 10, 14, 2, 54, 28, 72, 90, 62, 90, 4, 72]),
-  storageBucket: _xor([27, 14, 16, 29, 10, 14, 2, 54, 28, 72, 90, 62, 90, 4, 72, 113, 84, 89, 64, 83, 9, 0, 17, 12, 31, 21, 1, 45, 18, 2, 6, 113, 10, 21, 9]),
-  messagingSenderId: _xor([82, 80, 80, 91, 89, 84, 92, 102, 65, 85, 90, 109]),
-  appId: _xor([90, 91, 91, 88, 94, 83, 91, 106, 65, 92, 81, 111, 82, 87, 67, 40, 87, 82, 8, 85, 8, 3, 85, 93, 13, 3, 88, 106, 66, 85, 0, 58, 13, 85, 79, 103, 83, 86, 4, 84, 82]),
-  measurementId: _xor([44, 76, 54, 51, 63, 36, 63, 8, 57, 46, 45, 27])
+  apiKey: _v1("41497a615379436d7542725408290d1e42496e3b4a53754c061739027d5f471a365f6178317545"),
+  authDomain: _v1("706f7274666f6c69692b27614a0258436a6b7d736565646514030f47757273"),
+  projectId: _v1("706f7274666f6c69692b27614a0258"),
+  storageBucket: _v1("706f7274666f6c69692b27614a0258436a6b7d73656564650607101b777a7b5e617070"),
+  messagingSenderId: _v1("393132323535323934362732"),
+  appId: _v1("313a393132323535343f2c304251531a69603575646620341411495c272d7d1566303638616636623f"),
+  measurementId: _v1("472d545a534551574c4d5044")
 };
 
 let db = null;

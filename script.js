@@ -972,6 +972,8 @@ const firebaseConfig = {
 };
 
 let db = null;
+let currentFirebasePortfolioData = null;
+
 function initFirebaseApp() {
   if (typeof firebase !== 'undefined') {
     try {
@@ -987,14 +989,20 @@ function initFirebaseApp() {
 
 function syncPortfolioDataToFirebase(data) {
   if (!db) initFirebaseApp();
-  if (!db) return Promise.resolve(false);
+  currentFirebasePortfolioData = { ...data };
+  if (!db) {
+    applyDynamicPortfolioData();
+    return Promise.resolve(false);
+  }
   return db.collection("portfolio").doc("liveData").set(data, { merge: true })
     .then(() => {
       console.log("Synced portfolio data to Firebase Cloud Database!");
+      applyDynamicPortfolioData();
       return true;
     })
     .catch((err) => {
       console.error("Firebase Sync Error:", err);
+      applyDynamicPortfolioData();
       return false;
     });
 }
@@ -1006,8 +1014,11 @@ function initFirebaseLiveSync() {
     if (doc.exists) {
       const remoteData = doc.data();
       if (remoteData && Object.keys(remoteData).length > 0) {
-        localStorage.setItem('kabilan_portfolio_data', JSON.stringify(remoteData));
+        currentFirebasePortfolioData = remoteData;
         applyDynamicPortfolioData();
+        if (typeof loadFormData === 'function' && document.getElementById('adminLoginForm')) {
+          loadFormData();
+        }
       }
     }
   }, (err) => {
@@ -1127,13 +1138,7 @@ function getPortfolioDefaultData() {
 }
 
 function getPortfolioData() {
-  const dataRaw = localStorage.getItem('kabilan_portfolio_data');
-  if (dataRaw) {
-    try {
-      return JSON.parse(dataRaw);
-    } catch (e) {}
-  }
-  return getPortfolioDefaultData();
+  return currentFirebasePortfolioData || getPortfolioDefaultData();
 }
 
 // ── Admin Panel & Dynamic Portfolio Data Synchronization ────────
@@ -1645,116 +1650,7 @@ function initAdminPanel() {
 
   // Load Saved Admin Data into Form Inputs
   const loadFormData = () => {
-    const dataRaw = localStorage.getItem('kabilan_portfolio_data');
-    const defaultData = {
-      profile: {
-        name: 'Kabilan M',
-        role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
-        objective: 'Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.',
-        footerRights: '© 2026 Kabilan M. Security and Networking Engineer. All rights reserved.',
-        email: 'mkabilan1409@gmail.com',
-        phone: '+91 76049 59955',
-        linkedin: 'https://www.linkedin.com/in/kabilan-m-790801330/',
-        github: 'https://github.com/kabilanm1409/'
-      },
-      resumes: {
-        c2c: 'assets/resume/kabilanm_resume_c2c.pdf?v=4.0',
-        terminal: 'assets/resume/kabilanm_resume without photo.pdf?v=4.0'
-      },
-      education: {
-        cgpa: '7.08',
-        sem: 'up to 6th sem',
-        college: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
-        degree: 'B.Tech Information Technology',
-        timeline: [
-          {
-            year: '2024 - 2027',
-            title: 'B.Tech Information Technology',
-            institution: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
-            details: 'CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.'
-          },
-          {
-            year: '2022 - 2024',
-            title: 'Diploma in Mechanical Engineering',
-            institution: 'Kongunadu Polytechnic College, Thottiyam, Trichy',
-            details: 'Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT.'
-          },
-          {
-            year: '2021 - 2022',
-            title: 'Higher Secondary Certificate (HSC)',
-            institution: 'Government Higher Secondary School, Pappapatti, Trichy',
-            details: 'Completed higher secondary education with a 50% aggregate score.'
-          }
-        ]
-      },
-      achievements: [
-        {
-          icon: 'fa-trophy',
-          title: 'Artivers 3.0 Hackathon',
-          subtitle: '1st Place (College Level)',
-          certUrl: 'assets/cerificates/IMG_20260701_185332433.jpg',
-          certText: 'View Certificate'
-        },
-        {
-          icon: 'fa-medal',
-          title: 'Tezario 3.0 Project Expo',
-          subtitle: '2nd Place (College Level)',
-          certUrl: '',
-          certText: ''
-        },
-        {
-          icon: 'fa-certificate',
-          title: 'Infosys Springboard',
-          subtitle: 'Technical Certifications: HTML5, CSS3, JavaScript',
-          certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf',
-          certText: 'View PDF Certificate'
-        },
-        {
-          icon: 'fa-shield-halved',
-          title: 'Advanced Cyber Security',
-          subtitle: 'Penetration Testing Course (6 Days)',
-          certUrl: 'assets/cerificates/IMG_20260701_185137413.jpg',
-          certText: 'View Certificate'
-        }
-      ],
-      skills: {
-        languages: 'Java, HTML5, CSS3, JavaScript, Bootstrap',
-        databases: 'MySQL, MongoDB, Apache HDFS, Apache Pig',
-        tools: 'Wireshark, Burp Suite, VS Code, Git/GitHub, Arduino IDE, ESP32, ESP8266',
-        core: 'Computer Networks, DBMS, Packet Sniffing, Adaptability, Time Management'
-      },
-      projects: [
-        {
-          title: 'Wi-Fi De-authentication Device',
-          category: 'security',
-          description: 'An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.',
-          tags: 'ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display',
-          features: 'Developed wireless frame sniffer targeting Wi-Fi vulnerabilities.\\nSupports detection of deauthentication and probe frames.\\nOLED notifications for real-time traffic updates.',
-          github: 'https://github.com/kabilanm1409/',
-          demo: '../index.html#contact'
-        },
-        {
-          title: 'De-authentication Detection System',
-          category: 'security,software',
-          description: 'An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.',
-          tags: 'ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display',
-          features: 'Implements real-time packet capture for IEEE 802.11 frames.\\nGenerates live alerts for fast security response.\\nIncreases defense posture awareness in open networks.',
-          github: 'https://github.com/kabilanm1409/',
-          demo: '../index.html#contact'
-        },
-        {
-          title: 'Forest Fire Prediction System',
-          category: 'software',
-          description: 'An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.',
-          tags: 'React, Node.js, Python, REST APIs, Google Maps',
-          features: 'Visualizes environmental risk dynamically via Heatmaps.\\nSends alerts directly using WhatsApp and Email integrations.\\nUtilizes location services on Google Maps for fast responses.',
-          github: 'https://github.com/kabilanm1409/',
-          demo: '../index.html#contact'
-        }
-      ]
-    };
-
-    const data = dataRaw ? JSON.parse(dataRaw) : defaultData;
+    const data = getPortfolioData();
 
     // Set Profile fields
     if (data.profile) {
@@ -1858,7 +1754,7 @@ function initAdminPanel() {
   if (formProfile) {
     formProfile.addEventListener('submit', (e) => {
       e.preventDefault();
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.profile = {
         name: document.getElementById('admName').value.trim(),
         role: document.getElementById('admRole').value.trim(),
@@ -1869,10 +1765,8 @@ function initAdminPanel() {
         linkedin: document.getElementById('admLinkedin').value.trim(),
         github: document.getElementById('admGithub').value.trim()
       };
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'Profile details saved and synced to cloud!', true);
+      showAlert(dashAlert, 'Profile details saved and synced to Firebase Cloud!', true);
     });
   }
 
@@ -1881,15 +1775,13 @@ function initAdminPanel() {
   if (formResumes) {
     formResumes.addEventListener('submit', (e) => {
       e.preventDefault();
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.resumes = {
         c2c: document.getElementById('admC2cResume').value.trim(),
         terminal: document.getElementById('admTerminalResume').value.trim()
       };
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'Resume URLs updated and synced to cloud!', true);
+      showAlert(dashAlert, 'Resume URLs updated and synced to Firebase Cloud!', true);
     });
   }
 
@@ -1898,7 +1790,7 @@ function initAdminPanel() {
   if (formEducation) {
     formEducation.addEventListener('submit', (e) => {
       e.preventDefault();
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       const existingTimeline = currentData.education?.timeline || null;
       currentData.education = {
         cgpa: document.getElementById('admCgpa').value.trim(),
@@ -1907,10 +1799,8 @@ function initAdminPanel() {
         degree: document.getElementById('admDegree').value.trim(),
         timeline: existingTimeline
       };
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'Core education info updated and synced to cloud!', true);
+      showAlert(dashAlert, 'Core education info updated and synced to Firebase Cloud!', true);
     });
   }
 
@@ -1932,14 +1822,12 @@ function initAdminPanel() {
   const saveTimelineBtn = document.getElementById('saveTimelineBtn');
   if (saveTimelineBtn) {
     saveTimelineBtn.addEventListener('click', () => {
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       if (!currentData.education) currentData.education = {};
       currentData.education.timeline = collectEducationTimelineFromDOM();
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminTimelineList = [...currentData.education.timeline];
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'Academic Timeline saved and synced to cloud!', true);
+      showAlert(dashAlert, 'Academic Timeline saved and synced to Firebase Cloud!', true);
     });
   }
 
@@ -1962,13 +1850,11 @@ function initAdminPanel() {
   const saveAchievementsBtn = document.getElementById('saveAchievementsBtn');
   if (saveAchievementsBtn) {
     saveAchievementsBtn.addEventListener('click', () => {
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.achievements = collectAchievementsFromDOM();
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminAchievementsList = [...currentData.achievements];
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'Achievements saved and synced to cloud!', true);
+      showAlert(dashAlert, 'Achievements saved and synced to Firebase Cloud!', true);
     });
   }
 
@@ -1990,7 +1876,7 @@ function initAdminPanel() {
   const exportBtn = document.getElementById('exportJsonBtn');
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
-      const dataRaw = localStorage.getItem('kabilan_portfolio_data') || '{}';
+      const dataRaw = JSON.stringify(getPortfolioData(), null, 2);
       const blob = new Blob([dataRaw], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -2006,17 +1892,15 @@ function initAdminPanel() {
   if (formSkills) {
     formSkills.addEventListener('submit', (e) => {
       e.preventDefault();
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.skills = {
         languages: document.getElementById('admSkillsLanguages').value.trim(),
         databases: document.getElementById('admSkillsDatabases').value.trim(),
         tools: document.getElementById('admSkillsTools').value.trim(),
         core: document.getElementById('admSkillsCore').value.trim()
       };
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'Skills & Competencies saved and synced to cloud!', true);
+      showAlert(dashAlert, 'Skills & Competencies saved and synced to Firebase Cloud!', true);
     });
   }
 
@@ -2025,9 +1909,8 @@ function initAdminPanel() {
   if (formEmailAlert) {
     formEmailAlert.addEventListener('submit', (e) => {
       e.preventDefault();
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.notificationEmail = document.getElementById('admNotificationEmail').value.trim();
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       syncPortfolioDataToFirebase(currentData);
       showAlert(dashAlert, 'Direct Email Alert destination saved: ' + currentData.notificationEmail, true);
     });
@@ -2038,9 +1921,8 @@ function initAdminPanel() {
   if (formWebhook) {
     formWebhook.addEventListener('submit', (e) => {
       e.preventDefault();
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.webhookUrl = document.getElementById('admWebhookUrl').value.trim();
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       syncPortfolioDataToFirebase(currentData);
       showAlert(dashAlert, 'Notification Webhook URL saved!', true);
     });
@@ -2063,15 +1945,14 @@ function initAdminPanel() {
     const tableBody = document.getElementById('visitorLogTableBody');
     if (!tableBody) return;
 
+    const currentData = getPortfolioData();
     const webhookInput = document.getElementById('admWebhookUrl');
     if (webhookInput) {
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
       webhookInput.value = currentData.webhookUrl || '';
     }
 
     const emailNotifInput = document.getElementById('admNotificationEmail');
     if (emailNotifInput) {
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
       emailNotifInput.value = currentData.notificationEmail || 'mkabilan1409@gmail.com';
     }
 
@@ -2100,11 +1981,8 @@ function initAdminPanel() {
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
       if (confirm('Are you sure you want to reset all admin edits back to default site configuration?')) {
-        localStorage.removeItem('kabilan_portfolio_data');
-        loadFormData();
-        applyDynamicPortfolioData();
         syncPortfolioDataToFirebase(getPortfolioDefaultData());
-        showAlert(dashAlert, 'Reset back to default settings.', true);
+        showAlert(dashAlert, 'Reset back to default settings on Firebase Cloud.', true);
       }
     });
   }
@@ -2130,18 +2008,16 @@ function initAdminPanel() {
   const saveProjectsBtn = document.getElementById('saveProjectsBtn');
   if (saveProjectsBtn) {
     saveProjectsBtn.addEventListener('click', () => {
-      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const currentData = getPortfolioData();
       currentData.projects = collectProjectsFromDOM();
-      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminProjectsList = [...currentData.projects];
-      applyDynamicPortfolioData();
       syncPortfolioDataToFirebase(currentData);
-      showAlert(dashAlert, 'All projects saved and synced to cloud!', true);
+      showAlert(dashAlert, 'All projects saved and synced to Firebase Cloud!', true);
     });
   }
 
   // Load CMS items on dashboard init
-  const currentDataForCMS = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+  const currentDataForCMS = getPortfolioData();
   renderAdminProjects(currentDataForCMS.projects || null);
   renderAdminEducationTimeline(currentDataForCMS.education?.timeline || null);
   renderAdminAchievements(currentDataForCMS.achievements || null);
@@ -2189,9 +2065,9 @@ function initVisitorNotification() {
       localStorage.setItem('kabilan_visitor_logs', JSON.stringify(logs));
 
       // 2. Fire direct email notification to mkabilan1409@gmail.com
-      const dataRaw = localStorage.getItem('kabilan_portfolio_data');
-      let targetEmail = 'mkabilan1409@gmail.com';
-      let webhookUrl = '';
+      const d = getPortfolioData();
+      let targetEmail = d.notificationEmail || 'mkabilan1409@gmail.com';
+      let webhookUrl = d.webhookUrl || '';
       if (dataRaw) {
         try {
           const d = JSON.parse(dataRaw);

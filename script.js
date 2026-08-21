@@ -1,7 +1,47 @@
 /* =====================================================
    script.js — Kabilan M Portfolio
-   Single-Page Section Switcher + all features
+   Single-Page Section Switcher + Security & Source Shield
    ===================================================== */
+
+// ── Code Security & Source Code Shield Guard ────────────────
+(function initSourceCodeShield() {
+  // 1. Disable Right Click Context Menu
+  document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+  });
+
+  // 2. Block Inspect Keyboard Shortcuts
+  document.addEventListener('keydown', (e) => {
+    // F12 key
+    if (e.keyCode === 123 || e.key === 'F12') {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Inspect Element), Ctrl+U (View Source), Ctrl+S (Save Page)
+    if (e.ctrlKey && (e.shiftKey && ['I', 'J', 'C', 'i', 'j', 'c'].includes(e.key) || ['u', 'U', 's', 'S'].includes(e.key))) {
+      e.preventDefault();
+      return false;
+    }
+    // Cmd+Option+I on MacOS
+    if (e.metaKey && e.altKey && ['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U'].includes(e.key)) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // 3. Disable Dragging & Copying of Source Assets
+  document.addEventListener('dragstart', (e) => e.preventDefault());
+
+  // 4. Suppress Public Console Logs & Debugging Output
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    try {
+      console.log = function() {};
+      console.debug = function() {};
+      console.info = function() {};
+    } catch(err) {}
+  }
+})();
 
 // ── Element References ──────────────────────────────────────
 const typedTextEl       = document.getElementById('typed-text');

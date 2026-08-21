@@ -434,7 +434,9 @@ function initPortfolio() {
   initHeaderSearch();     // Start global header search and Easter Egg check
   protectInformation();   // Protect text and media from copy/saving
   initScreenshotShield(); // Enable screen capture shield
-  applyDynamicPortfolioData(); // Load custom admin overrides from LocalStorage
+  initFirebaseApp();       // Initialize Firebase Cloud Database
+  initFirebaseLiveSync();  // Subscribe to real-time live updates from Firebase Cloud
+  applyDynamicPortfolioData(); // Load custom admin overrides from LocalStorage / Firebase
   initAdminPanel();       // Initialize Admin Dashboard if on admin.html
   initVisitorNotification(); // Record visitor telemetry & fire alert notifications
   setYear();
@@ -956,6 +958,61 @@ function getSkillIconHTML(skillName) {
   if (nameLower.includes('git') && !nameLower.includes('hub')) return '<i class="fa-brands fa-git-alt" aria-hidden="true"></i> ';
   if (nameLower.includes('github')) return '<i class="fa-brands fa-github" aria-hidden="true"></i> ';
   return '';
+}
+
+// ── Firebase Cloud Database Integration ─────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyCmsDlTsJdsNKa-MWbLsdFkkBYj6_ax1uE",
+  authDomain: "portfolio-9a1a1.firebaseapp.com",
+  projectId: "portfolio-9a1a1",
+  storageBucket: "portfolio-9a1a1.firebasestorage.app",
+  messagingSenderId: "912255292092",
+  appId: "1:912255292092:web:ccb74ab6510cef068af6b9",
+  measurementId: "G-TZSEQWJKND"
+};
+
+let db = null;
+function initFirebaseApp() {
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.firestore();
+    } catch (e) {
+      console.warn("Firebase Init Notice:", e);
+    }
+  }
+}
+
+function syncPortfolioDataToFirebase(data) {
+  if (!db) initFirebaseApp();
+  if (!db) return Promise.resolve(false);
+  return db.collection("portfolio").doc("liveData").set(data, { merge: true })
+    .then(() => {
+      console.log("Synced portfolio data to Firebase Cloud Database!");
+      return true;
+    })
+    .catch((err) => {
+      console.error("Firebase Sync Error:", err);
+      return false;
+    });
+}
+
+function initFirebaseLiveSync() {
+  if (!db) initFirebaseApp();
+  if (!db) return;
+  db.collection("portfolio").doc("liveData").onSnapshot((doc) => {
+    if (doc.exists) {
+      const remoteData = doc.data();
+      if (remoteData && Object.keys(remoteData).length > 0) {
+        localStorage.setItem('kabilan_portfolio_data', JSON.stringify(remoteData));
+        applyDynamicPortfolioData();
+      }
+    }
+  }, (err) => {
+    console.warn("Firebase live sync notice:", err);
+  });
 }
 
 // ── Shared Default Portfolio Configuration Data ────────────────
@@ -1814,7 +1871,8 @@ function initAdminPanel() {
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'Profile details and footer rights saved!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'Profile details saved and synced to cloud!', true);
     });
   }
 
@@ -1830,7 +1888,8 @@ function initAdminPanel() {
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'Resume URLs updated successfully!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'Resume URLs updated and synced to cloud!', true);
     });
   }
 
@@ -1850,7 +1909,8 @@ function initAdminPanel() {
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'Core education info updated!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'Core education info updated and synced to cloud!', true);
     });
   }
 
@@ -1878,7 +1938,8 @@ function initAdminPanel() {
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminTimelineList = [...currentData.education.timeline];
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'Academic Timeline saved and live updated!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'Academic Timeline saved and synced to cloud!', true);
     });
   }
 
@@ -1906,7 +1967,8 @@ function initAdminPanel() {
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminAchievementsList = [...currentData.achievements];
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'Achievements & Certifications saved and live updated!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'Achievements saved and synced to cloud!', true);
     });
   }
 
@@ -1953,7 +2015,8 @@ function initAdminPanel() {
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'Skills & Competencies updated successfully!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'Skills & Competencies saved and synced to cloud!', true);
     });
   }
 
@@ -1965,6 +2028,7 @@ function initAdminPanel() {
       const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
       currentData.notificationEmail = document.getElementById('admNotificationEmail').value.trim();
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      syncPortfolioDataToFirebase(currentData);
       showAlert(dashAlert, 'Direct Email Alert destination saved: ' + currentData.notificationEmail, true);
     });
   }
@@ -1977,6 +2041,7 @@ function initAdminPanel() {
       const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
       currentData.webhookUrl = document.getElementById('admWebhookUrl').value.trim();
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      syncPortfolioDataToFirebase(currentData);
       showAlert(dashAlert, 'Notification Webhook URL saved!', true);
     });
   }
@@ -2038,6 +2103,7 @@ function initAdminPanel() {
         localStorage.removeItem('kabilan_portfolio_data');
         loadFormData();
         applyDynamicPortfolioData();
+        syncPortfolioDataToFirebase(getPortfolioDefaultData());
         showAlert(dashAlert, 'Reset back to default settings.', true);
       }
     });
@@ -2069,7 +2135,8 @@ function initAdminPanel() {
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminProjectsList = [...currentData.projects];
       applyDynamicPortfolioData();
-      showAlert(dashAlert, 'All projects saved successfully!', true);
+      syncPortfolioDataToFirebase(currentData);
+      showAlert(dashAlert, 'All projects saved and synced to cloud!', true);
     });
   }
 

@@ -994,9 +994,12 @@ function syncPortfolioDataToFirebase(data) {
     applyDynamicPortfolioData();
     return Promise.resolve(false);
   }
-  return db.collection("portfolio").doc("liveData").set(data, { merge: true })
+  // Write to both 'livedata' (as in user screenshot) and 'liveData'
+  const p1 = db.collection("portfolio").doc("livedata").set(data);
+  const p2 = db.collection("portfolio").doc("liveData").set(data);
+  return Promise.all([p1, p2])
     .then(() => {
-      console.log("Synced portfolio data to Firebase Cloud Database!");
+      console.log("Successfully synced portfolio data to Firebase Cloud Database!");
       applyDynamicPortfolioData();
       return true;
     })
@@ -1010,19 +1013,30 @@ function syncPortfolioDataToFirebase(data) {
 function initFirebaseLiveSync() {
   if (!db) initFirebaseApp();
   if (!db) return;
-  db.collection("portfolio").doc("liveData").onSnapshot((doc) => {
+
+  const handleDocUpdate = (doc) => {
     if (doc.exists) {
       const remoteData = doc.data();
       if (remoteData && Object.keys(remoteData).length > 0) {
-        currentFirebasePortfolioData = remoteData;
-        applyDynamicPortfolioData();
-        if (typeof loadFormData === 'function' && document.getElementById('adminLoginForm')) {
-          loadFormData();
+        // Only override if data contains real objects/maps
+        const hasValidObjects = typeof remoteData.profile === 'object' || typeof remoteData.skills === 'object' || typeof remoteData.education === 'object';
+        if (hasValidObjects) {
+          currentFirebasePortfolioData = remoteData;
+          applyDynamicPortfolioData();
+          if (typeof loadFormData === 'function' && document.getElementById('adminLoginForm')) {
+            loadFormData();
+          }
         }
       }
     }
-  }, (err) => {
-    console.warn("Firebase live sync notice:", err);
+  };
+
+  db.collection("portfolio").doc("livedata").onSnapshot(handleDocUpdate, (err) => {
+    console.warn("Firebase livedata sync notice:", err);
+  });
+
+  db.collection("portfolio").doc("liveData").onSnapshot(handleDocUpdate, (err) => {
+    console.warn("Firebase liveData sync notice:", err);
   });
 }
 
@@ -1975,6 +1989,21 @@ function initAdminPanel() {
       </tr>
     `).join('');
   };
+
+  // Sync Firebase Cloud Button
+  const syncFirebaseBtn = document.getElementById('syncFirebaseBtn');
+  if (syncFirebaseBtn) {
+    syncFirebaseBtn.addEventListener('click', () => {
+      const data = getPortfolioData();
+      syncPortfolioDataToFirebase(data).then(success => {
+        if (success) {
+          showAlert(dashAlert, 'Full portfolio data synced to Firebase Cloud successfully!', true);
+        } else {
+          showAlert(dashAlert, 'Firebase sync failed. Please check Firebase Rules in your console.');
+        }
+      });
+    });
+  }
 
   // Reset Defaults
   const resetBtn = document.getElementById('resetDefaultsBtn');

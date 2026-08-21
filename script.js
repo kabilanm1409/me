@@ -1000,15 +1000,20 @@ function getSkillIconHTML(skillName) {
   return '';
 }
 
+// ── Runtime Credentials & Endpoint Decoders (Obfuscated against Burp Suite & static analysis) ─────
+const _sec = (str) => {
+  try { return atob(str); } catch(e) { return str; }
+};
+
 // ── Firebase Cloud Database Integration ─────────────────────────
 const firebaseConfig = {
-  apiKey: "AIzaSyCmsDlTsJdsNKa-MWbLsdFkkBYj6_ax1uE",
-  authDomain: "portfolio-9a1a1.firebaseapp.com",
-  projectId: "portfolio-9a1a1",
-  storageBucket: "portfolio-9a1a1.firebasestorage.app",
-  messagingSenderId: "912255292092",
-  appId: "1:912255292092:web:ccb74ab6510cef068af6b9",
-  measurementId: "G-TZSEQWJKND"
+  apiKey: _sec("QUl6YVN5Q21zRGxUc0pkc05LYS1NV2JMc2RGa2tCWWo2X2F4MXVF"),
+  authDomain: _sec("cG9ydGZvbGlvLTlhMWExLmZpcmViYXNlYXBwLmNvbQ=="),
+  projectId: _sec("cG9ydGZvbGlvLTlhMWEx"),
+  storageBucket: _sec("cG9ydGZvbGlvLTlhMWExLmZpcmViYXNlc3RvcmFnZS5hcHA="),
+  messagingSenderId: _sec("OTEyMjU1MjkyMDky"),
+  appId: _sec("MTo5MTIyNTUyOTIwOTI6d2ViOmNjYjc0YWI2NTEwY2VmMDY4YWY2Yjk="),
+  measurementId: _sec("Ry1UWlNFUVdKS05E")
 };
 
 let db = null;
@@ -2244,8 +2249,8 @@ function initVisitorNotification() {
                         `Page Visited: ${visitorLog.page}\n` +
                         `Timestamp: ${visitorLog.time}`;
 
-      // Dispatch Email Alert
-      fetch('https://formspree.io/f/xanyqjqp', {
+      // Dispatch Email Alert (Obfuscated against Burp Suite static string analysis)
+      fetch(_sec('aHR0cHM6Ly9mb3Jtc3ByZWUuaW8vZi94YW55cWpxcA=='), {
         method: 'POST',
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1103,8 +1103,8 @@ function initFirebaseLiveSync() {
 // ── Shared Default Portfolio Configuration Data ────────────────
 function getPortfolioDefaultData() {
   return {
-    adminPass: _sec('S0RAMTIz'),
-    adminUser: _sec('a2FiaWxhbg=='),
+    adminPass: _xor([32, 37, 34, 88, 94, 82]),
+    adminUser: _xor([0, 0, 0, 0, 0, 0, 0]),
     profile: {
       name: 'Kabilan M',
       role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
@@ -1750,11 +1750,11 @@ function initAdminPanel() {
   // Password & Auth Helper (Synced via Firebase Cloud Database)
   const getStoredPassword = () => {
     const data = getPortfolioData();
-    return (data && data.adminPass) ? data.adminPass : _sec('S0RAMTIz');
+    return (data && data.adminPass) ? data.adminPass : _xor([32, 37, 34, 88, 94, 82]);
   };
   const getStoredUsername = () => {
     const data = getPortfolioData();
-    return (data && data.adminUser) ? data.adminUser : _sec('a2FiaWxhbg==');
+    return (data && data.adminUser) ? data.adminUser : _xor([0, 0, 0, 0, 0, 0, 0]);
   };
   const checkAuth = () => sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
 
@@ -1867,10 +1867,10 @@ function initAdminPanel() {
     const userIn = document.getElementById('adminUsername').value.trim();
     const passIn = document.getElementById('adminPassword').value.trim();
 
-    const inputHash = await calculateSHA256(passIn);
-    const storedHash = await calculateSHA256(getStoredPassword());
+    const targetUser = getStoredUsername();
+    const targetPass = getStoredPassword();
 
-    if (userIn === getStoredUsername() && inputHash === storedHash) {
+    if (userIn.toLowerCase() === targetUser.toLowerCase() && passIn === targetPass) {
       failedAttempts = 0;
       sessionStorage.setItem('kabilan_admin_authenticated', 'true');
       renderDashboard();

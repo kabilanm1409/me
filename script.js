@@ -133,7 +133,6 @@ function initSectionNav() {
 
 // ── Theme Toggle ─────────────────────────────────────────────
 function setTheme(theme) {
-  if (!themeToggle) return;
   const isDark = theme === 'dark';
   if (isDark) {
     document.body.dataset.theme = 'dark';
@@ -141,20 +140,23 @@ function setTheme(theme) {
     delete document.body.dataset.theme;
   }
   localStorage.setItem('portfolio-theme', isDark ? 'dark' : 'light');
-  const icon  = themeToggle.querySelector('i');
-  const label = themeToggle.querySelector('span');
-  if (icon)  icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-  if (label) label.textContent = isDark ? 'Light mode' : 'Dark mode';
+  if (themeToggle) {
+    const icon  = themeToggle.querySelector('i');
+    const label = themeToggle.querySelector('span');
+    if (icon)  icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    if (label) label.textContent = isDark ? 'Light mode' : 'Dark mode';
+  }
 }
 
 function initThemeToggle() {
-  if (!themeToggle) return;
   const savedTheme = localStorage.getItem('portfolio-theme') || 'light';
   setTheme(savedTheme);
-  themeToggle.addEventListener('click', () => {
-    const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-  });
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+  }
 }
 
 // ── Typed Text ───────────────────────────────────────────────
@@ -1000,9 +1002,183 @@ function applyDynamicPortfolioData() {
         }
       }
     }
+
+    // Skills Overrides
+    if (data.skills) {
+      // Update skill cards on about page or index page if they exist
+      const skillSections = {
+        languages: data.skills.languages,
+        databases: data.skills.databases,
+        tools: data.skills.tools,
+        core: data.skills.core
+      };
+      // Update any skill-list elements that match
+      document.querySelectorAll('.skill-category').forEach(cat => {
+        const heading = cat.querySelector('h3, h4, .skill-heading');
+        if (!heading) return;
+        const title = heading.textContent.toLowerCase();
+        let items = null;
+        if (title.includes('language') || title.includes('programming')) items = skillSections.languages;
+        else if (title.includes('database') || title.includes('big data')) items = skillSections.databases;
+        else if (title.includes('tool') || title.includes('hardware')) items = skillSections.tools;
+        else if (title.includes('core') || title.includes('competenc') || title.includes('soft')) items = skillSections.core;
+        if (items) {
+          const tagContainer = cat.querySelector('.tag-row, .skill-tags, .skill-list');
+          if (tagContainer) {
+            tagContainer.innerHTML = items.split(',').map(s => s.trim()).filter(s => s).map(s => `<span>${s}</span>`).join('');
+          }
+        }
+      });
+    }
+
+    // Projects Overrides — dynamically rebuild project grid if admin data exists
+    if (data.projects && data.projects.length > 0) {
+      const grid = document.querySelector('.project-grid');
+      if (grid) {
+        grid.innerHTML = data.projects.map((p, i) => {
+          const tags = (p.tags || '').split(',').map(t => t.trim()).filter(t => t).map(t => `<span>${t}</span>`).join('');
+          const features = (p.features || '').split('\\n').filter(f => f.trim()).map(f => `<li>${f.trim()}</li>`).join('');
+          return `
+            <article class="project-card card" data-category="${p.category || 'software'}" data-aos="fade-up">
+              <div class="project-image-wrap">
+                <img alt="${p.title || 'Project'} preview" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 600%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop stop-color=%22%23dbeafe%22/><stop offset=%221%22 stop-color=%22%232563eb%22/></linearGradient></defs><rect width=%22900%22 height=%22600%22 rx=%2240%22 fill=%22%23eef2ff%22/><rect x=%2252%22 y=%2252%22 width=%22796%22 height=%22496%22 rx=%2230%22 fill=%22white%22 stroke=%22url(%23g)%22 stroke-width=%225%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%232563eb%22 font-size=%2236%22 font-family=%22Arial%22 font-weight=%22700%22>${p.title || 'Project'}</text></svg>" />
+              </div>
+              <div class="project-content">
+                <p class="card-label">Project ${i + 1}</p>
+                <h3>${p.title || 'Untitled Project'}</h3>
+                <p>${p.description || ''}</p>
+                <div class="tag-row">${tags}</div>
+                <ul>${features}</ul>
+                <div class="project-actions">
+                  <a class="btn btn-secondary" href="${p.github || '#'}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+                  <a class="btn btn-primary" href="${p.demo || '#'}"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+    }
   } catch (err) {
     console.error('Error rendering dynamic portfolio data:', err);
   }
+}
+
+// ── Projects CMS Helper ─────────────────────────────────────
+let adminProjectsList = [];
+
+function renderAdminProjects(projects) {
+  const defaultProjects = [
+    {
+      title: 'Wi-Fi De-authentication Device',
+      category: 'security',
+      description: 'An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.',
+      tags: 'ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display',
+      features: 'Developed wireless frame sniffer targeting Wi-Fi vulnerabilities.\\nSupports detection of deauthentication and probe frames.\\nOLED notifications for real-time traffic updates.',
+      github: 'https://github.com/kabilanm1409/',
+      demo: '../index.html#contact'
+    },
+    {
+      title: 'De-authentication Detection System',
+      category: 'security,software',
+      description: 'An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.',
+      tags: 'ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display',
+      features: 'Implements real-time packet capture for IEEE 802.11 frames.\\nGenerates live alerts for fast security response.\\nIncreases defense posture awareness in open networks.',
+      github: 'https://github.com/kabilanm1409/',
+      demo: '../index.html#contact'
+    },
+    {
+      title: 'Forest Fire Prediction System',
+      category: 'software',
+      description: 'An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.',
+      tags: 'React, Node.js, Python, REST APIs, Google Maps',
+      features: 'Visualizes environmental risk dynamically via Heatmaps.\\nSends alerts directly using WhatsApp and Email integrations.\\nUtilizes location services on Google Maps for fast responses.',
+      github: 'https://github.com/kabilanm1409/',
+      demo: '../index.html#contact'
+    }
+  ];
+
+  adminProjectsList = projects && projects.length > 0 ? [...projects] : [...defaultProjects];
+
+  const container = document.getElementById('projectsListContainer');
+  if (!container) return;
+
+  container.innerHTML = adminProjectsList.map((p, i) => `
+    <div class="project-item-card" data-index="${i}">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="color: #38bdf8; margin: 0; font-size: 1rem;"><i class="fa-solid fa-diagram-project"></i> Project ${i + 1}</h4>
+        <button type="button" class="admin-btn admin-btn-danger admDeleteProjectBtn" data-index="${i}" style="padding: 4px 10px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Remove</button>
+      </div>
+      <div class="form-group">
+        <label>Project Title</label>
+        <input type="text" class="form-control admProjTitle" value="${escapeAttr(p.title || '')}" />
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Category (comma separated: security, software)</label>
+          <input type="text" class="form-control admProjCategory" value="${escapeAttr(p.category || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Tags (comma separated)</label>
+          <input type="text" class="form-control admProjTags" value="${escapeAttr(p.tags || '')}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control admProjDesc" rows="2">${escapeHTML(p.description || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Key Features (one per line)</label>
+        <textarea class="form-control admProjFeatures" rows="3">${escapeHTML((p.features || '').replace(/\\\\n/g, '\\n'))}</textarea>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>GitHub URL</label>
+          <input type="text" class="form-control admProjGithub" value="${escapeAttr(p.github || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Live Demo URL</label>
+          <input type="text" class="form-control admProjDemo" value="${escapeAttr(p.demo || '')}" />
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Bind delete buttons
+  container.querySelectorAll('.admDeleteProjectBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      if (confirm('Remove this project?')) {
+        adminProjectsList.splice(idx, 1);
+        renderAdminProjects(adminProjectsList);
+      }
+    });
+  });
+}
+
+function escapeAttr(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function collectProjectsFromDOM() {
+  const cards = document.querySelectorAll('.project-item-card');
+  const projects = [];
+  cards.forEach(card => {
+    projects.push({
+      title: card.querySelector('.admProjTitle').value.trim(),
+      category: card.querySelector('.admProjCategory').value.trim(),
+      description: card.querySelector('.admProjDesc').value.trim(),
+      tags: card.querySelector('.admProjTags').value.trim(),
+      features: card.querySelector('.admProjFeatures').value.trim().replace(/\\n/g, '\\\\n'),
+      github: card.querySelector('.admProjGithub').value.trim(),
+      demo: card.querySelector('.admProjDemo').value.trim()
+    });
+  });
+  return projects;
 }
 
 function initAdminPanel() {
@@ -1060,7 +1236,42 @@ function initAdminPanel() {
         sem: 'up to 6th sem',
         college: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
         degree: 'B.Tech Information Technology'
-      }
+      },
+      skills: {
+        languages: 'Java, HTML5, CSS3, JavaScript, Bootstrap',
+        databases: 'MySQL, MongoDB, Apache HDFS, Apache Pig',
+        tools: 'Wireshark, Burp Suite, VS Code, Git/GitHub, Arduino IDE, ESP32, ESP8266',
+        core: 'Computer Networks, DBMS, Packet Sniffing, Adaptability, Time Management'
+      },
+      projects: [
+        {
+          title: 'Wi-Fi De-authentication Device',
+          category: 'security',
+          description: 'An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.',
+          tags: 'ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display',
+          features: 'Developed wireless frame sniffer targeting Wi-Fi vulnerabilities.\\nSupports detection of deauthentication and probe frames.\\nOLED notifications for real-time traffic updates.',
+          github: 'https://github.com/kabilanm1409/',
+          demo: '../index.html#contact'
+        },
+        {
+          title: 'De-authentication Detection System',
+          category: 'security,software',
+          description: 'An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.',
+          tags: 'ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display',
+          features: 'Implements real-time packet capture for IEEE 802.11 frames.\\nGenerates live alerts for fast security response.\\nIncreases defense posture awareness in open networks.',
+          github: 'https://github.com/kabilanm1409/',
+          demo: '../index.html#contact'
+        },
+        {
+          title: 'Forest Fire Prediction System',
+          category: 'software',
+          description: 'An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.',
+          tags: 'React, Node.js, Python, REST APIs, Google Maps',
+          features: 'Visualizes environmental risk dynamically via Heatmaps.\\nSends alerts directly using WhatsApp and Email integrations.\\nUtilizes location services on Google Maps for fast responses.',
+          github: 'https://github.com/kabilanm1409/',
+          demo: '../index.html#contact'
+        }
+      ]
     };
 
     const data = dataRaw ? JSON.parse(dataRaw) : defaultData;
@@ -1088,6 +1299,29 @@ function initAdminPanel() {
       document.getElementById('admSem').value = data.education.sem || '';
       document.getElementById('admCollege').value = data.education.college || '';
       document.getElementById('admDegree').value = data.education.degree || '';
+    }
+
+    // Set Skills fields
+    if (data.skills) {
+      document.getElementById('admSkillsLanguages').value = data.skills.languages || '';
+      document.getElementById('admSkillsDatabases').value = data.skills.databases || '';
+      document.getElementById('admSkillsTools').value = data.skills.tools || '';
+      document.getElementById('admSkillsCore').value = data.skills.core || '';
+    }
+
+    // Set Notification Email
+    if (data.notificationEmail) {
+      document.getElementById('admNotificationEmail').value = data.notificationEmail;
+    }
+
+    // Set Webhook URL
+    if (data.webhookUrl) {
+      document.getElementById('admWebhookUrl').value = data.webhookUrl;
+    }
+
+    // Load projects into CMS
+    if (typeof renderAdminProjects === 'function') {
+      renderAdminProjects(data.projects || null);
     }
   };
 
@@ -1308,6 +1542,39 @@ function initAdminPanel() {
       }
     });
   }
+
+  // Add New Project Button
+  const addProjectBtn = document.getElementById('admAddProjectBtn');
+  if (addProjectBtn) {
+    addProjectBtn.addEventListener('click', () => {
+      adminProjectsList.push({
+        title: '',
+        category: '',
+        description: '',
+        tags: '',
+        features: '',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      });
+      renderAdminProjects(adminProjectsList);
+    });
+  }
+
+  // Save All Projects Button
+  const saveProjectsBtn = document.getElementById('saveProjectsBtn');
+  if (saveProjectsBtn) {
+    saveProjectsBtn.addEventListener('click', () => {
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.projects = collectProjectsFromDOM();
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      adminProjectsList = [...currentData.projects];
+      showAlert(dashAlert, 'All projects saved successfully!', true);
+    });
+  }
+
+  // Load projects on dashboard init
+  const currentDataForProjects = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+  renderAdminProjects(currentDataForProjects.projects || null);
 
   renderVisitorLogs();
   renderDashboard();

@@ -1207,6 +1207,35 @@ function initAdminPanel() {
     });
   }
 
+  // Save Skills Form
+  const formSkills = document.getElementById('formSkills');
+  if (formSkills) {
+    formSkills.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.skills = {
+        languages: document.getElementById('admSkillsLanguages').value.trim(),
+        databases: document.getElementById('admSkillsDatabases').value.trim(),
+        tools: document.getElementById('admSkillsTools').value.trim(),
+        core: document.getElementById('admSkillsCore').value.trim()
+      };
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      showAlert(dashAlert, 'Skills & Competencies updated successfully!', true);
+    });
+  }
+
+  // Save Direct Email Notification Settings Form
+  const formEmailAlert = document.getElementById('formEmailAlert');
+  if (formEmailAlert) {
+    formEmailAlert.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.notificationEmail = document.getElementById('admNotificationEmail').value.trim();
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      showAlert(dashAlert, 'Direct Email Alert destination saved: ' + currentData.notificationEmail, true);
+    });
+  }
+
   // Save Webhook URL Form
   const formWebhook = document.getElementById('formWebhookAlert');
   if (formWebhook) {
@@ -1240,6 +1269,12 @@ function initAdminPanel() {
     if (webhookInput) {
       const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
       webhookInput.value = currentData.webhookUrl || '';
+    }
+
+    const emailNotifInput = document.getElementById('admNotificationEmail');
+    if (emailNotifInput) {
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      emailNotifInput.value = currentData.notificationEmail || 'mkabilan1409@gmail.com';
     }
 
     const logsRaw = localStorage.getItem('kabilan_visitor_logs');
@@ -1316,31 +1351,56 @@ function initVisitorNotification() {
       if (logs.length > 50) logs = logs.slice(0, 50);
       localStorage.setItem('kabilan_visitor_logs', JSON.stringify(logs));
 
-      // 2. Fire instant push notification if Webhook URL configured
+      // 2. Fire direct email notification to mkabilan1409@gmail.com
       const dataRaw = localStorage.getItem('kabilan_portfolio_data');
+      let targetEmail = 'mkabilan1409@gmail.com';
+      let webhookUrl = '';
       if (dataRaw) {
         try {
-          const data = JSON.parse(dataRaw);
-          if (data.webhookUrl) {
-            const message = `🚨 *NEW PORTFOLIO VISITOR DETECTED!* 🚨\n\n` +
-                            `📍 *Location:* ${visitorLog.city}, ${visitorLog.region}, ${visitorLog.country}\n` +
-                            `🌐 *IP:* ${visitorLog.ip}\n` +
-                            `📶 *ISP:* ${visitorLog.org}\n` +
-                            `📱 *Device:* ${visitorLog.device}\n` +
-                            `📄 *Page:* ${visitorLog.page}\n` +
-                            `⏰ *Time:* ${visitorLog.time}`;
-
-            if (data.webhookUrl.includes('api.telegram.org')) {
-              fetch(data.webhookUrl + encodeURIComponent(message)).catch(() => {});
-            } else {
-              fetch(data.webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: message, text: message, visitor: visitorLog })
-              }).catch(() => {});
-            }
-          }
+          const d = JSON.parse(dataRaw);
+          if (d.notificationEmail) targetEmail = d.notificationEmail;
+          if (d.webhookUrl) webhookUrl = d.webhookUrl;
         } catch (e) {}
+      }
+
+      const alertBody = `NEW PORTFOLIO VISITOR DETECTED!\n\n` +
+                        `Location: ${visitorLog.city}, ${visitorLog.region}, ${visitorLog.country}\n` +
+                        `IP Address: ${visitorLog.ip}\n` +
+                        `ISP Network: ${visitorLog.org}\n` +
+                        `Device Type: ${visitorLog.device}\n` +
+                        `Page Visited: ${visitorLog.page}\n` +
+                        `Timestamp: ${visitorLog.time}`;
+
+      // Dispatch Email Alert
+      fetch('https://formspree.io/f/xanyqjqp', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: targetEmail,
+          subject: `🚨 Portfolio Visitor Alert: ${visitorLog.city}, ${visitorLog.country}`,
+          message: alertBody
+        })
+      }).catch(() => {});
+
+      // Dispatch Webhook / Telegram if configured
+      if (webhookUrl) {
+        const tgMsg = `🚨 *NEW PORTFOLIO VISITOR DETECTED!* 🚨\n\n` +
+                      `📍 *Location:* ${visitorLog.city}, ${visitorLog.region}, ${visitorLog.country}\n` +
+                      `🌐 *IP:* ${visitorLog.ip}\n` +
+                      `📶 *ISP:* ${visitorLog.org}\n` +
+                      `📱 *Device:* ${visitorLog.device}\n` +
+                      `📄 *Page:* ${visitorLog.page}\n` +
+                      `⏰ *Time:* ${visitorLog.time}`;
+
+        if (webhookUrl.includes('api.telegram.org')) {
+          fetch(webhookUrl + encodeURIComponent(tgMsg)).catch(() => {});
+        } else {
+          fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: tgMsg, text: tgMsg, visitor: visitorLog })
+          }).catch(() => {});
+        }
       }
     })
     .catch(() => {
@@ -1362,5 +1422,6 @@ function initVisitorNotification() {
 }
 
 initPortfolio();
+
 
 

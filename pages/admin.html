@@ -218,7 +218,8 @@
         <button class="admin-tab-btn" data-tab="tab-resumes"><i class="fa-solid fa-file-pdf"></i> Resume Links</button>
         <button class="admin-tab-btn" data-tab="tab-education"><i class="fa-solid fa-graduation-cap"></i> Education &amp; CGPA</button>
         <button class="admin-tab-btn" data-tab="tab-projects"><i class="fa-solid fa-diagram-project"></i> Projects</button>
-        <button class="admin-tab-btn" data-tab="tab-visitors"><i class="fa-solid fa-location-dot"></i> Visitor Logs &amp; Alerts</button>
+        <button class="admin-tab-btn" data-tab="tab-skills"><i class="fa-solid fa-code"></i> Skills &amp; Certs</button>
+        <button class="admin-tab-btn" data-tab="tab-visitors"><i class="fa-solid fa-envelope"></i> Email Alerts &amp; Logs</button>
         <button class="admin-tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Settings &amp; Sync</button>
       </div>
 
@@ -317,20 +318,53 @@
         <button id="saveProjectsBtn" class="admin-btn" style="margin-top: 15px;"><i class="fa-solid fa-floppy-disk"></i> Save All Projects</button>
       </div>
 
+      <!-- TAB: SKILLS & CERTS -->
+      <div id="tab-skills" class="admin-tab-content">
+        <form id="formSkills">
+          <div class="form-group">
+            <label for="admSkillsLanguages">Programming Languages (Comma separated)</label>
+            <input type="text" id="admSkillsLanguages" class="form-control" value="Java, HTML5, CSS3, JavaScript, Bootstrap" />
+          </div>
+          <div class="form-group">
+            <label for="admSkillsDatabases">Databases &amp; Big Data (Comma separated)</label>
+            <input type="text" id="admSkillsDatabases" class="form-control" value="MySQL, MongoDB, Apache HDFS, Apache Pig" />
+          </div>
+          <div class="form-group">
+            <label for="admSkillsTools">Developer Tools &amp; Hardware (Comma separated)</label>
+            <input type="text" id="admSkillsTools" class="form-control" value="Wireshark, Burp Suite, VS Code, Git/GitHub, Arduino IDE, ESP32, ESP8266" />
+          </div>
+          <div class="form-group">
+            <label for="admSkillsCore">Core Competencies &amp; Soft Skills (Comma separated)</label>
+            <input type="text" id="admSkillsCore" class="form-control" value="Computer Networks, DBMS, Packet Sniffing, Adaptability, Time Management" />
+          </div>
+          <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Save Skills &amp; Competencies</button>
+        </form>
+      </div>
+
       <!-- TAB: VISITOR LOGS & ALERTS -->
       <div id="tab-visitors" class="admin-tab-content">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-          <h3 style="color: #f8fafc; font-size: 1.1rem;"><i class="fa-solid fa-users"></i> Live Visitor Telemetry &amp; Location Logs</h3>
+          <h3 style="color: #f8fafc; font-size: 1.1rem;"><i class="fa-solid fa-users"></i> Live Visitor Telemetry &amp; Email Alerts</h3>
           <button id="clearVisitorLogsBtn" class="admin-btn admin-btn-danger" style="font-size: 0.85rem;"><i class="fa-solid fa-trash"></i> Clear Logs</button>
         </div>
 
+        <!-- Direct Email Alerts Config -->
+        <form id="formEmailAlert" style="margin-bottom: 25px; background: rgba(34, 197, 94, 0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.2);">
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label for="admNotificationEmail" style="color: #4ade80;"><i class="fa-solid fa-envelope"></i> Direct Email Inbox Notification Alert</label>
+            <input type="email" id="admNotificationEmail" class="form-control" value="mkabilan1409@gmail.com" />
+            <span style="font-size: 0.8rem; color: #94a3b8;">When anyone visits your portfolio, real-time telemetry (Location, City, IP, ISP &amp; Device) is delivered directly to your email inbox: <strong>mkabilan1409@gmail.com</strong>!</span>
+          </div>
+          <button type="submit" class="admin-btn" style="padding: 6px 14px; font-size: 0.85rem; background: #22c55e; color: #0f172a;"><i class="fa-solid fa-floppy-disk"></i> Save Email Notification Settings</button>
+        </form>
+
         <form id="formWebhookAlert" style="margin-bottom: 25px; background: rgba(6, 182, 212, 0.05); padding: 15px; border-radius: 10px; border: 1px solid rgba(6, 182, 212, 0.2);">
           <div class="form-group" style="margin-bottom: 10px;">
-            <label for="admWebhookUrl"><i class="fa-solid fa-bell"></i> Instant Push Notification Webhook URL (Telegram / Discord / Custom Webhook)</label>
+            <label for="admWebhookUrl"><i class="fa-solid fa-bell"></i> Mobile Push Webhook / Telegram Bot URL (Optional)</label>
             <input type="text" id="admWebhookUrl" class="form-control" placeholder="e.g. https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<ID>&text=" />
-            <span style="font-size: 0.8rem; color: #94a3b8;">Paste your Telegram Bot API URL or Webhook. When visitors open your portfolio, instant push alerts with their Location, IP, ISP &amp; Device info will be sent to your phone!</span>
+            <span style="font-size: 0.8rem; color: #94a3b8;">Optional Telegram Bot URL for mobile push notifications directly to your phone.</span>
           </div>
-          <button type="submit" class="admin-btn" style="padding: 6px 14px; font-size: 0.85rem;"><i class="fa-solid fa-floppy-disk"></i> Save Notification Webhook</button>
+          <button type="submit" class="admin-btn" style="padding: 6px 14px; font-size: 0.85rem;"><i class="fa-solid fa-floppy-disk"></i> Save Mobile Push Webhook</button>
         </form>
 
         <div style="overflow-x: auto;">

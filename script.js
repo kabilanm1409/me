@@ -1020,6 +1020,7 @@ const firebaseConfig = {
 };
 
 let db = null;
+let auth = null;
 let currentFirebasePortfolioData = null;
 
 function initFirebaseApp() {
@@ -1029,6 +1030,9 @@ function initFirebaseApp() {
         firebase.initializeApp(firebaseConfig);
       }
       db = firebase.firestore();
+      if (typeof firebase.auth === 'function') {
+        auth = firebase.auth();
+      }
     } catch (e) {
       console.warn("Firebase Init Notice:", e);
     }
@@ -1108,8 +1112,6 @@ function initFirebaseLiveSync() {
 // ── Shared Default Portfolio Configuration Data ────────────────
 function getPortfolioDefaultData() {
   return {
-    adminPass: _xor([32, 37, 34, 88, 94, 82]),
-    adminUser: _xor([0, 0, 0, 0, 0, 0, 0]),
     profile: {
       name: 'Kabilan M',
       role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
@@ -1752,16 +1754,10 @@ function initAdminPanel() {
   const dashAlert = document.getElementById('dashboardAlert');
   const logoutBtn = document.getElementById('adminLogoutBtn');
 
-  // Password & Auth Helper (Synced via Firebase Cloud Database)
-  const getStoredPassword = () => {
-    const data = getPortfolioData();
-    return (data && data.adminPass) ? data.adminPass : _xor([32, 37, 34, 88, 94, 82]);
+  const checkAuth = () => {
+    if (auth && auth.currentUser) return true;
+    return sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
   };
-  const getStoredUsername = () => {
-    const data = getPortfolioData();
-    return (data && data.adminUser) ? data.adminUser : _xor([0, 0, 0, 0, 0, 0, 0]);
-  };
-  const checkAuth = () => sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
 
   const showAlert = (el, text, isSuccess = false) => {
     el.textContent = text;
@@ -1780,6 +1776,20 @@ function initAdminPanel() {
       dashSection.style.display = 'none';
     }
   };
+
+  // Listen to Firebase Server-Side Auth State
+  if (!auth) initFirebaseApp();
+  if (auth) {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+        renderDashboard();
+      } else {
+        sessionStorage.removeItem('kabilan_admin_authenticated');
+        renderDashboard();
+      }
+    });
+  }
 
   // Load Saved Admin Data into Form Inputs
   const loadFormData = () => {
@@ -1847,21 +1857,11 @@ function initAdminPanel() {
     }
   };
 
-  // Login Form Submission
+  // Firebase Server-Side Login Form Submission
   let failedAttempts = 0;
   let isLockedOut = false;
 
-  const calculateSHA256 = async (str) => {
-    try {
-      const encoder = new TextEncoder();
-      const data = encoder.encode(str + 'kabilan_portfolio_2026_sec');
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    } catch(e) { return ''; }
-  };
-
-  loginForm.addEventListener('submit', async (e) => {
+  loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     if (isLockedOut) {
@@ -1869,34 +1869,38 @@ function initAdminPanel() {
       return;
     }
 
-    const userIn = document.getElementById('adminUsername').value.trim();
+    const emailIn = document.getElementById('adminUsername').value.trim();
     const passIn = document.getElementById('adminPassword').value.trim();
+    const targetEmail = emailIn.includes('@') ? emailIn : (emailIn.toLowerCase() === 'kabilan' ? 'mkabilan1409@gmail.com' : emailIn);
 
-    const targetUser = getStoredUsername();
-    const targetPass = getStoredPassword();
+    if (!auth) initFirebaseApp();
 
-    if (userIn.toLowerCase() === targetUser.toLowerCase() && passIn === targetPass) {
-      failedAttempts = 0;
-      sessionStorage.setItem('kabilan_admin_authenticated', 'true');
-      renderDashboard();
-    } else {
-      failedAttempts++;
-      if (failedAttempts >= 5) {
-        isLockedOut = true;
-        showAlert(loginAlert, '🔒 Account locked out for 60 seconds due to 5 failed login attempts!');
-        setTimeout(() => {
-          isLockedOut = false;
+    if (auth) {
+      auth.signInWithEmailAndPassword(targetEmail, passIn)
+        .then(() => {
           failedAttempts = 0;
-        }, 60000);
-      } else {
-        showAlert(loginAlert, `Invalid credentials! Failed attempt ${failedAttempts}/5. Please check username & password.`);
-      }
+          sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+          renderDashboard();
+        })
+        .catch((error) => {
+          failedAttempts++;
+          if (failedAttempts >= 5) {
+            isLockedOut = true;
+            showAlert(loginAlert, '🔒 Account locked out for 60 seconds due to 5 failed login attempts!');
+            setTimeout(() => { isLockedOut = false; failedAttempts = 0; }, 60000);
+          } else {
+            showAlert(loginAlert, '❌ Authentication Failed: ' + (error.message || 'Invalid administrative credentials'));
+          }
+        });
+    } else {
+      showAlert(loginAlert, '❌ Firebase Authentication service unavailable.');
     }
   });
 
   // Logout Action
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
+      if (auth) auth.signOut();
       sessionStorage.removeItem('kabilan_admin_authenticated');
       renderDashboard();
     });

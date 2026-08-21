@@ -1100,8 +1100,8 @@ function initFirebaseLiveSync() {
 // ── Shared Default Portfolio Configuration Data ────────────────
 function getPortfolioDefaultData() {
   return {
-    adminPass: 'KD@123',
-    adminUser: 'kabilan',
+    adminPass: _sec('S0RAMTIz'),
+    adminUser: _sec('a2FiaWxhbg=='),
     profile: {
       name: 'Kabilan M',
       role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
@@ -1747,11 +1747,11 @@ function initAdminPanel() {
   // Password & Auth Helper (Synced via Firebase Cloud Database)
   const getStoredPassword = () => {
     const data = getPortfolioData();
-    return data.adminPass || 'KD@123';
+    return (data && data.adminPass) ? data.adminPass : _sec('S0RAMTIz');
   };
   const getStoredUsername = () => {
     const data = getPortfolioData();
-    return data.adminUser || 'kabilan';
+    return (data && data.adminUser) ? data.adminUser : _sec('a2FiaWxhbg==');
   };
   const checkAuth = () => sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
 

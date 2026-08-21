@@ -1,0 +1,22 @@
+# Environment variables (NEVER commit to version control)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Node modules & dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs & Temporary Files
+*.log
+scratch/
+.temp/

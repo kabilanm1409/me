@@ -990,22 +990,31 @@ function initFirebaseApp() {
 function syncPortfolioDataToFirebase(data) {
   if (!db) initFirebaseApp();
   currentFirebasePortfolioData = { ...data };
+  
+  // Instant local cache backup
+  try {
+    localStorage.setItem('kabilan_portfolio_data', JSON.stringify(data));
+  } catch (e) {}
+
+  applyDynamicPortfolioData();
+
   if (!db) {
-    applyDynamicPortfolioData();
     return Promise.resolve(false);
   }
-  // Write to both 'livedata' (as in user screenshot) and 'liveData'
+
+  // Dual-write to both 'livedata' (as in user screenshot) and 'liveData'
   const p1 = db.collection("portfolio").doc("livedata").set(data);
   const p2 = db.collection("portfolio").doc("liveData").set(data);
   return Promise.all([p1, p2])
     .then(() => {
       console.log("Successfully synced portfolio data to Firebase Cloud Database!");
-      applyDynamicPortfolioData();
       return true;
     })
     .catch((err) => {
       console.error("Firebase Sync Error:", err);
-      applyDynamicPortfolioData();
+      if (err && (err.code === 'permission-denied' || String(err).includes('permission'))) {
+        alert("⚠️ FIREBASE RULES ACTION REQUIRED:\n\nFirebase Firestore blocked the update because of Security Rules.\n\nTo allow live updates for all visitors:\n1. Go to console.firebase.google.com\n2. Open Firestore Database -> Rules tab\n3. Set rule to: allow read, write: if true;\n4. Click Publish.");
+      }
       return false;
     });
 }
@@ -1022,6 +1031,9 @@ function initFirebaseLiveSync() {
         const hasValidObjects = typeof remoteData.profile === 'object' || typeof remoteData.skills === 'object' || typeof remoteData.education === 'object';
         if (hasValidObjects) {
           currentFirebasePortfolioData = remoteData;
+          try {
+            localStorage.setItem('kabilan_portfolio_data', JSON.stringify(remoteData));
+          } catch (e) {}
           applyDynamicPortfolioData();
           if (typeof loadFormData === 'function' && document.getElementById('adminLoginForm')) {
             loadFormData();
@@ -1154,7 +1166,15 @@ function getPortfolioDefaultData() {
 }
 
 function getPortfolioData() {
-  return currentFirebasePortfolioData || getPortfolioDefaultData();
+  if (currentFirebasePortfolioData) return currentFirebasePortfolioData;
+  try {
+    const localRaw = localStorage.getItem('kabilan_portfolio_data');
+    if (localRaw) {
+      const parsed = JSON.parse(localRaw);
+      if (parsed && Object.keys(parsed).length > 0) return parsed;
+    }
+  } catch (e) {}
+  return getPortfolioDefaultData();
 }
 
 // ── Admin Panel & Dynamic Portfolio Data Synchronization ────────

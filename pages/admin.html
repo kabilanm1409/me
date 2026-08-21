@@ -216,9 +216,10 @@
       <div class="admin-tabs">
         <button class="admin-tab-btn active" data-tab="tab-profile"><i class="fa-solid fa-user"></i> Profile &amp; Bio</button>
         <button class="admin-tab-btn" data-tab="tab-resumes"><i class="fa-solid fa-file-pdf"></i> Resume Links</button>
-        <button class="admin-tab-btn" data-tab="tab-education"><i class="fa-solid fa-graduation-cap"></i> Education &amp; CGPA</button>
+        <button class="admin-tab-btn" data-tab="tab-education"><i class="fa-solid fa-graduation-cap"></i> Education &amp; Timeline</button>
+        <button class="admin-tab-btn" data-tab="tab-achievements"><i class="fa-solid fa-trophy"></i> Achievements &amp; Certs</button>
         <button class="admin-tab-btn" data-tab="tab-projects"><i class="fa-solid fa-diagram-project"></i> Projects</button>
-        <button class="admin-tab-btn" data-tab="tab-skills"><i class="fa-solid fa-code"></i> Skills &amp; Certs</button>
+        <button class="admin-tab-btn" data-tab="tab-skills"><i class="fa-solid fa-code"></i> Skills &amp; Competencies</button>
         <button class="admin-tab-btn" data-tab="tab-visitors"><i class="fa-solid fa-envelope"></i> Email Alerts &amp; Logs</button>
         <button class="admin-tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Settings &amp; Sync</button>
       </div>
@@ -237,6 +238,11 @@
           <div class="form-group">
             <label for="admObjective">Career Objective / Bio</label>
             <textarea id="admObjective" class="form-control">Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.</textarea>
+          </div>
+          <div class="form-group">
+            <label for="admFooterRights">Footer Copyright Notice &amp; Rights Tagline</label>
+            <input type="text" id="admFooterRights" class="form-control" value="&copy; 2026 Kabilan M. Security and Networking Engineer. All rights reserved." />
+            <span style="font-size: 0.8rem; color: #94a3b8;">This text displays in the footer across all portfolio pages.</span>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div class="form-group">
@@ -279,9 +285,9 @@
         </form>
       </div>
 
-      <!-- TAB 3: EDUCATION & CGPA -->
+      <!-- TAB 3: EDUCATION & TIMELINE -->
       <div id="tab-education" class="admin-tab-content">
-        <form id="formEducation">
+        <form id="formEducation" style="margin-bottom: 25px;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div class="form-group">
               <label for="admCgpa">Current CGPA Score</label>
@@ -300,8 +306,35 @@
             <label for="admDegree">Degree Name</label>
             <input type="text" id="admDegree" class="form-control" value="B.Tech Information Technology" />
           </div>
-          <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Save Education Info</button>
+          <button type="submit" class="admin-btn"><i class="fa-solid fa-floppy-disk"></i> Save Core Education Info</button>
         </form>
+
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 25px 0;" />
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3 style="color: #f8fafc; font-size: 1.1rem;"><i class="fa-solid fa-timeline"></i> Academic Timeline Cards (Education History)</h3>
+          <button type="button" id="admAddTimelineBtn" class="admin-btn admin-btn-secondary" style="font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Add Timeline Entry</button>
+        </div>
+
+        <div id="educationTimelineContainer">
+          <!-- Dynamic Timeline Cards Rendered via JS -->
+        </div>
+
+        <button type="button" id="saveTimelineBtn" class="admin-btn" style="margin-top: 15px;"><i class="fa-solid fa-floppy-disk"></i> Save Academic Timeline</button>
+      </div>
+
+      <!-- TAB: ACHIEVEMENTS & CERTS -->
+      <div id="tab-achievements" class="admin-tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3 style="color: #f8fafc; font-size: 1.1rem;"><i class="fa-solid fa-trophy"></i> Manage Achievements &amp; Certifications</h3>
+          <button type="button" id="admAddAchievementBtn" class="admin-btn admin-btn-secondary" style="font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Add Achievement Card</button>
+        </div>
+        
+        <div id="achievementsListContainer">
+          <!-- Dynamic Achievement Cards Rendered via JS -->
+        </div>
+
+        <button type="button" id="saveAchievementsBtn" class="admin-btn" style="margin-top: 15px;"><i class="fa-solid fa-floppy-disk"></i> Save All Achievements</button>
       </div>
 
       <!-- TAB 4: PROJECTS MANAGER -->
@@ -413,9 +446,10 @@
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <p>&copy; 2026 Kabilan M. All rights reserved. <a href="admin.html" style="color: #06b6d4; font-size: 0.8rem; margin-left: 10px;"><i class="fa-solid fa-lock"></i> Admin Panel</a></p>
+  <footer class="footer" style="text-align: center; padding: 25px 20px; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 40px;">
+    <div class="footer-content" style="max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+      <p id="adminFooterRightsP" style="margin: 0; font-size: 0.9rem;">&copy; 2026 Kabilan M. Security and Networking Engineer. All rights reserved.</p>
+      <p style="margin: 0; font-size: 0.85rem;"><a href="../index.html" style="color: #38bdf8; text-decoration: none;">Home</a> · <a href="about.html" style="color: #38bdf8; text-decoration: none;">About</a> · <a href="projects.html" style="color: #38bdf8; text-decoration: none;">Projects</a> · <a href="contact.html" style="color: #38bdf8; text-decoration: none;">Contact</a> · <a href="admin.html" style="color: #06b6d4; font-weight: 600;"><i class="fa-solid fa-lock"></i> Admin Panel</a></p>
     </div>
   </footer>
 

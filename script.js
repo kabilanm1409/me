@@ -991,7 +991,20 @@ function applyDynamicPortfolioData() {
       }
     }
 
-    // Education & CGPA Overrides
+    // Footer Rights / Copyright Overrides
+    if (data.profile && data.profile.footerRights) {
+      document.querySelectorAll('.site-footer p:first-child, .footer-content p, #adminFooterRightsP').forEach(el => {
+        if (!el.querySelector('a')) {
+          el.textContent = data.profile.footerRights;
+        } else {
+          const links = Array.from(el.querySelectorAll('a'));
+          el.innerHTML = `${escapeHTML(data.profile.footerRights)} `;
+          links.forEach(link => el.appendChild(link));
+        }
+      });
+    }
+
+    // Education & CGPA & Timeline Overrides
     if (data.education) {
       if (data.education.cgpa) {
         const cgpaEl = document.getElementById('stat-cgpa');
@@ -1001,18 +1014,56 @@ function applyDynamicPortfolioData() {
           if (parent) parent.setAttribute('data-counter', data.education.cgpa);
         }
       }
+
+      // Dynamic Academic Timeline Cards Rebuild
+      if (data.education.timeline && data.education.timeline.length > 0) {
+        const timelineContainer = document.querySelector('.timeline');
+        if (timelineContainer) {
+          timelineContainer.innerHTML = data.education.timeline.map(item => `
+            <article class="timeline-item card" data-aos="fade-up">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div>
+                <p class="timeline-year">${escapeHTML(item.year || '')}</p>
+                <h3>${escapeHTML(item.title || '')}</h3>
+                <p class="timeline-institution">${escapeHTML(item.institution || '')}</p>
+                <p>${escapeHTML(item.details || '')}</p>
+              </div>
+            </article>
+          `).join('');
+        }
+      }
+    }
+
+    // Achievements & Certifications Overrides
+    if (data.achievements && data.achievements.length > 0) {
+      const grid = document.querySelector('.achievement-grid');
+      if (grid) {
+        grid.innerHTML = data.achievements.map(a => {
+          const certLink = a.certUrl ? `
+            <a class="cert-link" href="${escapeAttr(a.certUrl)}" target="_blank" rel="noopener noreferrer" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+              <i class="fa-solid ${a.certUrl.endsWith('.pdf') ? 'fa-file-pdf' : 'fa-image'}"></i> ${escapeHTML(a.certText || 'View Certificate')}
+            </a>
+          ` : '';
+          return `
+            <article class="achievement-card card" role="listitem" data-aos="fade-up">
+              <i class="fa-solid ${escapeAttr(a.icon || 'fa-trophy')}" aria-hidden="true"></i>
+              <h3>${escapeHTML(a.title || '')}</h3>
+              <p>${escapeHTML(a.subtitle || '')}</p>
+              ${certLink}
+            </article>
+          `;
+        }).join('');
+      }
     }
 
     // Skills Overrides
     if (data.skills) {
-      // Update skill cards on about page or index page if they exist
       const skillSections = {
         languages: data.skills.languages,
         databases: data.skills.databases,
         tools: data.skills.tools,
         core: data.skills.core
       };
-      // Update any skill-list elements that match
       document.querySelectorAll('.skill-category').forEach(cat => {
         const heading = cat.querySelector('h3, h4, .skill-heading');
         if (!heading) return;
@@ -1181,6 +1232,185 @@ function collectProjectsFromDOM() {
   return projects;
 }
 
+// ── Education Timeline CMS Helper ────────────────────────────
+let adminTimelineList = [];
+
+function renderAdminEducationTimeline(timeline) {
+  const defaultTimeline = [
+    {
+      year: '2024 - 2027',
+      title: 'B.Tech Information Technology',
+      institution: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
+      details: 'CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.'
+    },
+    {
+      year: '2022 - 2024',
+      title: 'Diploma in Mechanical Engineering',
+      institution: 'Kongunadu Polytechnic College, Thottiyam, Trichy',
+      details: 'Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT.'
+    },
+    {
+      year: '2021 - 2022',
+      title: 'Higher Secondary Certificate (HSC)',
+      institution: 'Government Higher Secondary School, Pappapatti, Trichy',
+      details: 'Completed higher secondary education with a 50% aggregate score.'
+    }
+  ];
+
+  adminTimelineList = timeline && timeline.length > 0 ? [...timeline] : [...defaultTimeline];
+  const container = document.getElementById('educationTimelineContainer');
+  if (!container) return;
+
+  container.innerHTML = adminTimelineList.map((item, i) => `
+    <div class="project-item-card" data-index="${i}">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h4 style="color: #38bdf8; margin: 0; font-size: 0.95rem;"><i class="fa-solid fa-graduation-cap"></i> Timeline Entry ${i + 1}</h4>
+        <button type="button" class="admin-btn admin-btn-danger admDeleteTimelineBtn" data-index="${i}" style="padding: 3px 8px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Remove</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+        <div class="form-group">
+          <label>Years / Period</label>
+          <input type="text" class="form-control admTimeYear" value="${escapeAttr(item.year || '')}" placeholder="e.g. 2024 - 2027" />
+        </div>
+        <div class="form-group">
+          <label>Degree / Certificate Title</label>
+          <input type="text" class="form-control admTimeTitle" value="${escapeAttr(item.title || '')}" placeholder="e.g. B.Tech Information Technology" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Institution / College Name</label>
+        <input type="text" class="form-control admTimeInstitution" value="${escapeAttr(item.institution || '')}" placeholder="e.g. Kongunadu College..." />
+      </div>
+      <div class="form-group">
+        <label>Details &amp; Achievements (CGPA, Highlights)</label>
+        <textarea class="form-control admTimeDetails" rows="2">${escapeHTML(item.details || '')}</textarea>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.admDeleteTimelineBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      if (confirm('Remove this education timeline entry?')) {
+        adminTimelineList.splice(idx, 1);
+        renderAdminEducationTimeline(adminTimelineList);
+      }
+    });
+  });
+}
+
+function collectEducationTimelineFromDOM() {
+  const cards = document.querySelectorAll('#educationTimelineContainer .project-item-card');
+  const list = [];
+  cards.forEach(card => {
+    list.push({
+      year: card.querySelector('.admTimeYear').value.trim(),
+      title: card.querySelector('.admTimeTitle').value.trim(),
+      institution: card.querySelector('.admTimeInstitution').value.trim(),
+      details: card.querySelector('.admTimeDetails').value.trim()
+    });
+  });
+  return list;
+}
+
+// ── Achievements & Certifications CMS Helper ────────────────
+let adminAchievementsList = [];
+
+function renderAdminAchievements(achievements) {
+  const defaultAchievements = [
+    {
+      icon: 'fa-trophy',
+      title: 'Artivers 3.0 Hackathon',
+      subtitle: '1st Place (College Level)',
+      certUrl: 'assets/cerificates/IMG_20260701_185332433.jpg',
+      certText: 'View Certificate'
+    },
+    {
+      icon: 'fa-medal',
+      title: 'Tezario 3.0 Project Expo',
+      subtitle: '2nd Place (College Level)',
+      certUrl: '',
+      certText: ''
+    },
+    {
+      icon: 'fa-certificate',
+      title: 'Infosys Springboard',
+      subtitle: 'Technical Certifications: HTML5, CSS3, JavaScript',
+      certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf',
+      certText: 'View PDF Certificate'
+    },
+    {
+      icon: 'fa-shield-halved',
+      title: 'Advanced Cyber Security',
+      subtitle: 'Penetration Testing Course (6 Days)',
+      certUrl: 'assets/cerificates/IMG_20260701_185137413.jpg',
+      certText: 'View Certificate'
+    }
+  ];
+
+  adminAchievementsList = achievements && achievements.length > 0 ? [...achievements] : [...defaultAchievements];
+  const container = document.getElementById('achievementsListContainer');
+  if (!container) return;
+
+  container.innerHTML = adminAchievementsList.map((item, i) => `
+    <div class="project-item-card" data-index="${i}">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h4 style="color: #38bdf8; margin: 0; font-size: 0.95rem;"><i class="fa-solid fa-trophy"></i> Achievement ${i + 1}</h4>
+        <button type="button" class="admin-btn admin-btn-danger admDeleteAchievementBtn" data-index="${i}" style="padding: 3px 8px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Remove</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+        <div class="form-group">
+          <label>FontAwesome Icon Class</label>
+          <input type="text" class="form-control admAchieveIcon" value="${escapeAttr(item.icon || 'fa-trophy')}" placeholder="e.g. fa-trophy, fa-medal" />
+        </div>
+        <div class="form-group">
+          <label>Achievement Title</label>
+          <input type="text" class="form-control admAchieveTitle" value="${escapeAttr(item.title || '')}" placeholder="e.g. Artivers 3.0 Hackathon" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subtitle / Award / Description</label>
+        <input type="text" class="form-control admAchieveSubtitle" value="${escapeAttr(item.subtitle || '')}" placeholder="e.g. 1st Place (College Level)" />
+      </div>
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Certificate Image / PDF Path</label>
+          <input type="text" class="form-control admAchieveCertUrl" value="${escapeAttr(item.certUrl || '')}" placeholder="e.g. assets/cerificates/..." />
+        </div>
+        <div class="form-group">
+          <label>Link Label Text</label>
+          <input type="text" class="form-control admAchieveCertText" value="${escapeAttr(item.certText || 'View Certificate')}" />
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.admDeleteAchievementBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      if (confirm('Remove this achievement?')) {
+        adminAchievementsList.splice(idx, 1);
+        renderAdminAchievements(adminAchievementsList);
+      }
+    });
+  });
+}
+
+function collectAchievementsFromDOM() {
+  const cards = document.querySelectorAll('#achievementsListContainer .project-item-card');
+  const list = [];
+  cards.forEach(card => {
+    list.push({
+      icon: card.querySelector('.admAchieveIcon').value.trim(),
+      title: card.querySelector('.admAchieveTitle').value.trim(),
+      subtitle: card.querySelector('.admAchieveSubtitle').value.trim(),
+      certUrl: card.querySelector('.admAchieveCertUrl').value.trim(),
+      certText: card.querySelector('.admAchieveCertText').value.trim()
+    });
+  });
+  return list;
+}
+
 function initAdminPanel() {
   const loginForm = document.getElementById('adminLoginForm');
   if (!loginForm) return; // Not on admin.html page
@@ -1222,6 +1452,7 @@ function initAdminPanel() {
         name: 'Kabilan M',
         role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
         objective: 'Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.',
+        footerRights: '© 2026 Kabilan M. Security and Networking Engineer. All rights reserved.',
         email: 'mkabilan1409@gmail.com',
         phone: '+91 76049 59955',
         linkedin: 'https://www.linkedin.com/in/kabilan-m-790801330/',
@@ -1235,8 +1466,58 @@ function initAdminPanel() {
         cgpa: '7.08',
         sem: 'up to 6th sem',
         college: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
-        degree: 'B.Tech Information Technology'
+        degree: 'B.Tech Information Technology',
+        timeline: [
+          {
+            year: '2024 - 2027',
+            title: 'B.Tech Information Technology',
+            institution: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
+            details: 'CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.'
+          },
+          {
+            year: '2022 - 2024',
+            title: 'Diploma in Mechanical Engineering',
+            institution: 'Kongunadu Polytechnic College, Thottiyam, Trichy',
+            details: 'Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT.'
+          },
+          {
+            year: '2021 - 2022',
+            title: 'Higher Secondary Certificate (HSC)',
+            institution: 'Government Higher Secondary School, Pappapatti, Trichy',
+            details: 'Completed higher secondary education with a 50% aggregate score.'
+          }
+        ]
       },
+      achievements: [
+        {
+          icon: 'fa-trophy',
+          title: 'Artivers 3.0 Hackathon',
+          subtitle: '1st Place (College Level)',
+          certUrl: 'assets/cerificates/IMG_20260701_185332433.jpg',
+          certText: 'View Certificate'
+        },
+        {
+          icon: 'fa-medal',
+          title: 'Tezario 3.0 Project Expo',
+          subtitle: '2nd Place (College Level)',
+          certUrl: '',
+          certText: ''
+        },
+        {
+          icon: 'fa-certificate',
+          title: 'Infosys Springboard',
+          subtitle: 'Technical Certifications: HTML5, CSS3, JavaScript',
+          certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf',
+          certText: 'View PDF Certificate'
+        },
+        {
+          icon: 'fa-shield-halved',
+          title: 'Advanced Cyber Security',
+          subtitle: 'Penetration Testing Course (6 Days)',
+          certUrl: 'assets/cerificates/IMG_20260701_185137413.jpg',
+          certText: 'View Certificate'
+        }
+      ],
       skills: {
         languages: 'Java, HTML5, CSS3, JavaScript, Bootstrap',
         databases: 'MySQL, MongoDB, Apache HDFS, Apache Pig',
@@ -1281,6 +1562,9 @@ function initAdminPanel() {
       document.getElementById('admName').value = data.profile.name || '';
       document.getElementById('admRole').value = data.profile.role || '';
       document.getElementById('admObjective').value = data.profile.objective || '';
+      if (document.getElementById('admFooterRights')) {
+        document.getElementById('admFooterRights').value = data.profile.footerRights || '© 2026 Kabilan M. Security and Networking Engineer. All rights reserved.';
+      }
       document.getElementById('admEmail').value = data.profile.email || '';
       document.getElementById('admPhone').value = data.profile.phone || '';
       document.getElementById('admLinkedin').value = data.profile.linkedin || '';
@@ -1299,6 +1583,16 @@ function initAdminPanel() {
       document.getElementById('admSem').value = data.education.sem || '';
       document.getElementById('admCollege').value = data.education.college || '';
       document.getElementById('admDegree').value = data.education.degree || '';
+    }
+
+    // Load Education Timeline into CMS
+    if (typeof renderAdminEducationTimeline === 'function') {
+      renderAdminEducationTimeline(data.education?.timeline || null);
+    }
+
+    // Load Achievements into CMS
+    if (typeof renderAdminAchievements === 'function') {
+      renderAdminAchievements(data.achievements || null);
     }
 
     // Set Skills fields
@@ -1370,13 +1664,15 @@ function initAdminPanel() {
         name: document.getElementById('admName').value.trim(),
         role: document.getElementById('admRole').value.trim(),
         objective: document.getElementById('admObjective').value.trim(),
+        footerRights: document.getElementById('admFooterRights') ? document.getElementById('admFooterRights').value.trim() : '© 2026 Kabilan M. Security and Networking Engineer. All rights reserved.',
         email: document.getElementById('admEmail').value.trim(),
         phone: document.getElementById('admPhone').value.trim(),
         linkedin: document.getElementById('admLinkedin').value.trim(),
         github: document.getElementById('admGithub').value.trim()
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
-      showAlert(dashAlert, 'Profile details saved successfully!', true);
+      applyDynamicPortfolioData();
+      showAlert(dashAlert, 'Profile details and footer rights saved!', true);
     });
   }
 
@@ -1391,24 +1687,84 @@ function initAdminPanel() {
         terminal: document.getElementById('admTerminalResume').value.trim()
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      applyDynamicPortfolioData();
       showAlert(dashAlert, 'Resume URLs updated successfully!', true);
     });
   }
 
-  // Save Education Form
+  // Save Core Education Form
   const formEducation = document.getElementById('formEducation');
   if (formEducation) {
     formEducation.addEventListener('submit', (e) => {
       e.preventDefault();
       const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      const existingTimeline = currentData.education?.timeline || null;
       currentData.education = {
         cgpa: document.getElementById('admCgpa').value.trim(),
         sem: document.getElementById('admSem').value.trim(),
         college: document.getElementById('admCollege').value.trim(),
-        degree: document.getElementById('admDegree').value.trim()
+        degree: document.getElementById('admDegree').value.trim(),
+        timeline: existingTimeline
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
-      showAlert(dashAlert, 'Education & CGPA details updated!', true);
+      applyDynamicPortfolioData();
+      showAlert(dashAlert, 'Core education info updated!', true);
+    });
+  }
+
+  // Add New Education Timeline Entry Button
+  const addTimelineBtn = document.getElementById('admAddTimelineBtn');
+  if (addTimelineBtn) {
+    addTimelineBtn.addEventListener('click', () => {
+      adminTimelineList.push({
+        year: '',
+        title: '',
+        institution: '',
+        details: ''
+      });
+      renderAdminEducationTimeline(adminTimelineList);
+    });
+  }
+
+  // Save Academic Timeline Button
+  const saveTimelineBtn = document.getElementById('saveTimelineBtn');
+  if (saveTimelineBtn) {
+    saveTimelineBtn.addEventListener('click', () => {
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      if (!currentData.education) currentData.education = {};
+      currentData.education.timeline = collectEducationTimelineFromDOM();
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      adminTimelineList = [...currentData.education.timeline];
+      applyDynamicPortfolioData();
+      showAlert(dashAlert, 'Academic Timeline saved and live updated!', true);
+    });
+  }
+
+  // Add New Achievement Button
+  const addAchievementBtn = document.getElementById('admAddAchievementBtn');
+  if (addAchievementBtn) {
+    addAchievementBtn.addEventListener('click', () => {
+      adminAchievementsList.push({
+        icon: 'fa-trophy',
+        title: '',
+        subtitle: '',
+        certUrl: '',
+        certText: 'View Certificate'
+      });
+      renderAdminAchievements(adminAchievementsList);
+    });
+  }
+
+  // Save All Achievements Button
+  const saveAchievementsBtn = document.getElementById('saveAchievementsBtn');
+  if (saveAchievementsBtn) {
+    saveAchievementsBtn.addEventListener('click', () => {
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.achievements = collectAchievementsFromDOM();
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      adminAchievementsList = [...currentData.achievements];
+      applyDynamicPortfolioData();
+      showAlert(dashAlert, 'Achievements & Certifications saved and live updated!', true);
     });
   }
 
@@ -1454,6 +1810,7 @@ function initAdminPanel() {
         core: document.getElementById('admSkillsCore').value.trim()
       };
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      applyDynamicPortfolioData();
       showAlert(dashAlert, 'Skills & Competencies updated successfully!', true);
     });
   }
@@ -1538,6 +1895,7 @@ function initAdminPanel() {
       if (confirm('Are you sure you want to reset all admin edits back to default site configuration?')) {
         localStorage.removeItem('kabilan_portfolio_data');
         loadFormData();
+        applyDynamicPortfolioData();
         showAlert(dashAlert, 'Reset back to default settings.', true);
       }
     });
@@ -1568,13 +1926,16 @@ function initAdminPanel() {
       currentData.projects = collectProjectsFromDOM();
       localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
       adminProjectsList = [...currentData.projects];
+      applyDynamicPortfolioData();
       showAlert(dashAlert, 'All projects saved successfully!', true);
     });
   }
 
-  // Load projects on dashboard init
-  const currentDataForProjects = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
-  renderAdminProjects(currentDataForProjects.projects || null);
+  // Load CMS items on dashboard init
+  const currentDataForCMS = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+  renderAdminProjects(currentDataForCMS.projects || null);
+  renderAdminEducationTimeline(currentDataForCMS.education?.timeline || null);
+  renderAdminAchievements(currentDataForCMS.achievements || null);
 
   renderVisitorLogs();
   renderDashboard();

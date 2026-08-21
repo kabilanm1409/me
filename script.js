@@ -434,6 +434,7 @@ function initPortfolio() {
   initScreenshotShield(); // Enable screen capture shield
   applyDynamicPortfolioData(); // Load custom admin overrides from LocalStorage
   initAdminPanel();       // Initialize Admin Dashboard if on admin.html
+  initVisitorNotification(); // Record visitor telemetry & fire alert notifications
   setYear();
 }
 
@@ -1206,6 +1207,61 @@ function initAdminPanel() {
     });
   }
 
+  // Save Webhook URL Form
+  const formWebhook = document.getElementById('formWebhookAlert');
+  if (formWebhook) {
+    formWebhook.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      currentData.webhookUrl = document.getElementById('admWebhookUrl').value.trim();
+      localStorage.setItem('kabilan_portfolio_data', JSON.stringify(currentData));
+      showAlert(dashAlert, 'Notification Webhook URL saved!', true);
+    });
+  }
+
+  // Clear Visitor Logs
+  const clearLogsBtn = document.getElementById('clearVisitorLogsBtn');
+  if (clearLogsBtn) {
+    clearLogsBtn.addEventListener('click', () => {
+      if (confirm('Clear all visitor location logs?')) {
+        localStorage.removeItem('kabilan_visitor_logs');
+        renderVisitorLogs();
+        showAlert(dashAlert, 'Visitor logs cleared.', true);
+      }
+    });
+  }
+
+  // Render Visitor Table
+  const renderVisitorLogs = () => {
+    const tableBody = document.getElementById('visitorLogTableBody');
+    if (!tableBody) return;
+
+    const webhookInput = document.getElementById('admWebhookUrl');
+    if (webhookInput) {
+      const currentData = JSON.parse(localStorage.getItem('kabilan_portfolio_data') || '{}');
+      webhookInput.value = currentData.webhookUrl || '';
+    }
+
+    const logsRaw = localStorage.getItem('kabilan_visitor_logs');
+    const logs = logsRaw ? JSON.parse(logsRaw) : [];
+
+    if (logs.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No visitor logs recorded yet.</td></tr>';
+      return;
+    }
+
+    tableBody.innerHTML = logs.map(l => `
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding: 10px; color: #38bdf8;">${l.time || 'N/A'}</td>
+        <td style="padding: 10px; font-family: monospace; color: #4ade80;">${l.ip || 'N/A'}</td>
+        <td style="padding: 10px;"><strong>${l.city || ''}</strong> ${l.region || ''} (${l.country || 'N/A'})</td>
+        <td style="padding: 10px; font-size: 0.8rem; color: #94a3b8;">${l.org || 'N/A'}</td>
+        <td style="padding: 10px; color: #e2e8f0;">${l.device || 'N/A'}</td>
+        <td style="padding: 10px; color: #06b6d4;">${l.page || 'index.html'}</td>
+      </tr>
+    `).join('');
+  };
+
   // Reset Defaults
   const resetBtn = document.getElementById('resetDefaultsBtn');
   if (resetBtn) {
@@ -1218,8 +1274,93 @@ function initAdminPanel() {
     });
   }
 
+  renderVisitorLogs();
   renderDashboard();
 }
 
+// ── Visitor Telemetry & Real-Time Alert System ─────────────────
+function initVisitorNotification() {
+  if (sessionStorage.getItem('kabilan_visited_session')) {
+    return; // Record once per browser session
+  }
+  sessionStorage.setItem('kabilan_visited_session', 'true');
+
+  const getDeviceType = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return 'Tablet';
+    if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/i.test(ua)) return 'Mobile Phone';
+    return 'Desktop PC';
+  };
+
+  const pagePath = window.location.pathname.split('/').pop() || 'index.html';
+  const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST';
+
+  fetch('https://ipapi.co/json/')
+    .then(res => res.json())
+    .then(geo => {
+      const visitorLog = {
+        ip: geo.ip || 'Unknown IP',
+        city: geo.city || 'Unknown City',
+        region: geo.region || '',
+        country: geo.country_name || 'Unknown Country',
+        org: geo.org || geo.asn || 'Network Provider',
+        device: getDeviceType() + ' (' + navigator.platform + ')',
+        page: pagePath,
+        time: timestamp
+      };
+
+      // 1. Save to LocalStorage visitor log history
+      const logsRaw = localStorage.getItem('kabilan_visitor_logs');
+      let logs = logsRaw ? JSON.parse(logsRaw) : [];
+      logs.unshift(visitorLog);
+      if (logs.length > 50) logs = logs.slice(0, 50);
+      localStorage.setItem('kabilan_visitor_logs', JSON.stringify(logs));
+
+      // 2. Fire instant push notification if Webhook URL configured
+      const dataRaw = localStorage.getItem('kabilan_portfolio_data');
+      if (dataRaw) {
+        try {
+          const data = JSON.parse(dataRaw);
+          if (data.webhookUrl) {
+            const message = `🚨 *NEW PORTFOLIO VISITOR DETECTED!* 🚨\n\n` +
+                            `📍 *Location:* ${visitorLog.city}, ${visitorLog.region}, ${visitorLog.country}\n` +
+                            `🌐 *IP:* ${visitorLog.ip}\n` +
+                            `📶 *ISP:* ${visitorLog.org}\n` +
+                            `📱 *Device:* ${visitorLog.device}\n` +
+                            `📄 *Page:* ${visitorLog.page}\n` +
+                            `⏰ *Time:* ${visitorLog.time}`;
+
+            if (data.webhookUrl.includes('api.telegram.org')) {
+              fetch(data.webhookUrl + encodeURIComponent(message)).catch(() => {});
+            } else {
+              fetch(data.webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: message, text: message, visitor: visitorLog })
+              }).catch(() => {});
+            }
+          }
+        } catch (e) {}
+      }
+    })
+    .catch(() => {
+      const fallbackLog = {
+        ip: 'Active Visitor',
+        city: 'Local Area',
+        region: '',
+        country: 'India',
+        org: 'Mobile Data / Wi-Fi',
+        device: getDeviceType(),
+        page: pagePath,
+        time: timestamp
+      };
+      const logsRaw = localStorage.getItem('kabilan_visitor_logs');
+      let logs = logsRaw ? JSON.parse(logsRaw) : [];
+      logs.unshift(fallbackLog);
+      localStorage.setItem('kabilan_visitor_logs', JSON.stringify(logs));
+    });
+}
+
 initPortfolio();
+
 

@@ -58,7 +58,9 @@ body {
     radial-gradient(ellipse at 50% 100%, rgba(99, 102, 241, 0.09), transparent 38%),
     var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: clamp(0.92rem, 0.88rem + 0.25vw, 1.05rem);
+  line-height: 1.6;
   overflow-x: hidden;
   transition: background 0.35s ease, color 0.35s ease;
   
@@ -68,6 +70,11 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+
+h1 { font-size: clamp(2.2rem, 5vw + 1rem, 4.8rem); line-height: 1.08; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.6rem, 3vw + 0.8rem, 2.8rem); line-height: 1.15; letter-spacing: -0.015em; }
+h3 { font-size: clamp(1.2rem, 2vw + 0.5rem, 1.8rem); line-height: 1.25; }
+h4 { font-size: clamp(1.02rem, 1.2vw + 0.4rem, 1.3rem); line-height: 1.3; }
 
 /* Allow selection inside form fields for user input */
 input, textarea {

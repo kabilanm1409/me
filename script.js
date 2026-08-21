@@ -958,12 +958,131 @@ function getSkillIconHTML(skillName) {
   return '';
 }
 
+// ── Shared Default Portfolio Configuration Data ────────────────
+function getPortfolioDefaultData() {
+  return {
+    profile: {
+      name: 'Kabilan M',
+      role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
+      objective: 'Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.',
+      footerRights: '© 2026 Kabilan M. Security and Networking Engineer. All rights reserved.',
+      email: 'mkabilan1409@gmail.com',
+      phone: '+91 76049 59955',
+      linkedin: 'https://www.linkedin.com/in/kabilan-m-790801330/',
+      github: 'https://github.com/kabilanm1409/'
+    },
+    resumes: {
+      c2c: 'assets/resume/kabilanm_resume_c2c.pdf?v=4.0',
+      terminal: 'assets/resume/kabilanm_resume without photo.pdf?v=4.0'
+    },
+    education: {
+      cgpa: '7.08',
+      sem: 'up to 6th sem',
+      college: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
+      degree: 'B.Tech Information Technology',
+      timeline: [
+        {
+          year: '2024 - 2027',
+          title: 'B.Tech Information Technology',
+          institution: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
+          details: 'CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.'
+        },
+        {
+          year: '2022 - 2024',
+          title: 'Diploma in Mechanical Engineering',
+          institution: 'Kongunadu Polytechnic College, Thottiyam, Trichy',
+          details: 'Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT.'
+        },
+        {
+          year: '2021 - 2022',
+          title: 'Higher Secondary Certificate (HSC)',
+          institution: 'Government Higher Secondary School, Pappapatti, Trichy',
+          details: 'Completed higher secondary education with a 50% aggregate score.'
+        }
+      ]
+    },
+    achievements: [
+      {
+        icon: 'fa-trophy',
+        title: 'Artivers 3.0 Hackathon',
+        subtitle: '1st Place (College Level)',
+        certUrl: 'assets/cerificates/IMG_20260701_185332433.jpg',
+        certText: 'View Certificate'
+      },
+      {
+        icon: 'fa-medal',
+        title: 'Tezario 3.0 Project Expo',
+        subtitle: '2nd Place (College Level)',
+        certUrl: '',
+        certText: ''
+      },
+      {
+        icon: 'fa-certificate',
+        title: 'Infosys Springboard',
+        subtitle: 'Technical Certifications: HTML5, CSS3, JavaScript',
+        certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf',
+        certText: 'View PDF Certificate'
+      },
+      {
+        icon: 'fa-shield-halved',
+        title: 'Advanced Cyber Security',
+        subtitle: 'Penetration Testing Course (6 Days)',
+        certUrl: 'assets/cerificates/IMG_20260701_185137413.jpg',
+        certText: 'View Certificate'
+      }
+    ],
+    skills: {
+      languages: 'Java, HTML5, CSS3, JavaScript, Bootstrap',
+      databases: 'MySQL, MongoDB, Apache HDFS, Apache Pig',
+      tools: 'Wireshark, Burp Suite, VS Code, Git/GitHub, Arduino IDE, ESP32, ESP8266',
+      core: 'Computer Networks, DBMS, Packet Sniffing, Adaptability, Time Management'
+    },
+    projects: [
+      {
+        title: 'Wi-Fi De-authentication Device',
+        category: 'security',
+        description: 'An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.',
+        tags: 'ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display',
+        features: 'Developed wireless frame sniffer targeting Wi-Fi vulnerabilities.\\nSupports detection of deauthentication and probe frames.\\nOLED notifications for real-time traffic updates.',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      },
+      {
+        title: 'De-authentication Detection System',
+        category: 'security,software',
+        description: 'An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.',
+        tags: 'ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display',
+        features: 'Implements real-time packet capture for IEEE 802.11 frames.\\nGenerates live alerts for fast security response.\\nIncreases defense posture awareness in open networks.',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      },
+      {
+        title: 'Forest Fire Prediction System',
+        category: 'software',
+        description: 'An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.',
+        tags: 'React, Node.js, Python, REST APIs, Google Maps',
+        features: 'Visualizes environmental risk dynamically via Heatmaps.\\nSends alerts directly using WhatsApp and Email integrations.\\nUtilizes location services on Google Maps for fast responses.',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      }
+    ]
+  };
+}
+
+function getPortfolioData() {
+  const dataRaw = localStorage.getItem('kabilan_portfolio_data');
+  if (dataRaw) {
+    try {
+      return JSON.parse(dataRaw);
+    } catch (e) {}
+  }
+  return getPortfolioDefaultData();
+}
+
 // ── Admin Panel & Dynamic Portfolio Data Synchronization ────────
 function applyDynamicPortfolioData() {
-  const dataRaw = localStorage.getItem('kabilan_portfolio_data');
-  if (!dataRaw) return;
   try {
-    const data = JSON.parse(dataRaw);
+    const data = getPortfolioData();
 
     // Profile & Bio Overrides
     if (data.profile) {

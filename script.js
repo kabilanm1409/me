@@ -939,6 +939,25 @@ function initScreenshotShield() {
   });
 }
 
+// ── Skill Tag Icon Resolver Helper ──────────────────────────
+function getSkillIconHTML(skillName) {
+  const nameLower = skillName.toLowerCase();
+  if (nameLower.includes('java') && !nameLower.includes('script')) return '<i class="fa-brands fa-java" aria-hidden="true"></i> ';
+  if (nameLower.includes('javascript') || nameLower.includes('js')) return '<i class="fa-brands fa-js" aria-hidden="true"></i> ';
+  if (nameLower.includes('html')) return '<i class="fa-brands fa-html5" aria-hidden="true"></i> ';
+  if (nameLower.includes('css')) return '<i class="fa-brands fa-css3-alt" aria-hidden="true"></i> ';
+  if (nameLower.includes('bootstrap')) return '<i class="fa-brands fa-bootstrap" aria-hidden="true"></i> ';
+  if (nameLower.includes('react')) return '<i class="fa-brands fa-react" aria-hidden="true"></i> ';
+  if (nameLower.includes('node')) return '<i class="fa-brands fa-node-js" aria-hidden="true"></i> ';
+  if (nameLower.includes('python')) return '<i class="fa-brands fa-python" aria-hidden="true"></i> ';
+  if (nameLower.includes('sql') || nameLower.includes('db') || nameLower.includes('mongo')) return '<i class="fa-solid fa-database" aria-hidden="true"></i> ';
+  if (nameLower.includes('linux') || nameLower.includes('ubuntu')) return '<i class="fa-brands fa-linux" aria-hidden="true"></i> ';
+  if (nameLower.includes('windows')) return '<i class="fa-brands fa-windows" aria-hidden="true"></i> ';
+  if (nameLower.includes('git') && !nameLower.includes('hub')) return '<i class="fa-brands fa-git-alt" aria-hidden="true"></i> ';
+  if (nameLower.includes('github')) return '<i class="fa-brands fa-github" aria-hidden="true"></i> ';
+  return '';
+}
+
 // ── Admin Panel & Dynamic Portfolio Data Synchronization ────────
 function applyDynamicPortfolioData() {
   const dataRaw = localStorage.getItem('kabilan_portfolio_data');
@@ -1064,19 +1083,23 @@ function applyDynamicPortfolioData() {
         tools: data.skills.tools,
         core: data.skills.core
       };
-      document.querySelectorAll('.skill-category').forEach(cat => {
+      document.querySelectorAll('.skill-list, .skill-category, .skills-grid article').forEach(cat => {
         const heading = cat.querySelector('h3, h4, .skill-heading');
         if (!heading) return;
         const title = heading.textContent.toLowerCase();
         let items = null;
-        if (title.includes('language') || title.includes('programming')) items = skillSections.languages;
+        if (title.includes('language') || title.includes('programming') || title.includes('web')) items = skillSections.languages;
         else if (title.includes('database') || title.includes('big data')) items = skillSections.databases;
-        else if (title.includes('tool') || title.includes('hardware')) items = skillSections.tools;
-        else if (title.includes('core') || title.includes('competenc') || title.includes('soft')) items = skillSections.core;
+        else if (title.includes('tool') || title.includes('hardware') || title.includes('operating') || title.includes('system')) items = skillSections.tools;
+        else if (title.includes('core') || title.includes('competenc') || title.includes('soft') || title.includes('concept')) items = skillSections.core;
+        
         if (items) {
-          const tagContainer = cat.querySelector('.tag-row, .skill-tags, .skill-list');
+          const tagContainer = cat.querySelector('.tag-row, .skill-tags');
           if (tagContainer) {
-            tagContainer.innerHTML = items.split(',').map(s => s.trim()).filter(s => s).map(s => `<span>${s}</span>`).join('');
+            tagContainer.innerHTML = items.split(',').map(s => s.trim()).filter(s => s).map(s => {
+              const icon = getSkillIconHTML(s);
+              return `<span>${icon}${escapeHTML(s)}</span>`;
+            }).join('');
           }
         }
       });

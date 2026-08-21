@@ -1113,11 +1113,25 @@ function getPortfolioDefaultData() {
         certText: ''
       },
       {
-        icon: 'fa-certificate',
+        icon: 'fa-html5',
         title: 'Infosys Springboard',
-        subtitle: 'Technical Certifications: HTML5, CSS3, JavaScript',
+        subtitle: 'HTML5 Certification Course',
         certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf',
-        certText: 'View PDF Certificate'
+        certText: 'View HTML5 PDF Certificate'
+      },
+      {
+        icon: 'fa-css3-alt',
+        title: 'Infosys Springboard',
+        subtitle: 'CSS3 Certification Course',
+        certUrl: 'assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf',
+        certText: 'View CSS3 PDF Certificate'
+      },
+      {
+        icon: 'fa-js',
+        title: 'Infosys Springboard',
+        subtitle: 'JavaScript Certification Course',
+        certUrl: 'assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf',
+        certText: 'View JavaScript PDF Certificate'
       },
       {
         icon: 'fa-shield-halved',

@@ -1023,33 +1023,33 @@ function collectTimelineFromDOM() {
 
 function loadAdminMessages() {
   if (!db) initFirebaseApp();
-  const tbody = document.getElementById('visitorLogTableBody');
-  if (!tbody || !db) return;
+  const mbody = document.getElementById('messagesTableBody');
+  if (!mbody || !db) return;
 
   db.collection("messages").orderBy("createdAt", "desc").get()
     .then(snapshot => {
       if (snapshot.empty) {
-        tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No messages received yet.</td></tr>';
+        mbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No contact messages received yet.</td></tr>';
         return;
       }
-      tbody.innerHTML = snapshot.docs.map(doc => {
+      mbody.innerHTML = snapshot.docs.map(doc => {
         const m = doc.data();
         const dateStr = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleString() : (m.createdAt || 'N/A');
         return `
           <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
             <td style="padding: 10px;">${escapeHTML(dateStr)}</td>
             <td style="padding: 10px; font-weight: 600; color: #38bdf8;">${escapeHTML(m.name || 'Anonymous')}</td>
-            <td style="padding: 10px;">${escapeHTML(m.email || 'N/A')}</td>
-            <td style="padding: 10px;">${escapeHTML(m.subject || 'Enquiry')}</td>
-            <td style="padding: 10px;">${escapeHTML(m.message || '')}</td>
+            <td style="padding: 10px;"><a href="mailto:${escapeAttr(m.email || '')}" style="color: #4ade80; text-decoration: underline;">${escapeHTML(m.email || 'N/A')}</a></td>
+            <td style="padding: 10px; color: #f1f5f9;">${escapeHTML(m.subject || 'Enquiry')}</td>
+            <td style="padding: 10px; max-width: 250px;">${escapeHTML(m.message || '')}</td>
             <td style="padding: 10px;">
-              <button type="button" class="admin-btn admin-btn-danger admDeleteMsgBtn" data-id="${doc.id}" style="padding: 3px 8px; font-size: 0.75rem;"><i class="fa-solid fa-trash"></i></button>
+              <button type="button" class="admin-btn admin-btn-danger admDeleteMsgBtn" data-id="${doc.id}" style="padding: 4px 10px; font-size: 0.75rem;"><i class="fa-solid fa-trash"></i> Delete</button>
             </td>
           </tr>
         `;
       }).join('');
 
-      tbody.querySelectorAll('.admDeleteMsgBtn').forEach(btn => {
+      mbody.querySelectorAll('.admDeleteMsgBtn').forEach(btn => {
         btn.addEventListener('click', () => {
           const docId = btn.getAttribute('data-id');
           if (confirm('Delete this contact message?')) {
@@ -1059,8 +1059,68 @@ function loadAdminMessages() {
       });
     })
     .catch(() => {
-      tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No messages log accessible.</td></tr>';
+      mbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No messages log accessible.</td></tr>';
     });
+}
+
+function loadVisitorTelemetry() {
+  if (!db) initFirebaseApp();
+  const vbody = document.getElementById('visitorLogTableBody');
+  if (!vbody || !db) return;
+
+  db.collection("visitors").orderBy("visitedAt", "desc").limit(50).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        vbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No visitor session logs captured yet.</td></tr>';
+        return;
+      }
+      vbody.innerHTML = snapshot.docs.map(doc => {
+        const v = doc.data();
+        const dateStr = v.visitedAt && v.visitedAt.toDate ? v.visitedAt.toDate().toLocaleString() : (v.visitedAt || 'Just now');
+        return `
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <td style="padding: 10px;">${escapeHTML(dateStr)}</td>
+            <td style="padding: 10px; font-weight: 600; color: #38bdf8;">${escapeHTML(v.ip || '127.0.0.1')}</td>
+            <td style="padding: 10px;">${escapeHTML(v.city || 'Unknown')}, ${escapeHTML(v.country || 'Global')}</td>
+            <td style="padding: 10px;">${escapeHTML(v.org || 'ISP Network')}</td>
+            <td style="padding: 10px; font-size: 0.8rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeAttr(v.device || '')}">${escapeHTML(v.device || 'Unknown Device')}</td>
+            <td style="padding: 10px; color: #a7f3d0;">${escapeHTML(v.page || '/')}</td>
+          </tr>
+        `;
+      }).join('');
+    })
+    .catch(() => {
+      vbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">Visitor session logs available.</td></tr>';
+    });
+}
+
+function recordVisitorTelemetry() {
+  if (!db) initFirebaseApp();
+  if (!db) return;
+
+  try {
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        db.collection("visitors").add({
+          ip: data.ip || 'N/A',
+          city: data.city || 'N/A',
+          country: data.country_name || 'N/A',
+          org: data.org || 'N/A',
+          device: navigator.userAgent || 'Unknown Device',
+          page: window.location.pathname || '/',
+          visitedAt: typeof firebase !== 'undefined' && firebase.firestore && firebase.firestore.FieldValue ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+        }).catch(() => {});
+      })
+      .catch(() => {
+        db.collection("visitors").add({
+          ip: 'Anonymous',
+          device: navigator.userAgent || 'Unknown Device',
+          page: window.location.pathname || '/',
+          visitedAt: typeof firebase !== 'undefined' && firebase.firestore && firebase.firestore.FieldValue ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
+        }).catch(() => {});
+      });
+  } catch(e) {}
 }
 
 function initAdminPanel() {
@@ -1148,6 +1208,7 @@ function initAdminPanel() {
     renderAdminAchievements(data.achievements || null);
     renderAdminProjects(data.projects || null);
     loadAdminMessages();
+    loadVisitorTelemetry();
   };
   window.refreshAdminFormData = loadFormData;
 
@@ -1383,6 +1444,7 @@ function initAdminPanel() {
 function initPortfolio() {
   initFirebaseApp();
   initFirebaseLiveSync();
+  recordVisitorTelemetry();
   initSectionNav();
   initThemeToggle();
   initTypedText();

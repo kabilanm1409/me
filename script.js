@@ -11,13 +11,40 @@
   document.addEventListener('contextmenu', e => {
     if (e.target.closest('#downloadResumeBtn') || e.target.closest('a[download]')) return;
     e.preventDefault();
-  });
+  }, true);
 
-  document.addEventListener('keydown', e => {
-    if (e.keyCode === 123 || e.key === 'F12') { e.preventDefault(); return false; }
-    if (e.ctrlKey && (e.shiftKey && ['I', 'J', 'C', 'i', 'j', 'c'].includes(e.key) || ['u', 'U', 's', 'S'].includes(e.key))) { e.preventDefault(); return false; }
-    if (e.metaKey && e.altKey && ['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U'].includes(e.key)) { e.preventDefault(); return false; }
-  });
+  const blockDevTools = (e) => {
+    const k = (e.key || '').toLowerCase();
+    const code = e.keyCode || e.which;
+
+    // Block F12
+    if (code === 123 || k === 'f12') {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+
+    // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Cmd+Opt+I, Cmd+Opt+J, Cmd+Opt+C
+    const isControl = e.ctrlKey || e.metaKey;
+    const isShiftOrAlt = e.shiftKey || e.altKey;
+
+    if (isControl && isShiftOrAlt && (k === 'i' || k === 'j' || k === 'c' || code === 73 || code === 74 || code === 67)) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+
+    // Block Ctrl+U (View Source) and Ctrl+S (Save Page)
+    if (isControl && (k === 'u' || k === 's' || code === 85 || code === 83)) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  };
+
+  window.addEventListener('keydown', blockDevTools, true);
+  document.addEventListener('keydown', blockDevTools, true);
+  window.addEventListener('keypress', blockDevTools, true);
 
   try {
     const _empty = function() {};

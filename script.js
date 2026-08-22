@@ -153,10 +153,6 @@ function getPortfolioData() {
   if (currentFirebasePortfolioData && Object.keys(currentFirebasePortfolioData).length > 0) {
     return currentFirebasePortfolioData;
   }
-  const raw = localStorage.getItem('kabilan_portfolio_data');
-  if (raw) {
-    try { return JSON.parse(raw); } catch (e) {}
-  }
   return getPortfolioDefaultData();
 }
 
@@ -165,10 +161,6 @@ function syncPortfolioDataToFirebase(data) {
   
   const cleanData = JSON.parse(JSON.stringify(data || {}));
   currentFirebasePortfolioData = { ...cleanData };
-  
-  try {
-    localStorage.setItem('kabilan_portfolio_data', JSON.stringify(cleanData));
-  } catch (e) {}
 
   applyDynamicPortfolioData();
 
@@ -197,9 +189,6 @@ function initFirebaseLiveSync() {
       const remoteData = doc.data();
       if (remoteData && Object.keys(remoteData).length > 0) {
         currentFirebasePortfolioData = remoteData;
-        try {
-          localStorage.setItem('kabilan_portfolio_data', JSON.stringify(remoteData));
-        } catch (e) {}
         applyDynamicPortfolioData();
       }
     }
@@ -336,7 +325,6 @@ function setTheme(theme) {
   } else {
     delete document.body.dataset.theme;
   }
-  localStorage.setItem('portfolio-theme', isDark ? 'dark' : 'light');
   const icon  = themeToggle.querySelector('i');
   const label = themeToggle.querySelector('span');
   if (icon)  icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
@@ -344,8 +332,7 @@ function setTheme(theme) {
 }
 
 function initThemeToggle() {
-  const savedTheme = localStorage.getItem('portfolio-theme') || 'light';
-  setTheme(savedTheme);
+  setTheme('light');
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';

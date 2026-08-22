@@ -152,6 +152,13 @@ function getPortfolioData() {
   if (currentFirebasePortfolioData && Object.keys(currentFirebasePortfolioData).length > 0) {
     return currentFirebasePortfolioData;
   }
+  try {
+    const cached = localStorage.getItem('kabilan_portfolio_cache');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed && Object.keys(parsed).length > 0) return parsed;
+    }
+  } catch(e) {}
   return getPortfolioDefaultData();
 }
 
@@ -161,6 +168,10 @@ function syncPortfolioDataToFirebase(data) {
   const cleanData = JSON.parse(JSON.stringify(data || {}));
   currentFirebasePortfolioData = { ...cleanData };
 
+  try {
+    localStorage.setItem('kabilan_portfolio_cache', JSON.stringify(cleanData));
+  } catch (e) {}
+
   applyDynamicPortfolioData();
 
   if (!db) return Promise.resolve(true);
@@ -168,6 +179,7 @@ function syncPortfolioDataToFirebase(data) {
   return db.collection("portfolio").doc("livedata").set(cleanData)
     .then(() => {
       db.collection("portfolio").doc("liveData").set(cleanData).catch(() => {});
+      applyDynamicPortfolioData();
       return true;
     })
     .catch((err) => {
@@ -187,7 +199,13 @@ function initFirebaseLiveSync() {
       const remoteData = doc.data();
       if (remoteData && Object.keys(remoteData).length > 0) {
         currentFirebasePortfolioData = remoteData;
+        try {
+          localStorage.setItem('kabilan_portfolio_cache', JSON.stringify(remoteData));
+        } catch (e) {}
         applyDynamicPortfolioData();
+        if (typeof window.refreshAdminFormData === 'function') {
+          window.refreshAdminFormData();
+        }
       }
     }
   };
@@ -1104,6 +1122,7 @@ function initAdminPanel() {
     renderAdminProjects(data.projects || null);
     loadAdminMessages();
   };
+  window.refreshAdminFormData = loadFormData;
 
   let failedAttempts = 0;
   let isLockedOut = false;

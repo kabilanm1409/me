@@ -3,6 +3,9 @@
    Single-Page Section Switcher + Admin Panel CMS + Anti-Console Shield
    ===================================================== */
 
+(function PortfolioScope() {
+  'use strict';
+
 // ── Source Code & Console Anti-Inspection Shield ────────────────────────
 (function initSourceCodeShield() {
   document.addEventListener('contextmenu', e => {
@@ -1284,4 +1287,5 @@ function initScreenshotShield() {
   });
 }
 
-initPortfolio();
+  initPortfolio();
+})();

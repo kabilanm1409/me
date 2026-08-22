@@ -163,12 +163,12 @@ function getPortfolioDefaultData() {
       }
     ],
     achievements: [
-      { title: 'Artivers 3.0 Hackathon', subtitle: '1st Place (College Level)', certUrl: 'assets/cerificates/IMG_20260701_185332433.jpg', icon: 'fa-solid fa-trophy' },
+      { title: 'Artivers 3.0 Hackathon', subtitle: '1st Place (College Level)', certUrl: 'assets/certificates/IMG_20260701_185332433.jpg', icon: 'fa-solid fa-trophy' },
       { title: 'Tezario 3.0 Project Expo', subtitle: '2nd Place (College Level)', certUrl: '', icon: 'fa-solid fa-medal' },
-      { title: 'Infosys Springboard - HTML5', subtitle: 'HTML5 Certificate', certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf', icon: 'fa-brands fa-html5' },
-      { title: 'Infosys Springboard - CSS3', subtitle: 'CSS3 Certificate', certUrl: 'assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf', icon: 'fa-brands fa-css3-alt' },
-      { title: 'Infosys Springboard - JavaScript', subtitle: 'JavaScript Certificate', certUrl: 'assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf', icon: 'fa-brands fa-js' },
-      { title: 'Advanced Cyber Security', subtitle: 'Penetration Testing Course (6 Days)', certUrl: 'assets/cerificates/IMG_20260701_185137413.jpg', icon: 'fa-solid fa-shield-halved' }
+      { title: 'Infosys Springboard - HTML5', subtitle: 'HTML5 Certificate', certUrl: 'assets/certificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf', icon: 'fa-brands fa-html5' },
+      { title: 'Infosys Springboard - CSS3', subtitle: 'CSS3 Certificate', certUrl: 'assets/certificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf', icon: 'fa-brands fa-css3-alt' },
+      { title: 'Infosys Springboard - JavaScript', subtitle: 'JavaScript Certificate', certUrl: 'assets/certificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf', icon: 'fa-brands fa-js' },
+      { title: 'Advanced Cyber Security', subtitle: 'Penetration Testing Course (6 Days)', certUrl: 'assets/certificates/IMG_20260701_185137413.jpg', icon: 'fa-solid fa-shield-halved' }
     ],
     notificationEmail: 'mkabilan1409@gmail.com',
     webhookUrl: ''
@@ -203,8 +203,8 @@ function syncPortfolioDataToFirebase(data) {
 
   if (!db) return Promise.resolve(true);
 
-  const p1 = db.collection("portfolio").doc("livedata").set(cleanData);
-  const p2 = db.collection("portfolio").doc("liveData").set(cleanData).catch(() => {});
+  const p1 = db.collection("portfolio").doc("liveData").set(cleanData);
+  const p2 = db.collection("portfolio").doc("livedata").set(cleanData).catch(() => {});
   const p3 = db.collection("portfolio_data").doc("livedata").set(cleanData).catch(() => {});
 
   return p1
@@ -240,8 +240,12 @@ function initFirebaseLiveSync() {
     }
   };
 
-  db.collection("portfolio").doc("livedata").onSnapshot(handleDocUpdate, () => {});
+  db.collection("portfolio").doc("liveData").get().then(handleDocUpdate).catch(() => {});
+  db.collection("portfolio").doc("livedata").get().then(handleDocUpdate).catch(() => {});
+  db.collection("portfolio_data").doc("livedata").get().then(handleDocUpdate).catch(() => {});
+
   db.collection("portfolio").doc("liveData").onSnapshot(handleDocUpdate, () => {});
+  db.collection("portfolio").doc("livedata").onSnapshot(handleDocUpdate, () => {});
   db.collection("portfolio_data").doc("livedata").onSnapshot(handleDocUpdate, () => {});
 }
 

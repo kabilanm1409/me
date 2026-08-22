@@ -176,9 +176,12 @@ function syncPortfolioDataToFirebase(data) {
 
   if (!db) return Promise.resolve(true);
 
-  return db.collection("portfolio").doc("livedata").set(cleanData)
+  const p1 = db.collection("portfolio").doc("livedata").set(cleanData);
+  const p2 = db.collection("portfolio").doc("liveData").set(cleanData).catch(() => {});
+  const p3 = db.collection("portfolio_data").doc("livedata").set(cleanData).catch(() => {});
+
+  return p1
     .then(() => {
-      db.collection("portfolio").doc("liveData").set(cleanData).catch(() => {});
       applyDynamicPortfolioData();
       return true;
     })
@@ -195,7 +198,7 @@ function initFirebaseLiveSync() {
   if (!db) return;
 
   const handleDocUpdate = (doc) => {
-    if (doc.exists) {
+    if (doc && doc.exists) {
       const remoteData = doc.data();
       if (remoteData && Object.keys(remoteData).length > 0) {
         currentFirebasePortfolioData = remoteData;
@@ -211,6 +214,8 @@ function initFirebaseLiveSync() {
   };
 
   db.collection("portfolio").doc("livedata").onSnapshot(handleDocUpdate, () => {});
+  db.collection("portfolio").doc("liveData").onSnapshot(handleDocUpdate, () => {});
+  db.collection("portfolio_data").doc("livedata").onSnapshot(handleDocUpdate, () => {});
 }
 
 function applyDynamicPortfolioData() {

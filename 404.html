@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirecting...</title>
+  <script>
+    // GitHub Pages Single Page App Redirector
+    (function() {
+      var pathname = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+
+      // Extract section route (e.g. /me/about -> about, /me/admin -> admin)
+      var pathSegments = pathname.split('/').filter(Boolean);
+      var lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : '';
+
+      // If user requested a subpage like admin or about
+      if (lastSegment && lastSegment !== 'me' && lastSegment !== 'index.html') {
+        var isPages = pathname.includes('/pages/');
+        var rootUrl = isPages ? '../index.html' : './index.html';
+        window.location.replace(rootUrl + '#' + lastSegment + search + hash);
+      } else {
+        window.location.replace('./index.html');
+      }
+    })();
+  </script>
+</head>
+<body style="background: #0f172a; color: #f8fafc; font-family: sans-serif; text-align: center; padding-top: 100px;">
+  <p>Redirecting to requested portfolio section...</p>
+</body>
+</html>

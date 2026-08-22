@@ -200,10 +200,145 @@ function applyDynamicPortfolioData() {
   if (!data) return;
 
   try {
+    // 1. Profile & Bio Overrides
     if (data.profile) {
-      document.querySelectorAll('.profile-name, h1').forEach(el => {
-        if (el.textContent.includes('Kabilan')) el.textContent = data.profile.name || 'Kabilan M';
-      });
+      if (data.profile.name) {
+        document.querySelectorAll('.brand-text, .profile-name, h1').forEach(el => {
+          if (el.tagName === 'H1' && el.closest('.hero')) el.textContent = data.profile.name;
+        });
+      }
+      if (data.profile.role) {
+        document.querySelectorAll('.hero-subtitle, .eyebrow').forEach(el => {
+          if (el.classList.contains('eyebrow')) el.textContent = data.profile.role;
+        });
+      }
+      if (data.profile.objective) {
+        document.querySelectorAll('#about p, .overview-card p').forEach(el => {
+          if (el.closest('.overview-card') && el.previousElementSibling && el.previousElementSibling.textContent.includes('Career')) {
+            el.textContent = data.profile.objective;
+          }
+        });
+      }
+      if (data.profile.footerRights) {
+        document.querySelectorAll('.site-footer p:first-child, #adminFooterRightsP').forEach(el => {
+          el.innerHTML = data.profile.footerRights;
+        });
+      }
+      if (data.profile.email) {
+        document.querySelectorAll('#contactEmail, #heroEmailLink').forEach(el => {
+          if (el.tagName === 'A') {
+            el.href = 'mailto:' + data.profile.email;
+            if (el.id === 'contactEmail') el.innerHTML = `<i class="fa-solid fa-envelope"></i> ${data.profile.email}`;
+          }
+        });
+      }
+      if (data.profile.phone) {
+        const pLink = document.getElementById('contactPhone');
+        if (pLink) {
+          pLink.href = 'tel:' + data.profile.phone.replace(/\s+/g, '');
+          pLink.innerHTML = `<i class="fa-solid fa-phone"></i> ${data.profile.phone}`;
+        }
+      }
+      if (data.profile.linkedin) {
+        document.querySelectorAll('#heroLinkedinLink, #contactLinkedin').forEach(el => { el.href = data.profile.linkedin; });
+      }
+      if (data.profile.github) {
+        document.querySelectorAll('#heroGithubLink, #contactGithub').forEach(el => { el.href = data.profile.github; });
+      }
+    }
+
+    // 2. Resumes Overrides
+    if (data.resumes && data.resumes.c2c) {
+      document.querySelectorAll('#downloadResumeBtn, #viewResumeBtn').forEach(el => { el.href = data.resumes.c2c; });
+    }
+
+    // 3. Education & Timeline Overrides
+    if (data.education) {
+      if (data.education.cgpa) {
+        const cgpaEl = document.getElementById('stat-cgpa');
+        if (cgpaEl) cgpaEl.textContent = data.education.cgpa;
+      }
+      if (data.education.timeline && data.education.timeline.length > 0) {
+        const timelineWrap = document.querySelector('#education .timeline');
+        if (timelineWrap) {
+          timelineWrap.innerHTML = data.education.timeline.map(t => `
+            <article class="timeline-item card">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div>
+                <p class="timeline-year">${escapeHTML(t.year || '')}</p>
+                <h3>${escapeHTML(t.title || '')}</h3>
+                <p class="timeline-institution">${escapeHTML(t.institution || '')}</p>
+                <p>${escapeHTML(t.details || '')}</p>
+              </div>
+            </article>
+          `).join('');
+        }
+      }
+    }
+
+    // 4. Skills Overrides
+    if (data.skills) {
+      const skillLists = document.querySelectorAll('#skills .skill-list');
+      if (skillLists.length >= 4) {
+        if (data.skills.languages) {
+          const tagRow = skillLists[0].querySelector('.tag-row');
+          if (tagRow) tagRow.innerHTML = data.skills.languages.split(',').map(s => `<span>${escapeHTML(s.trim())}</span>`).join('');
+        }
+        if (data.skills.databases) {
+          const tagRow = skillLists[1].querySelector('.tag-row');
+          if (tagRow) tagRow.innerHTML = data.skills.databases.split(',').map(s => `<span>${escapeHTML(s.trim())}</span>`).join('');
+        }
+        if (data.skills.tools) {
+          const tagRow = skillLists[2].querySelector('.tag-row');
+          if (tagRow) tagRow.innerHTML = data.skills.tools.split(',').map(s => `<span>${escapeHTML(s.trim())}</span>`).join('');
+        }
+        if (data.skills.core) {
+          const tagRow = skillLists[3].querySelector('.tag-row');
+          if (tagRow) tagRow.innerHTML = data.skills.core.split(',').map(s => `<span>${escapeHTML(s.trim())}</span>`).join('');
+        }
+      }
+    }
+
+    // 5. Achievements Overrides
+    if (data.achievements && data.achievements.length > 0) {
+      const grid = document.querySelector('#achievements .achievement-grid');
+      if (grid) {
+        grid.innerHTML = data.achievements.map(a => `
+          <article class="achievement-card card" role="listitem">
+            <i class="${escapeAttr(a.icon || 'fa-solid fa-trophy')}" aria-hidden="true"></i>
+            <h3>${escapeHTML(a.title || '')}</h3>
+            <p>${escapeHTML(a.subtitle || '')}</p>
+            ${a.certUrl ? `<a class="cert-link" href="${escapeAttr(a.certUrl)}" target="_blank" rel="noopener noreferrer" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> View Certificate</a>` : ''}
+          </article>
+        `).join('');
+      }
+    }
+
+    // 6. Projects Overrides
+    if (data.projects && data.projects.length > 0) {
+      const grid = document.querySelector('#projects .project-grid');
+      if (grid) {
+        grid.innerHTML = data.projects.map((p, i) => {
+          const featuresList = (p.features || '').split('\n').filter(f => f.trim()).map(f => `<li>${escapeHTML(f.trim())}</li>`).join('');
+          return `
+            <article class="project-card card" data-category="${escapeAttr(p.category || 'software')}">
+              <div class="project-image-wrap">
+                <img alt="${escapeAttr(p.title || 'Project')} screenshot" loading="lazy" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 900 600%22><rect width=%22900%22 height=%22600%22 rx=%2240%22 fill=%22%23090909%22/><rect x=%2240%22 y=%2240%22 width=%22820%22 height=%22520%22 rx=%2230%22 fill=%22%230c1a0d%22 stroke=%22%2338bdf8%22 stroke-width=%224%22 stroke-dasharray=%2210 12%22/><text x=%2250%25%22 y=%2244%25%22 text-anchor=%22middle%22 fill=%22%2338bdf8%22 font-size=%2248%22 font-family=%22monospace%22>${escapeHTML(p.title || 'Project')}</text></svg>" />
+              </div>
+              <div class="project-content">
+                <h3>${escapeHTML(p.title || 'Untitled Project')}</h3>
+                <p>${escapeHTML(p.description || '')}</p>
+                <div class="project-meta"><span>Technologies: ${escapeHTML(p.tags || '')}</span></div>
+                <ul>${featuresList}</ul>
+                <div class="project-actions">
+                  ${p.github ? `<a class="btn btn-secondary" href="${escapeAttr(p.github)}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>` : ''}
+                  <a class="btn btn-primary" href="${escapeAttr(p.demo || '#contact')}"><i class="fa-solid fa-paper-plane"></i> Live Demo / Contact</a>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
     }
   } catch(e) {}
 }
@@ -313,6 +448,13 @@ function initSectionNav() {
     const section = e.state && e.state.section ? e.state.section : 'home';
     showSection(section, false);
   });
+
+  // Check URL hash first (for 404 redirects), then pathname
+  const hash = window.location.hash.replace('#', '');
+  if (hash && document.querySelector(`[data-section="${hash}"]`)) {
+    showSection(hash, false);
+    return;
+  }
 
   const pathname = window.location.pathname.replace(/\/$/, '');
   const lastPart = pathname.split('/').pop().replace('.html', '');

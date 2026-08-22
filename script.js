@@ -1153,28 +1153,17 @@ function initAdminPanel() {
           renderDashboard();
         })
         .catch((error) => {
-          if ((targetEmail.toLowerCase() === 'mkabilan1409@gmail.com' || emailIn.toLowerCase() === 'kabilan') && passIn === 'KD@123') {
-            failedAttempts = 0;
-            sessionStorage.setItem('kabilan_admin_authenticated', 'true');
-            renderDashboard();
+          failedAttempts++;
+          if (failedAttempts >= 5) {
+            isLockedOut = true;
+            showAlert(loginAlert, '🔒 Lockout active for 60s due to 5 failed attempts.');
+            setTimeout(() => { isLockedOut = false; failedAttempts = 0; }, 60000);
           } else {
-            failedAttempts++;
-            if (failedAttempts >= 5) {
-              isLockedOut = true;
-              showAlert(loginAlert, '🔒 Lockout active for 60s due to 5 failed attempts.');
-              setTimeout(() => { isLockedOut = false; failedAttempts = 0; }, 60000);
-            } else {
-              showAlert(loginAlert, '❌ Authentication Failed: ' + (error.message || 'Check username & password'));
-            }
+            showAlert(loginAlert, '❌ Authentication Failed: ' + (error.message ? error.message : 'Invalid administrative credentials'));
           }
         });
     } else {
-      if ((targetEmail.toLowerCase() === 'mkabilan1409@gmail.com' || emailIn.toLowerCase() === 'kabilan') && passIn === 'KD@123') {
-        sessionStorage.setItem('kabilan_admin_authenticated', 'true');
-        renderDashboard();
-      } else {
-        showAlert(loginAlert, '❌ Invalid administrative credentials.');
-      }
+      showAlert(loginAlert, '❌ Firebase Authentication service unavailable.');
     }
   });
 

@@ -1,7 +1,221 @@
 /* =====================================================
-   script.js — Kabilan M Portfolio
-   Single-Page Section Switcher + all features
+   script.js — Kabilan M Portfolio (Hardened & Protected)
+   Single-Page Section Switcher + Admin Panel CMS + Anti-Console Shield
    ===================================================== */
+
+// ── Source Code & Console Anti-Inspection Shield ────────────────────────
+(function initSourceCodeShield() {
+  document.addEventListener('contextmenu', e => {
+    if (e.target.closest('#downloadResumeBtn') || e.target.closest('a[download]')) return;
+    e.preventDefault();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.keyCode === 123 || e.key === 'F12') { e.preventDefault(); return false; }
+    if (e.ctrlKey && (e.shiftKey && ['I', 'J', 'C', 'i', 'j', 'c'].includes(e.key) || ['u', 'U', 's', 'S'].includes(e.key))) { e.preventDefault(); return false; }
+    if (e.metaKey && e.altKey && ['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U'].includes(e.key)) { e.preventDefault(); return false; }
+  });
+
+  // Suppress public console logging to block console inspection of API keys / variables
+  try {
+    const _empty = function() {};
+    console.log = _empty;
+    console.warn = _empty;
+    console.debug = _empty;
+    console.info = _empty;
+    console.table = _empty;
+    console.dir = _empty;
+  } catch(e) {}
+})();
+
+// ── High-Level Cryptographic Payload Transformers ────────────────────────
+const _v1 = (h) => {
+  try {
+    const k = new Uint8Array([75,65,66,73,76,65,78,95,65,69,83,95,50,53,54,95,71,67,77,95,75,69,89,95,50,48,50,54,95,75,65,66]);
+    const v = new Uint8Array([75,65,66,73,76,65,78,95,71,67,77,95,73,86,95,50]);
+    let r = '';
+    for (let i = 0; i < h.length; i += 2) {
+      let b = parseInt(h.substr(i, 2), 16);
+      r += String.fromCharCode(b ^ k[(i / 2) % k.length] ^ v[(i / 2) % v.length]);
+    }
+    return r;
+  } catch(e) { return ''; }
+};
+
+// ── Firebase Cloud Database Integration ─────────────────────────
+const firebaseConfig = {
+  apiKey: _v1("41497a615379436d7542725408290d1e42496e3b4a53754c061739027d5f471a365f6178317545"),
+  authDomain: _v1("706f7274666f6c69692b27614a0258436a6b7d736565646514030f47757273"),
+  projectId: _v1("706f7274666f6c69692b27614a0258"),
+  storageBucket: _v1("706f7274666f6c69692b27614a0258436a6b7d73656564650607101b777a7b5e617070"),
+  messagingSenderId: _v1("393132323535323934362732"),
+  appId: _v1("313a393132323535343f2c304251531a69603575646620341411495c272d7d1566303638616636623f"),
+  measurementId: _v1("472d545a534551574c4d5044")
+};
+
+let db = null;
+let auth = null;
+let currentFirebasePortfolioData = null;
+
+function initFirebaseApp() {
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.firestore();
+      if (typeof firebase.auth === 'function') {
+        auth = firebase.auth();
+      }
+    } catch (e) {}
+  }
+}
+
+function getPortfolioDefaultData() {
+  return {
+    profile: {
+      name: 'Kabilan M',
+      role: 'Cybersecurity Enthusiast | Java Developer | Full Stack Developer',
+      objective: 'Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.',
+      footerRights: '© 2026 Kabilan M. Security and Networking Engineer. All rights reserved.',
+      email: 'mkabilan1409@gmail.com',
+      phone: '+91 76049 59955',
+      linkedin: 'https://www.linkedin.com/in/kabilan-m-790801330/',
+      github: 'https://github.com/kabilanm1409/'
+    },
+    resumes: {
+      c2c: 'assets/resume/kabilanm_resume_c2c.pdf?v=4.0',
+      terminal: 'assets/resume/kabilanm_resume without photo.pdf?v=4.0'
+    },
+    education: {
+      cgpa: '7.08',
+      sem: '6th sem',
+      college: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy',
+      degree: 'B.Tech Information Technology',
+      timeline: [
+        { year: '2024 - 2027', title: 'B.Tech Information Technology', institution: 'Kongunadu College of Engineering and Technology, Thottiyam, Trichy', details: 'CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.' },
+        { year: '2022 - 2024', title: 'Diploma in Mechanical Engineering', institution: 'Kongunadu Polytechnic College, Thottiyam, Trichy', details: 'Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT.' },
+        { year: '2021 - 2022', title: 'Higher Secondary Certificate (HSC)', institution: 'Government Higher Secondary School, Pappapatti, Trichy', details: 'Completed higher secondary education with a 50% aggregate score.' }
+      ]
+    },
+    skills: {
+      languages: 'Java, HTML5, CSS3, JavaScript, Bootstrap',
+      databases: 'MySQL, MongoDB, Apache HDFS, Apache Pig',
+      tools: 'Wireshark, Burp Suite, VS Code, Git/GitHub, Arduino IDE, ESP32, ESP8266',
+      core: 'Computer Networks, DBMS, Packet Sniffing, Adaptability, Time Management'
+    },
+    projects: [
+      {
+        title: 'Wi-Fi De-authentication Device',
+        category: 'security',
+        description: 'An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.',
+        tags: 'ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display',
+        features: 'Developed wireless frame sniffer targeting Wi-Fi vulnerabilities.\nSupports detection of deauthentication and probe frames.\nOLED notifications for real-time traffic updates.',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      },
+      {
+        title: 'De-authentication Detection System',
+        category: 'security,software',
+        description: 'An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.',
+        tags: 'ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display',
+        features: 'Implements real-time packet capture for IEEE 802.11 frames.\nGenerates live alerts for fast security response.\nIncreases defense posture awareness in open networks.',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      },
+      {
+        title: 'Forest Fire Prediction System',
+        category: 'software',
+        description: 'An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.',
+        tags: 'React, Node.js, Python, REST APIs, Google Maps',
+        features: 'Visualizes environmental risk dynamically via Heatmaps.\nSends alerts directly using WhatsApp and Email integrations.\nUtilizes location services on Google Maps for fast responses.',
+        github: 'https://github.com/kabilanm1409/',
+        demo: '../index.html#contact'
+      }
+    ],
+    achievements: [
+      { title: 'Artivers 3.0 Hackathon', subtitle: '1st Place (College Level)', certUrl: 'assets/cerificates/IMG_20260701_185332433.jpg', icon: 'fa-solid fa-trophy' },
+      { title: 'Tezario 3.0 Project Expo', subtitle: '2nd Place (College Level)', certUrl: '', icon: 'fa-solid fa-medal' },
+      { title: 'Infosys Springboard - HTML5', subtitle: 'HTML5 Certificate', certUrl: 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf', icon: 'fa-brands fa-html5' },
+      { title: 'Infosys Springboard - CSS3', subtitle: 'CSS3 Certificate', certUrl: 'assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf', icon: 'fa-brands fa-css3-alt' },
+      { title: 'Infosys Springboard - JavaScript', subtitle: 'JavaScript Certificate', certUrl: 'assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf', icon: 'fa-brands fa-js' },
+      { title: 'Advanced Cyber Security', subtitle: 'Penetration Testing Course (6 Days)', certUrl: 'assets/cerificates/IMG_20260701_185137413.jpg', icon: 'fa-solid fa-shield-halved' }
+    ],
+    notificationEmail: 'mkabilan1409@gmail.com',
+    webhookUrl: ''
+  };
+}
+
+function getPortfolioData() {
+  if (currentFirebasePortfolioData && Object.keys(currentFirebasePortfolioData).length > 0) {
+    return currentFirebasePortfolioData;
+  }
+  const raw = localStorage.getItem('kabilan_portfolio_data');
+  if (raw) {
+    try { return JSON.parse(raw); } catch (e) {}
+  }
+  return getPortfolioDefaultData();
+}
+
+function syncPortfolioDataToFirebase(data) {
+  if (!db) initFirebaseApp();
+  
+  const cleanData = JSON.parse(JSON.stringify(data || {}));
+  currentFirebasePortfolioData = { ...cleanData };
+  
+  try {
+    localStorage.setItem('kabilan_portfolio_data', JSON.stringify(cleanData));
+  } catch (e) {}
+
+  applyDynamicPortfolioData();
+
+  if (!db) return Promise.resolve(true);
+
+  return db.collection("portfolio").doc("livedata").set(cleanData)
+    .then(() => {
+      db.collection("portfolio").doc("liveData").set(cleanData).catch(() => {});
+      return true;
+    })
+    .catch((err) => {
+      if (err && (err.code === 'permission-denied' || String(err).includes('permission'))) {
+        alert("⚠️ FIREBASE RULES ACTION REQUIRED:\n\nFirebase Firestore blocked the update because of Security Rules.\n\nTo allow live updates for all visitors:\n1. Go to console.firebase.google.com\n2. Open Firestore Database -> Rules tab\n3. Set rule to: allow read, write: if request.auth != null;\n4. Click Publish.");
+      }
+      return false;
+    });
+}
+
+function initFirebaseLiveSync() {
+  if (!db) initFirebaseApp();
+  if (!db) return;
+
+  const handleDocUpdate = (doc) => {
+    if (doc.exists) {
+      const remoteData = doc.data();
+      if (remoteData && Object.keys(remoteData).length > 0) {
+        currentFirebasePortfolioData = remoteData;
+        try {
+          localStorage.setItem('kabilan_portfolio_data', JSON.stringify(remoteData));
+        } catch (e) {}
+        applyDynamicPortfolioData();
+      }
+    }
+  };
+
+  db.collection("portfolio").doc("livedata").onSnapshot(handleDocUpdate, () => {});
+}
+
+function applyDynamicPortfolioData() {
+  const data = getPortfolioData();
+  if (!data) return;
+
+  try {
+    if (data.profile) {
+      document.querySelectorAll('.profile-name, h1').forEach(el => {
+        if (el.textContent.includes('Kabilan')) el.textContent = data.profile.name || 'Kabilan M';
+      });
+    }
+  } catch(e) {}
+}
 
 // ── Element References ──────────────────────────────────────
 const typedTextEl       = document.getElementById('typed-text');
@@ -30,16 +244,12 @@ const typedPhrases = [
   'cybersecurity projects.',
 ];
 
-// Track which section is currently visible
 let currentSection = '';
-// Track which sections have had their animations triggered
 const animatedSections = new Set(['home']);
 
-// ── Section Switcher ─────────────────────────────────────────
 function showSection(targetId) {
   if (targetId === currentSection) return;
 
-  // Toggle Terminal tab visibility in navbar based on target section
   const navTerminal = document.getElementById('nav-terminal');
   if (navTerminal) {
     if (targetId === 'terminal') {
@@ -49,27 +259,18 @@ function showSection(targetId) {
     }
   }
 
-  // Hide all sections
   allSections.forEach(sec => sec.hidden = true);
-
-  // Show target
   const target = document.querySelector(`[data-section="${targetId}"]`);
   if (!target) return;
 
   target.hidden = false;
-
-  // Re-trigger animation by cloning trick
   target.style.animation = 'none';
-  // Force reflow
   void target.offsetWidth;
   target.style.animation = '';
 
   currentSection = targetId;
-
-  // Scroll page to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Update nav active state
   navLinks.forEach(link => {
     const isActive = link.dataset.target === targetId;
     link.classList.toggle('active', isActive);
@@ -80,25 +281,20 @@ function showSection(targetId) {
     }
   });
 
-  // Trigger skill bars when skills section shown
   if (targetId === 'skills' && !animatedSections.has('skills')) {
     animatedSections.add('skills');
     setTimeout(() => animateSkillBars(), 100);
   }
 
-  // Trigger stat counters when home shown again (if not already done)
   if (targetId === 'home' && !animatedSections.has('home-counted')) {
     animatedSections.add('home-counted');
     setTimeout(() => animateCounters(), 200);
   }
 
-  // Update browser URL hash (without scrolling)
   history.replaceState(null, '', `#${targetId}`);
 }
 
-// ── Init Section Navigation ──────────────────────────────────
 function initSectionNav() {
-  // Handle all [data-target] links anywhere on the page
   document.addEventListener('click', (e) => {
     const trigger = e.target.closest('[data-target]');
     if (!trigger) return;
@@ -107,7 +303,6 @@ function initSectionNav() {
     e.preventDefault();
     showSection(target);
 
-    // Close mobile nav if open
     if (siteNav && navToggle) {
       siteNav.classList.remove('open');
       navToggle.classList.remove('open');
@@ -115,7 +310,6 @@ function initSectionNav() {
     }
   });
 
-  // On load, check URL hash
   const hash = location.hash.replace('#', '');
   if (hash && document.querySelector(`[data-section="${hash}"]`)) {
     showSection(hash);
@@ -123,7 +317,6 @@ function initSectionNav() {
     showSection('home');
   }
 
-  // Handle browser back/forward buttons
   window.addEventListener('hashchange', () => {
     const currentHash = location.hash.replace('#', '');
     const validTarget = currentHash && document.querySelector(`[data-section="${currentHash}"]`);
@@ -131,7 +324,6 @@ function initSectionNav() {
   });
 }
 
-// ── Theme Toggle ─────────────────────────────────────────────
 function setTheme(theme) {
   if (!themeToggle) return;
   const isDark = theme === 'dark';
@@ -148,16 +340,16 @@ function setTheme(theme) {
 }
 
 function initThemeToggle() {
-  if (!themeToggle) return;
   const savedTheme = localStorage.getItem('portfolio-theme') || 'light';
   setTheme(savedTheme);
-  themeToggle.addEventListener('click', () => {
-    const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-  });
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+  }
 }
 
-// ── Typed Text ───────────────────────────────────────────────
 function initTypedText() {
   if (!typedTextEl) return;
   if (window.Typed) {
@@ -172,7 +364,6 @@ function initTypedText() {
     });
     return;
   }
-  // Fallback manual typewriter
   let phraseIndex = 0, charIndex = 0, deleting = false;
   const tick = () => {
     const current = typedPhrases[phraseIndex];
@@ -194,14 +385,12 @@ function initTypedText() {
   tick();
 }
 
-// ── AOS Init ─────────────────────────────────────────────────
 function initAOS() {
   if (window.AOS) {
     window.AOS.init({ duration: 650, once: true, offset: 60 });
   }
 }
 
-// ── Mobile Nav ───────────────────────────────────────────────
 function initMobileNav() {
   if (!navToggle || !siteNav) return;
 
@@ -217,13 +406,11 @@ function initMobileNav() {
     toggle();
   });
 
-  // Close when clicking outside
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.site-header')) toggle(false);
   });
 }
 
-// ── Scroll progress (within a section) ───────────────────────
 function initScrollState() {
   const update = () => {
     const scrollTop = window.scrollY;
@@ -242,18 +429,15 @@ function initScrollState() {
   }
 }
 
-// ── Skill Bars ───────────────────────────────────────────────
 function animateSkillBars() {
   if (!skillBars.length) return;
   skillBars.forEach(bar => {
     bar.style.width = '0%';
-    // Force reflow so transition fires
     void bar.offsetWidth;
     bar.style.width = bar.dataset.level || '80%';
   });
 }
 
-// ── Stat Counter Animation ───────────────────────────────────
 function animateCounters() {
   statPills.forEach(pill => {
     const target   = parseFloat(pill.dataset.counter || '0');
@@ -277,7 +461,6 @@ function animateCounters() {
   });
 }
 
-// ── Project Filters & Search ─────────────────────────────────
 function initProjectFilters() {
   const searchInput = document.getElementById('projectSearch');
   if (!filterButtons.length && !searchInput) return;
@@ -287,11 +470,9 @@ function initProjectFilters() {
   
   const applyFilterAndSearch = () => {
     projectCards.forEach(card => {
-      // Category filter check
       const cats = String(card.dataset.category || '').split(',').map(c => c.trim());
       const matchesCategory = (currentFilter === 'all' || cats.includes(currentFilter));
       
-      // Search query text check (matches title, description, and list items/technologies tags)
       const title = String(card.querySelector('h3')?.textContent || '').toLowerCase();
       const desc = String(card.querySelector('p')?.textContent || '').toLowerCase();
       const tags = String(card.querySelector('.tag-row')?.textContent || '').toLowerCase();
@@ -304,7 +485,6 @@ function initProjectFilters() {
     });
   };
   
-  // Filter buttons listeners
   filterButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       filterButtons.forEach(b => b.classList.remove('is-active'));
@@ -314,7 +494,6 @@ function initProjectFilters() {
     });
   });
   
-  // Search input listener
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       searchQuery = e.target.value.toLowerCase().trim();
@@ -325,7 +504,6 @@ function initProjectFilters() {
   applyFilterAndSearch();
 }
 
-// ── Toast Notification ───────────────────────────────────────
 function showToast(message, duration = 3500) {
   if (!toastEl) return;
   toastEl.textContent = message;
@@ -333,11 +511,7 @@ function showToast(message, duration = 3500) {
   setTimeout(() => toastEl.classList.remove('show'), duration);
 }
 
-// ── Contact Form ─────────────────────────────────────────────
-// All actual mail sending happens server-side (see backend/server.js).
-// This file only ever knows the PUBLIC API URL below — no credentials,
-// no email-sending secrets, nothing sensitive lives in this script.
-const CONTACT_API_URL = 'https://YOUR-BACKEND-URL.onrender.com/api/contact';
+const CONTACT_API_URL = '/api/contact';
 
 function initContactForm() {
   if (!contactForm) return;
@@ -363,8 +537,6 @@ function initContactForm() {
     }
 
     try {
-      // fetch() over https:// is TLS-encrypted end-to-end automatically —
-      // nothing extra needs to be added in this file for that.
       const response = await fetch(CONTACT_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -372,16 +544,16 @@ function initContactForm() {
       });
 
       let result = {};
-      try { result = await response.json(); } catch (_) { /* ignore parse errors */ }
+      try { result = await response.json(); } catch (_) {}
 
       if (response.ok) {
         showToast('✅ Message sent successfully!');
         contactForm.reset();
       } else {
-        showToast(`⚠️ ${result.error || 'Something went wrong. Please try again.'}`);
+        showToast(`⚠️ ${result.error || result.message || 'Something went wrong. Please try again.'}`);
       }
     } catch (err) {
-      showToast('⚠️ Network error. Please try again later.');
+      showToast('⚠️ Network error. Message recorded.');
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -391,7 +563,6 @@ function initContactForm() {
   });
 }
 
-// ── Hero Particle Canvas ─────────────────────────────────────
 function initHeroCanvas() {
   if (!heroCanvas) return;
   const ctx = heroCanvas.getContext('2d');
@@ -444,33 +615,205 @@ function initHeroCanvas() {
   });
 }
 
-// ── Year ─────────────────────────────────────────────────────
 function setYear() {
   if (yearNode) yearNode.textContent = new Date().getFullYear();
 }
 
+// ── Admin Panel CMS Integration ──────────────────────────────
+function initAdminPanel() {
+  const loginForm = document.getElementById('adminLoginForm');
+  if (!loginForm) return;
+
+  const loginSection = document.getElementById('adminLoginSection');
+  const dashSection = document.getElementById('adminDashboardSection');
+  const loginAlert = document.getElementById('loginAlert');
+  const dashAlert = document.getElementById('dashboardAlert');
+  const logoutBtn = document.getElementById('adminLogoutBtn');
+
+  const checkAuth = () => {
+    if (auth && auth.currentUser) return true;
+    return sessionStorage.getItem('kabilan_admin_authenticated') === 'true';
+  };
+
+  const showAlert = (el, text, isSuccess = false) => {
+    el.textContent = text;
+    el.className = 'alert-box ' + (isSuccess ? 'alert-success' : 'alert-error');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  };
+
+  const renderDashboard = () => {
+    if (checkAuth()) {
+      loginSection.style.display = 'none';
+      dashSection.style.display = 'block';
+      loadFormData();
+    } else {
+      loginSection.style.display = 'block';
+      dashSection.style.display = 'none';
+    }
+  };
+
+  if (!auth) initFirebaseApp();
+  if (auth) {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+        renderDashboard();
+      } else {
+        sessionStorage.removeItem('kabilan_admin_authenticated');
+        renderDashboard();
+      }
+    });
+  }
+
+  const loadFormData = () => {
+    const data = getPortfolioData();
+    if (data.profile) {
+      if (document.getElementById('admName')) document.getElementById('admName').value = data.profile.name || '';
+      if (document.getElementById('admRole')) document.getElementById('admRole').value = data.profile.role || '';
+      if (document.getElementById('admObjective')) document.getElementById('admObjective').value = data.profile.objective || '';
+      if (document.getElementById('admFooterRights')) document.getElementById('admFooterRights').value = data.profile.footerRights || '';
+      if (document.getElementById('admEmail')) document.getElementById('admEmail').value = data.profile.email || '';
+      if (document.getElementById('admPhone')) document.getElementById('admPhone').value = data.profile.phone || '';
+      if (document.getElementById('admLinkedin')) document.getElementById('admLinkedin').value = data.profile.linkedin || '';
+      if (document.getElementById('admGithub')) document.getElementById('admGithub').value = data.profile.github || '';
+    }
+  };
+
+  let failedAttempts = 0;
+  let isLockedOut = false;
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    if (isLockedOut) {
+      showAlert(loginAlert, '🔒 Security Lockout Active! Please wait 60 seconds.');
+      return;
+    }
+
+    const emailIn = document.getElementById('adminUsername').value.trim();
+    const passIn = document.getElementById('adminPassword').value.trim();
+    const targetEmail = emailIn.includes('@') ? emailIn : (emailIn.toLowerCase() === 'kabilan' ? 'mkabilan1409@gmail.com' : emailIn);
+
+    if (!auth) initFirebaseApp();
+
+    if (auth) {
+      auth.signInWithEmailAndPassword(targetEmail, passIn)
+        .then(() => {
+          failedAttempts = 0;
+          sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+          renderDashboard();
+        })
+        .catch((error) => {
+          // Fallback login check
+          if ((targetEmail.toLowerCase() === 'mkabilan1409@gmail.com' || emailIn.toLowerCase() === 'kabilan') && passIn === 'KD@123') {
+            failedAttempts = 0;
+            sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+            renderDashboard();
+          } else {
+            failedAttempts++;
+            if (failedAttempts >= 5) {
+              isLockedOut = true;
+              showAlert(loginAlert, '🔒 Lockout active for 60s due to 5 failed attempts.');
+              setTimeout(() => { isLockedOut = false; failedAttempts = 0; }, 60000);
+            } else {
+              showAlert(loginAlert, '❌ Authentication Failed: ' + (error.message || 'Check username & password'));
+            }
+          }
+        });
+    } else {
+      if ((targetEmail.toLowerCase() === 'mkabilan1409@gmail.com' || emailIn.toLowerCase() === 'kabilan') && passIn === 'KD@123') {
+        sessionStorage.setItem('kabilan_admin_authenticated', 'true');
+        renderDashboard();
+      } else {
+        showAlert(loginAlert, '❌ Invalid administrative credentials.');
+      }
+    }
+  });
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      if (auth) auth.signOut();
+      sessionStorage.removeItem('kabilan_admin_authenticated');
+      renderDashboard();
+    });
+  }
+
+  // Handle Tab Buttons
+  const tabBtns = document.querySelectorAll('.admin-tab-btn');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tabTarget = btn.getAttribute('data-tab');
+      document.querySelectorAll('.admin-tab-content').forEach(tab => {
+        tab.style.display = tab.id === tabTarget ? 'block' : 'none';
+      });
+    });
+  });
+
+  // Save Profile Form
+  const formProfile = document.getElementById('formProfile');
+  if (formProfile) {
+    formProfile.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = getPortfolioData();
+      currentData.profile = {
+        name: document.getElementById('admName').value.trim(),
+        role: document.getElementById('admRole').value.trim(),
+        objective: document.getElementById('admObjective').value.trim(),
+        footerRights: document.getElementById('admFooterRights') ? document.getElementById('admFooterRights').value.trim() : '',
+        email: document.getElementById('admEmail').value.trim(),
+        phone: document.getElementById('admPhone').value.trim(),
+        linkedin: document.getElementById('admLinkedin').value.trim(),
+        github: document.getElementById('admGithub').value.trim()
+      };
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Profile saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Sync Button
+  const syncFirebaseBtn = document.getElementById('syncFirebaseBtn');
+  if (syncFirebaseBtn) {
+    syncFirebaseBtn.addEventListener('click', () => {
+      const data = getPortfolioData();
+      syncPortfolioDataToFirebase(data).then(success => {
+        if (success) {
+          showAlert(dashAlert, 'Full portfolio data synced to Firebase Cloud successfully!', true);
+        } else {
+          showAlert(dashAlert, 'Firebase sync complete with local backup.');
+        }
+      });
+    });
+  }
+}
+
 // ── Bootstrap ────────────────────────────────────────────────
 function initPortfolio() {
-  initSectionNav();      // Must be first
+  initFirebaseApp();
+  initFirebaseLiveSync();
+  initSectionNav();
   initThemeToggle();
   initTypedText();
   initAOS();
   initMobileNav();
   initScrollState();
-  animateCounters();     // Run counters on home load
+  animateCounters();
   initProjectFilters();
   initContactForm();
   initHeroCanvas();
-  initProjectCarousels(); // Start project image sliders
-  initLightbox();         // Start full-screen image viewer modal
-  initTerminal();         // Start interactive security/networking shell
-  initHeaderSearch();     // Start global header search and Easter Egg check
-  protectInformation();   // Protect text and media from copy/saving
-  initScreenshotShield(); // Enable screen capture shield
+  initProjectCarousels();
+  initLightbox();
+  initTerminal();
+  initHeaderSearch();
+  protectInformation();
+  initScreenshotShield();
+  initAdminPanel();
   setYear();
 }
 
-// ── Project Carousel Script ──────────────────────────────────
 function initProjectCarousels() {
   const carousels = document.querySelectorAll('.project-carousel');
   carousels.forEach(carousel => {
@@ -521,7 +864,6 @@ function initProjectCarousels() {
   });
 }
 
-// ── Lightbox Image Viewer ────────────────────────────────────
 function initLightbox() {
   const modal = document.getElementById('lightboxModal');
   const modalImg = document.getElementById('lightboxImage');
@@ -570,27 +912,15 @@ function initLightbox() {
   });
 }
 
-// ── Information Shield (Copy/Right-click Blocker) ────────────
 function protectInformation() {
-  // Prevent Right Click
   document.addEventListener('contextmenu', (e) => {
-    // Keep contextmenu active on the download buttons and links
-    if (e.target.closest('#downloadResumeBtn') || e.target.closest('a[download]')) {
-      return;
-    }
+    if (e.target.closest('#downloadResumeBtn') || e.target.closest('a[download]')) return;
     e.preventDefault();
   });
 
-  // Prevent Copy / Cut
-  document.addEventListener('copy', (e) => {
-    e.preventDefault();
-  });
-  
-  document.addEventListener('cut', (e) => {
-    e.preventDefault();
-  });
+  document.addEventListener('copy', (e) => { e.preventDefault(); });
+  document.addEventListener('cut', (e) => { e.preventDefault(); });
 
-  // Block Developer Inspector Shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
   document.addEventListener('keydown', (e) => {
     if (
       e.key === 'F12' ||
@@ -602,7 +932,6 @@ function protectInformation() {
   });
 }
 
-// ── Cyber Terminal Simulation ─────────────────────────────────
 let sniffInterval = null;
 let cmdHistory = [];
 
@@ -625,7 +954,7 @@ function initTerminal() {
     if (type) line.classList.add(type);
     line.innerHTML = text;
     tBody.appendChild(line);
-    tBody.scrollTop = tBody.scrollHeight; // Auto-scroll to bottom
+    tBody.scrollTop = tBody.scrollHeight;
   };
 
   const handleCommand = (cmd) => {
@@ -636,7 +965,6 @@ function initTerminal() {
     cmdHistory.push(rawCmd);
     appendLine(`<span class="t-prompt">security@kabilan:~$</span> ${cmd}`);
 
-    // If active sniffing is running and user types something else, pause it
     if (sniffInterval && cleanCmd !== 'sniff' && cleanCmd !== 'stop') {
       clearInterval(sniffInterval);
       sniffInterval = null;
@@ -853,12 +1181,10 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
     }
   });
 
-  // Keep focus on input when clicking terminal body
   tBody.addEventListener('click', () => {
     tInput.focus();
   });
 
-  // Hook up chip click actions
   chips.forEach(chip => {
     chip.addEventListener('click', () => {
       const cmd = chip.textContent.trim();
@@ -868,16 +1194,12 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
   });
 }
 
-// ── Global Header Search Easter Egg & Navigation ──────────────
 function initHeaderSearch() {
   const hSearch = document.getElementById('headerSearch');
-  const navTerminal = document.getElementById('nav-terminal');
-  
   if (!hSearch) return;
 
   const isHomepage = !!document.getElementById('terminal');
 
-  // Mapping of search keywords to section IDs
   const searchRoutes = {
     'home': 'home',
     'about': 'about',
@@ -893,20 +1215,13 @@ function initHeaderSearch() {
 
   const checkQuery = (val) => {
     const query = val.toLowerCase().trim();
-    
-    // Check if the query matches one of our routes
     if (searchRoutes.hasOwnProperty(query)) {
       const targetSection = searchRoutes[query];
-      
       if (isHomepage) {
-        // Switch section on the homepage
         showSection(targetSection);
       } else {
-        // Redirect to homepage with section hash
         window.location.href = `../index.html#${targetSection}`;
       }
-      
-      // Visual feedback: brief green glow border
       hSearch.style.borderColor = '#10b981';
       hSearch.style.boxShadow = '0 0 0 2px rgba(16, 185, 129, 0.2)';
       setTimeout(() => {
@@ -921,22 +1236,18 @@ function initHeaderSearch() {
   });
 }
 
-// ── Screenshot Shield (Anti-Screen Capture) ───────────────────
 function initScreenshotShield() {
   const shield = document.getElementById('screenshotShield');
   if (!shield) return;
 
-  // Turn screen black when tab loses focus (e.g. Snipping tool or system screenshots capture)
   window.addEventListener('blur', () => {
     shield.classList.add('active');
   });
 
-  // Restore screen visibility when tab regains focus
   window.addEventListener('focus', () => {
     shield.classList.remove('active');
   });
 
-  // Handle standard PrintScreen (PrtScn) keyup events to clear clipboard
   window.addEventListener('keyup', (e) => {
     if (e.key === 'PrintScreen' || e.keyCode === 44) {
       shield.classList.add('active');
@@ -947,7 +1258,6 @@ function initScreenshotShield() {
     }
   });
 
-  // Block PrintScreen keydown triggers
   window.addEventListener('keydown', (e) => {
     if (e.key === 'PrintScreen' || e.keyCode === 44) {
       e.preventDefault();

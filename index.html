@@ -21,11 +21,7 @@
   <link rel="stylesheet" href="style.css?v=1.0.1" />
   <script defer src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <!-- Firebase Cloud Database & Authentication SDKs -->
-  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script defer src="script.min.js?v=2.0.0"></script>
+  <script defer src="script.js?v=1.0.1"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -365,22 +361,14 @@
           <p>2nd Place (College Level)</p>
         </article>
         <article class="achievement-card card" role="listitem">
-          <i class="fa-brands fa-html5" aria-hidden="true"></i>
+          <i class="fa-solid fa-certificate" aria-hidden="true"></i>
           <h3>Infosys Springboard</h3>
-          <p>HTML5 Certification Course</p>
-          <a class="cert-link" href="assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf" target="_blank" rel="noopener noreferrer" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> View HTML5 Certificate</a>
-        </article>
-        <article class="achievement-card card" role="listitem">
-          <i class="fa-brands fa-css3-alt" aria-hidden="true"></i>
-          <h3>Infosys Springboard</h3>
-          <p>CSS3 Certification Course</p>
-          <a class="cert-link" href="assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf" target="_blank" rel="noopener noreferrer" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> View CSS3 Certificate</a>
-        </article>
-        <article class="achievement-card card" role="listitem">
-          <i class="fa-brands fa-js" aria-hidden="true"></i>
-          <h3>Infosys Springboard</h3>
-          <p>JavaScript Certification Course</p>
-          <a class="cert-link" href="assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf" target="_blank" rel="noopener noreferrer" style="margin-top: 8px; font-size: 0.85rem; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> View JavaScript Certificate</a>
+          <p>Technical Certifications:</p>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; font-size: 0.85rem; font-weight: 600; text-align: left; width: 100%;">
+            <a href="assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf" target="_blank" rel="noopener noreferrer" style="color: var(--primary); display: inline-flex; align-items: center; gap: 6px; text-decoration: none;"><i class="fa-solid fa-file-pdf"></i> HTML5 Certificate</a>
+            <a href="assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf" target="_blank" rel="noopener noreferrer" style="color: var(--primary); display: inline-flex; align-items: center; gap: 6px; text-decoration: none;"><i class="fa-solid fa-file-pdf"></i> CSS3 Certificate</a>
+            <a href="assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf" target="_blank" rel="noopener noreferrer" style="color: var(--primary); display: inline-flex; align-items: center; gap: 6px; text-decoration: none;"><i class="fa-solid fa-file-pdf"></i> JavaScript Certificate</a>
+          </div>
         </article>
         <article class="achievement-card card" role="listitem">
           <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
@@ -468,7 +456,7 @@
           <input type="text" id="formSubject" name="subject" placeholder="Subject" required aria-required="true" />
           <textarea id="formMessage" name="message" rows="6" placeholder="Tell me about your project or opportunity..." required aria-required="true"></textarea>
           <button class="btn btn-primary" type="submit" id="contactSubmitBtn"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Message</button>
-          <p class="form-note">This form opens your email client with the message pre-filled.</p>
+          <p class="form-note">Your message is sent securely and privately — no email client required.</p>
         </form>
       </div>
     </section>
@@ -495,7 +483,7 @@
     </div>
     <div id="lightboxCaption" class="lightbox-caption"></div>
   </div>
- 
+
   <!-- Screenshot Shield Overlay -->
   <div id="screenshotShield" class="screenshot-shield" aria-hidden="true">
     <div class="shield-message">
@@ -503,6 +491,5 @@
       <p>Screen capture is restricted to protect content integrity.</p>
     </div>
   </div>
-  <!-- Update career objective -->
 </body>
 </html>

@@ -258,14 +258,16 @@ function applyDynamicPortfolioData() {
         });
       }
       if (data.profile.objective) {
+        const subHeading = document.querySelector('.hero-subtitle');
+        if (subHeading) subHeading.textContent = data.profile.objective;
         document.querySelectorAll('#about p, .overview-card p').forEach(el => {
-          if (el.closest('.overview-card') && el.previousElementSibling && el.previousElementSibling.textContent.includes('Career')) {
+          if (el.closest('.overview-card') && el.previousElementSibling && (el.previousElementSibling.textContent.includes('Career') || el.previousElementSibling.textContent.includes('Who'))) {
             el.textContent = data.profile.objective;
           }
         });
       }
       if (data.profile.footerRights) {
-        document.querySelectorAll('.site-footer p:first-child, #adminFooterRightsP').forEach(el => {
+        document.querySelectorAll('.site-footer p:first-child, #adminFooterRightsP, footer.footer p:first-child').forEach(el => {
           el.innerHTML = data.profile.footerRights;
         });
       }
@@ -346,6 +348,9 @@ function applyDynamicPortfolioData() {
 
     // 5. Achievements Overrides
     if (data.achievements && data.achievements.length > 0) {
+      const achPill = document.getElementById('stat-achievements');
+      if (achPill) achPill.textContent = `${data.achievements.length}+`;
+
       const grid = document.querySelector('#achievements .achievement-grid');
       if (grid) {
         grid.innerHTML = data.achievements.map(a => `
@@ -361,6 +366,9 @@ function applyDynamicPortfolioData() {
 
     // 6. Projects Overrides
     if (data.projects && data.projects.length > 0) {
+      const projPill = document.getElementById('stat-projects');
+      if (projPill) projPill.textContent = `${data.projects.length}+`;
+
       const grid = document.querySelector('#projects .project-grid');
       if (grid) {
         grid.innerHTML = data.projects.map((p, i) => {
@@ -384,6 +392,10 @@ function applyDynamicPortfolioData() {
           `;
         }).join('');
       }
+    }
+
+    if (typeof initLightbox === 'function') {
+      initLightbox();
     }
   } catch(e) {}
 }

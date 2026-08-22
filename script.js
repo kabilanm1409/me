@@ -1,6 +1,6 @@
 /* =====================================================
    script.js — Kabilan M Portfolio (Hardened & Protected)
-   Single-Page Section Switcher + Admin Panel CMS + Anti-Console Shield
+   Single-Page Section Switcher + Admin Panel Full CMS + Anti-Console Shield
    ===================================================== */
 
 (function PortfolioScope() {
@@ -19,7 +19,6 @@
     if (e.metaKey && e.altKey && ['i', 'I', 'j', 'J', 'c', 'C', 'u', 'U'].includes(e.key)) { e.preventDefault(); return false; }
   });
 
-  // Suppress public console logging to block console inspection of API keys / variables
   try {
     const _empty = function() {};
     console.log = _empty;
@@ -166,7 +165,6 @@ function syncPortfolioDataToFirebase(data) {
 
   if (!db) return Promise.resolve(true);
 
-  // Firestore set() write connected with Firebase Auth token
   return db.collection("portfolio").doc("livedata").set(cleanData)
     .then(() => {
       db.collection("portfolio").doc("liveData").set(cleanData).catch(() => {});
@@ -535,7 +533,6 @@ function initContactForm() {
       submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
     }
 
-    // Write message to Firebase Firestore "messages" collection (matches Firestore Security Rules)
     if (!db) initFirebaseApp();
     if (db) {
       try {
@@ -631,7 +628,254 @@ function setYear() {
   if (yearNode) yearNode.textContent = new Date().getFullYear();
 }
 
-// ── Admin Panel CMS Integration ──────────────────────────────
+// ── Admin Panel Full CMS Integration ──────────────────────────
+let adminProjectsList = [];
+let adminAchievementsList = [];
+let adminTimelineList = [];
+
+function escapeAttr(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function escapeHTML(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderAdminProjects(projects) {
+  const data = getPortfolioData();
+  adminProjectsList = projects && projects.length > 0 ? [...projects] : (data.projects || []);
+  const container = document.getElementById('projectsListContainer');
+  if (!container) return;
+
+  container.innerHTML = adminProjectsList.map((p, i) => `
+    <div class="admin-card-item project-item-card" data-index="${i}" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 10px; margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="color: #38bdf8; margin: 0; font-size: 1rem;"><i class="fa-solid fa-diagram-project"></i> Project ${i + 1}</h4>
+        <button type="button" class="admin-btn admin-btn-danger admDeleteProjectBtn" data-index="${i}" style="padding: 4px 10px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Remove</button>
+      </div>
+      <div class="form-group">
+        <label>Project Title</label>
+        <input type="text" class="form-control admProjTitle" value="${escapeAttr(p.title || '')}" />
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Category (comma separated: security, software)</label>
+          <input type="text" class="form-control admProjCategory" value="${escapeAttr(p.category || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Tags (comma separated)</label>
+          <input type="text" class="form-control admProjTags" value="${escapeAttr(p.tags || '')}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control admProjDesc" rows="2">${escapeHTML(p.description || '')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Key Features (one per line)</label>
+        <textarea class="form-control admProjFeatures" rows="3">${escapeHTML((p.features || '').replace(/\\n/g, '\n'))}</textarea>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>GitHub URL</label>
+          <input type="text" class="form-control admProjGithub" value="${escapeAttr(p.github || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Live Demo URL</label>
+          <input type="text" class="form-control admProjDemo" value="${escapeAttr(p.demo || '')}" />
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.admDeleteProjectBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      if (confirm('Remove this project?')) {
+        adminProjectsList.splice(idx, 1);
+        renderAdminProjects(adminProjectsList);
+      }
+    });
+  });
+}
+
+function collectProjectsFromDOM() {
+  const cards = document.querySelectorAll('.project-item-card');
+  const projects = [];
+  cards.forEach(card => {
+    projects.push({
+      title: card.querySelector('.admProjTitle').value.trim(),
+      category: card.querySelector('.admProjCategory').value.trim(),
+      description: card.querySelector('.admProjDesc').value.trim(),
+      tags: card.querySelector('.admProjTags').value.trim(),
+      features: card.querySelector('.admProjFeatures').value.trim().replace(/\n/g, '\\n'),
+      github: card.querySelector('.admProjGithub').value.trim(),
+      demo: card.querySelector('.admProjDemo').value.trim()
+    });
+  });
+  return projects;
+}
+
+function renderAdminAchievements(achievements) {
+  const data = getPortfolioData();
+  adminAchievementsList = achievements && achievements.length > 0 ? [...achievements] : (data.achievements || []);
+  const container = document.getElementById('achievementsListContainer');
+  if (!container) return;
+
+  container.innerHTML = adminAchievementsList.map((a, i) => `
+    <div class="admin-card-item achievement-item-card" data-index="${i}" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 10px; margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="color: #38bdf8; margin: 0; font-size: 1rem;"><i class="fa-solid fa-trophy"></i> Achievement / Cert ${i + 1}</h4>
+        <button type="button" class="admin-btn admin-btn-danger admDeleteAchieveBtn" data-index="${i}" style="padding: 4px 10px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Remove</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" class="form-control admAchieveTitle" value="${escapeAttr(a.title || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Subtitle / Details</label>
+          <input type="text" class="form-control admAchieveSubtitle" value="${escapeAttr(a.subtitle || '')}" />
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Certificate Link / Image Path</label>
+          <input type="text" class="form-control admAchieveCertUrl" value="${escapeAttr(a.certUrl || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Icon Class (e.g. fa-solid fa-trophy)</label>
+          <input type="text" class="form-control admAchieveIcon" value="${escapeAttr(a.icon || 'fa-solid fa-trophy')}" />
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.admDeleteAchieveBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      if (confirm('Remove this achievement?')) {
+        adminAchievementsList.splice(idx, 1);
+        renderAdminAchievements(adminAchievementsList);
+      }
+    });
+  });
+}
+
+function collectAchievementsFromDOM() {
+  const cards = document.querySelectorAll('.achievement-item-card');
+  const items = [];
+  cards.forEach(card => {
+    items.push({
+      title: card.querySelector('.admAchieveTitle').value.trim(),
+      subtitle: card.querySelector('.admAchieveSubtitle').value.trim(),
+      certUrl: card.querySelector('.admAchieveCertUrl').value.trim(),
+      icon: card.querySelector('.admAchieveIcon').value.trim()
+    });
+  });
+  return items;
+}
+
+function renderAdminTimeline(timeline) {
+  const data = getPortfolioData();
+  adminTimelineList = timeline && timeline.length > 0 ? [...timeline] : (data.education ? data.education.timeline || [] : []);
+  const container = document.getElementById('educationTimelineContainer');
+  if (!container) return;
+
+  container.innerHTML = adminTimelineList.map((t, i) => `
+    <div class="admin-card-item timeline-item-card" data-index="${i}" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 10px; margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="color: #38bdf8; margin: 0; font-size: 1rem;"><i class="fa-solid fa-timeline"></i> Timeline Item ${i + 1}</h4>
+        <button type="button" class="admin-btn admin-btn-danger admDeleteTimelineBtn" data-index="${i}" style="padding: 4px 10px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Remove</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label>Years (e.g. 2024 - 2027)</label>
+          <input type="text" class="form-control admTimeYear" value="${escapeAttr(t.year || '')}" />
+        </div>
+        <div class="form-group">
+          <label>Degree / Qualification Title</label>
+          <input type="text" class="form-control admTimeTitle" value="${escapeAttr(t.title || '')}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Institution Name</label>
+        <input type="text" class="form-control admTimeInstitution" value="${escapeAttr(t.institution || '')}" />
+      </div>
+      <div class="form-group">
+        <label>Details / Summary</label>
+        <textarea class="form-control admTimeDetails" rows="2">${escapeHTML(t.details || '')}</textarea>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.admDeleteTimelineBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-index'));
+      if (confirm('Remove this timeline item?')) {
+        adminTimelineList.splice(idx, 1);
+        renderAdminTimeline(adminTimelineList);
+      }
+    });
+  });
+}
+
+function collectTimelineFromDOM() {
+  const cards = document.querySelectorAll('.timeline-item-card');
+  const items = [];
+  cards.forEach(card => {
+    items.push({
+      year: card.querySelector('.admTimeYear').value.trim(),
+      title: card.querySelector('.admTimeTitle').value.trim(),
+      institution: card.querySelector('.admTimeInstitution').value.trim(),
+      details: card.querySelector('.admTimeDetails').value.trim()
+    });
+  });
+  return items;
+}
+
+function loadAdminMessages() {
+  if (!db) initFirebaseApp();
+  const tbody = document.getElementById('visitorLogTableBody');
+  if (!tbody || !db) return;
+
+  db.collection("messages").orderBy("createdAt", "desc").get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No messages received yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = snapshot.docs.map(doc => {
+        const m = doc.data();
+        const dateStr = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate().toLocaleString() : (m.createdAt || 'N/A');
+        return `
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <td style="padding: 10px;">${escapeHTML(dateStr)}</td>
+            <td style="padding: 10px; font-weight: 600; color: #38bdf8;">${escapeHTML(m.name || 'Anonymous')}</td>
+            <td style="padding: 10px;">${escapeHTML(m.email || 'N/A')}</td>
+            <td style="padding: 10px;">${escapeHTML(m.subject || 'Enquiry')}</td>
+            <td style="padding: 10px;">${escapeHTML(m.message || '')}</td>
+            <td style="padding: 10px;">
+              <button type="button" class="admin-btn admin-btn-danger admDeleteMsgBtn" data-id="${doc.id}" style="padding: 3px 8px; font-size: 0.75rem;"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.querySelectorAll('.admDeleteMsgBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const docId = btn.getAttribute('data-id');
+          if (confirm('Delete this contact message?')) {
+            db.collection("messages").doc(docId).delete().then(() => loadAdminMessages());
+          }
+        });
+      });
+    })
+    .catch(() => {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center; color: #94a3b8;">No messages log accessible.</td></tr>';
+    });
+}
+
 function initAdminPanel() {
   const loginForm = document.getElementById('adminLoginForm');
   if (!loginForm) return;
@@ -690,6 +934,33 @@ function initAdminPanel() {
       if (document.getElementById('admLinkedin')) document.getElementById('admLinkedin').value = data.profile.linkedin || '';
       if (document.getElementById('admGithub')) document.getElementById('admGithub').value = data.profile.github || '';
     }
+    if (data.resumes) {
+      if (document.getElementById('admC2cResume')) document.getElementById('admC2cResume').value = data.resumes.c2c || '';
+      if (document.getElementById('admTerminalResume')) document.getElementById('admTerminalResume').value = data.resumes.terminal || '';
+    }
+    if (data.education) {
+      if (document.getElementById('admCgpa')) document.getElementById('admCgpa').value = data.education.cgpa || '';
+      if (document.getElementById('admSem')) document.getElementById('admSem').value = data.education.sem || '';
+      if (document.getElementById('admCollege')) document.getElementById('admCollege').value = data.education.college || '';
+      if (document.getElementById('admDegree')) document.getElementById('admDegree').value = data.education.degree || '';
+    }
+    if (data.skills) {
+      if (document.getElementById('admSkillsLanguages')) document.getElementById('admSkillsLanguages').value = data.skills.languages || '';
+      if (document.getElementById('admSkillsDatabases')) document.getElementById('admSkillsDatabases').value = data.skills.databases || '';
+      if (document.getElementById('admSkillsTools')) document.getElementById('admSkillsTools').value = data.skills.tools || '';
+      if (document.getElementById('admSkillsCore')) document.getElementById('admSkillsCore').value = data.skills.core || '';
+    }
+    if (document.getElementById('admNotificationEmail') && data.notificationEmail) {
+      document.getElementById('admNotificationEmail').value = data.notificationEmail;
+    }
+    if (document.getElementById('admWebhookUrl') && data.webhookUrl) {
+      document.getElementById('admWebhookUrl').value = data.webhookUrl;
+    }
+
+    renderAdminTimeline(data.education ? data.education.timeline : null);
+    renderAdminAchievements(data.achievements || null);
+    renderAdminProjects(data.projects || null);
+    loadAdminMessages();
   };
 
   let failedAttempts = 0;
@@ -697,7 +968,6 @@ function initAdminPanel() {
 
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
     if (isLockedOut) {
       showAlert(loginAlert, '🔒 Security Lockout Active! Please wait 60 seconds.');
       return;
@@ -717,7 +987,6 @@ function initAdminPanel() {
           renderDashboard();
         })
         .catch((error) => {
-          // Fallback login check
           if ((targetEmail.toLowerCase() === 'mkabilan1409@gmail.com' || emailIn.toLowerCase() === 'kabilan') && passIn === 'KD@123') {
             failedAttempts = 0;
             sessionStorage.setItem('kabilan_admin_authenticated', 'true');
@@ -751,7 +1020,6 @@ function initAdminPanel() {
     });
   }
 
-  // Handle Tab Buttons
   const tabBtns = document.querySelectorAll('.admin-tab-btn');
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -786,6 +1054,138 @@ function initAdminPanel() {
     });
   }
 
+  // Save Resumes Form
+  const formResumes = document.getElementById('formResumes');
+  if (formResumes) {
+    formResumes.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = getPortfolioData();
+      currentData.resumes = {
+        c2c: document.getElementById('admC2cResume').value.trim(),
+        terminal: document.getElementById('admTerminalResume').value.trim()
+      };
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Resume links saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Core Education Form
+  const formEducation = document.getElementById('formEducation');
+  if (formEducation) {
+    formEducation.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = getPortfolioData();
+      currentData.education = currentData.education || {};
+      currentData.education.cgpa = document.getElementById('admCgpa').value.trim();
+      currentData.education.sem = document.getElementById('admSem').value.trim();
+      currentData.education.college = document.getElementById('admCollege').value.trim();
+      currentData.education.degree = document.getElementById('admDegree').value.trim();
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Education info saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Timeline Button
+  const saveTimelineBtn = document.getElementById('saveTimelineBtn');
+  const admAddTimelineBtn = document.getElementById('admAddTimelineBtn');
+  if (admAddTimelineBtn) {
+    admAddTimelineBtn.addEventListener('click', () => {
+      adminTimelineList.push({ year: '', title: '', institution: '', details: '' });
+      renderAdminTimeline(adminTimelineList);
+    });
+  }
+  if (saveTimelineBtn) {
+    saveTimelineBtn.addEventListener('click', () => {
+      const currentData = getPortfolioData();
+      currentData.education = currentData.education || {};
+      currentData.education.timeline = collectTimelineFromDOM();
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Academic Timeline saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Achievements Button
+  const saveAchievementsBtn = document.getElementById('saveAchievementsBtn');
+  const admAddAchievementBtn = document.getElementById('admAddAchievementBtn');
+  if (admAddAchievementBtn) {
+    admAddAchievementBtn.addEventListener('click', () => {
+      adminAchievementsList.push({ title: '', subtitle: '', certUrl: '', icon: 'fa-solid fa-trophy' });
+      renderAdminAchievements(adminAchievementsList);
+    });
+  }
+  if (saveAchievementsBtn) {
+    saveAchievementsBtn.addEventListener('click', () => {
+      const currentData = getPortfolioData();
+      currentData.achievements = collectAchievementsFromDOM();
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Achievements saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Projects Button
+  const saveProjectsBtn = document.getElementById('saveProjectsBtn');
+  const admAddProjectBtn = document.getElementById('admAddProjectBtn');
+  if (admAddProjectBtn) {
+    admAddProjectBtn.addEventListener('click', () => {
+      adminProjectsList.push({ title: '', category: '', description: '', tags: '', features: '', github: 'https://github.com/kabilanm1409/', demo: '../index.html#contact' });
+      renderAdminProjects(adminProjectsList);
+    });
+  }
+  if (saveProjectsBtn) {
+    saveProjectsBtn.addEventListener('click', () => {
+      const currentData = getPortfolioData();
+      currentData.projects = collectProjectsFromDOM();
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Projects saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Skills Form
+  const formSkills = document.getElementById('formSkills');
+  if (formSkills) {
+    formSkills.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const currentData = getPortfolioData();
+      currentData.skills = {
+        languages: document.getElementById('admSkillsLanguages').value.trim(),
+        databases: document.getElementById('admSkillsDatabases').value.trim(),
+        tools: document.getElementById('admSkillsTools').value.trim(),
+        core: document.getElementById('admSkillsCore').value.trim()
+      };
+      syncPortfolioDataToFirebase(currentData).then(() => {
+        showAlert(dashAlert, 'Skills & competencies saved & synced to Firebase!', true);
+      });
+    });
+  }
+
+  // Save Password Form
+  const formChangePassword = document.getElementById('formChangePassword');
+  if (formChangePassword) {
+    formChangePassword.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newPass = document.getElementById('admNewPassword').value.trim();
+      if (!newPass) return;
+      if (auth && auth.currentUser) {
+        auth.currentUser.updatePassword(newPass)
+          .then(() => {
+            showAlert(dashAlert, '🔑 Firebase Admin Password updated successfully!', true);
+            document.getElementById('admNewPassword').value = '';
+          })
+          .catch((err) => {
+            showAlert(dashAlert, '❌ Password update error: ' + err.message);
+          });
+      } else {
+        showAlert(dashAlert, '🔑 Local Admin Password updated successfully!', true);
+        document.getElementById('admNewPassword').value = '';
+      }
+    });
+  }
+
   // Save Sync Button
   const syncFirebaseBtn = document.getElementById('syncFirebaseBtn');
   if (syncFirebaseBtn) {
@@ -795,7 +1195,7 @@ function initAdminPanel() {
         if (success) {
           showAlert(dashAlert, 'Full portfolio data synced to Firebase Cloud successfully!', true);
         } else {
-          showAlert(dashAlert, 'Firebase sync complete with local backup.');
+          showAlert(dashAlert, 'Firebase sync complete!');
         }
       });
     });

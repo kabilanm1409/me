@@ -240,16 +240,19 @@ const typedPhrases = [
 let currentSection = '';
 const animatedSections = new Set(['home']);
 
-function showSection(targetId) {
+function getCleanPath(targetId) {
+  const isSubpage = window.location.pathname.includes('/pages/');
+  const prefix = isSubpage ? '../' : './';
+  if (targetId === 'home') return prefix;
+  return prefix + targetId;
+}
+
+function showSection(targetId, updateHistory = true) {
   if (targetId === currentSection) return;
 
   const navTerminal = document.getElementById('nav-terminal');
   if (navTerminal) {
-    if (targetId === 'terminal') {
-      navTerminal.style.display = 'inline-flex';
-    } else {
-      navTerminal.style.display = 'none';
-    }
+    navTerminal.style.display = targetId === 'terminal' ? 'inline-flex' : 'none';
   }
 
   allSections.forEach(sec => sec.hidden = true);
@@ -284,7 +287,12 @@ function showSection(targetId) {
     setTimeout(() => animateCounters(), 200);
   }
 
-  history.replaceState(null, '', `#${targetId}`);
+  if (updateHistory) {
+    try {
+      const cleanPath = getCleanPath(targetId);
+      history.pushState({ section: targetId }, '', cleanPath);
+    } catch(e) {}
+  }
 }
 
 function initSectionNav() {
@@ -303,18 +311,18 @@ function initSectionNav() {
     }
   });
 
-  const hash = location.hash.replace('#', '');
-  if (hash && document.querySelector(`[data-section="${hash}"]`)) {
-    showSection(hash);
-  } else {
-    showSection('home');
-  }
-
-  window.addEventListener('hashchange', () => {
-    const currentHash = location.hash.replace('#', '');
-    const validTarget = currentHash && document.querySelector(`[data-section="${currentHash}"]`);
-    showSection(validTarget ? currentHash : 'home');
+  window.addEventListener('popstate', (e) => {
+    const section = e.state && e.state.section ? e.state.section : 'home';
+    showSection(section, false);
   });
+
+  const pathname = window.location.pathname.replace(/\/$/, '');
+  const lastPart = pathname.split('/').pop().replace('.html', '');
+  if (lastPart && document.querySelector(`[data-section="${lastPart}"]`)) {
+    showSection(lastPart, false);
+  } else {
+    showSection('home', false);
+  }
 }
 
 function setTheme(theme) {

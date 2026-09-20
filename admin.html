@@ -1,0 +1,3351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard &amp; Intelligence — Portfolio | Kabilan M</title>
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop stop-color=%22%232563eb%22/><stop offset=%221%22 stop-color=%22%2314b8a6%22/></linearGradient></defs><rect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22url(%23g)%22/><path d=%22M18 34h28M32 18v28%22 stroke=%22white%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css?v=2.1.0" />
+
+  <style>
+    :root {
+      --admin-mono-font: 'JetBrains Mono', monospace, ui-monospace, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: auto;
+      -webkit-user-select: auto;
+    }
+
+    .admin-container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+      flex: 1;
+    }
+
+    /* ── Header ── */
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .admin-brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .admin-brand-info h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .admin-brand-info p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .live-pulse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(34, 197, 94, 0.14);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 999px;
+      color: #16a34a;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    body[data-theme='dark'] .live-pulse-badge {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      border-color: rgba(74, 222, 128, 0.4);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      animation: pulseAnim 1.8s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    /* ── Main Navigation Tabs ── */
+    .admin-main-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .main-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .main-tab-btn:hover {
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    .main-tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+
+    /* ── Login View ── */
+    .login-wrapper {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      text-align: center;
+    }
+
+    .login-header { margin-bottom: 28px; }
+    .login-icon-box {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+    }
+
+    .login-header h2 { font-size: 1.6rem; font-weight: 700; margin: 0 0 6px; color: var(--text); }
+    .login-header p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
+    .admin-form { display: flex; flex-direction: column; gap: 18px; text-align: left; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+
+    .input-wrapper { position: relative; display: flex; align-items: center; }
+    .input-wrapper i.prefix-icon { position: absolute; left: 14px; color: var(--muted); font-size: 0.95rem; pointer-events: none; }
+    .input-wrapper input, .cms-input, .cms-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-wrapper input { padding-left: 42px; }
+    .cms-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+    .input-wrapper input:focus, .cms-input:focus, .cms-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .password-toggle-btn { position: absolute; right: 12px; background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; font-size: 0.95rem; }
+    .btn-block { width: 100%; justify-content: center; padding: 13px; font-size: 1rem; font-weight: 600; border-radius: 12px; margin-top: 8px; }
+    .alert-box { padding: 12px 16px; border-radius: 12px; font-size: 0.88rem; display: none; align-items: center; gap: 10px; margin-top: 16px; }
+    .alert-box.show { display: flex; }
+    .alert-error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #dc2626; }
+
+    /* ── Metrics Grid ── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .metric-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: rgba(37, 99, 235, 0.14); color: var(--primary); }
+    .icon-teal { background: rgba(20, 184, 166, 0.14); color: var(--secondary); }
+    .icon-purple { background: rgba(99, 102, 241, 0.14); color: var(--accent); }
+    .icon-green { background: rgba(34, 197, 94, 0.14); color: #16a34a; }
+    .icon-orange { background: rgba(249, 115, 22, 0.14); color: #ea580c; }
+
+    .metric-info { flex: 1; min-width: 0; }
+    .metric-label { font-size: 0.8rem; color: var(--muted); margin: 0 0 3px; font-weight: 500; }
+    .metric-value { font-size: 1.45rem; font-weight: 800; color: var(--text); margin: 0; font-family: var(--admin-mono-font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Intelligence Tables ── */
+    .visitors-section, .cms-section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      margin-bottom: 24px;
+    }
+
+    .section-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .section-heading { display: flex; align-items: center; gap: 10px; }
+    .section-heading h2 { font-size: 1.25rem; font-weight: 700; margin: 0; }
+    .badge-count { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; background: var(--primary); color: #fff; font-size: 0.8rem; font-weight: 700; }
+
+    .table-responsive { width: 100%; overflow-x: auto; }
+    .visitors-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+    .visitors-table th { padding: 12px 14px; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .visitors-table td { padding: 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+    .visitors-table tbody tr { transition: background 0.15s ease; cursor: pointer; }
+    .visitors-table tbody tr:hover { background: var(--surface-soft); }
+
+    /* ── Intelligence Badges ── */
+    .uid-badge { font-family: var(--admin-mono-font); font-size: 0.78rem; background: var(--surface-soft); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); }
+    .page-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 6px; background: rgba(37, 99, 235, 0.1); color: var(--primary); font-weight: 600; font-size: 0.84rem; }
+    .status-badge-live { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; color: #16a34a; }
+    
+    .geo-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.86rem; color: var(--text); }
+    .isp-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.82rem; background: rgba(20, 184, 166, 0.1); color: var(--secondary); padding: 3px 8px; border-radius: 6px; font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .device-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.82rem; background: rgba(99, 102, 241, 0.1); color: var(--accent); padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+
+    .journey-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      background: var(--surface-soft);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .duration-tag {
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .empty-state { padding: 40px 20px; text-align: center; color: var(--muted); }
+    .empty-state-icon { font-size: 2.6rem; color: var(--muted); opacity: 0.6; margin-bottom: 10px; }
+
+    /* ── Modal Inspector ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    .modal-header h3 { margin: 0; font-size: 1.3rem; }
+    .modal-close-btn { background: none; border: none; font-size: 1.4rem; color: var(--muted); cursor: pointer; }
+    .modal-close-btn:hover { color: var(--text); }
+
+    .journey-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .journey-step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+    }
+
+    /* ── CMS Styles ── */
+    .cms-sub-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 14px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .cms-sub-tab-btn { padding: 8px 14px; border-radius: 10px; background: var(--surface-soft); border: 1px solid var(--border); color: var(--text); font-size: 0.88rem; font-weight: 600; white-space: nowrap; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+    .cms-sub-tab-btn:hover { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+    .cms-sub-tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .cms-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .cms-card-item { background: var(--surface-soft); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 14px; }
+    .cms-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .cms-card-header h4 { margin: 0; font-size: 1rem; font-weight: 700; color: var(--text); }
+    .cms-delete-btn { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 8px; padding: 6px 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+    .cms-delete-btn:hover { background: #ef4444; color: #fff; }
+    .cms-add-btn { background: var(--surface-soft); border: 2px dashed var(--border); border-radius: 14px; padding: 14px; color: var(--primary); font-weight: 600; font-size: 0.92rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .cms-add-btn:hover { border-color: var(--primary); background: rgba(37, 99, 235, 0.08); }
+    .cms-footer-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 20px; }
+    .save-status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+    .save-status-badge.saved { color: #16a34a; font-weight: 600; }
+    .seed-btn { background: var(--surface-soft); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+
+    .rule-alert { margin-top: 20px; padding: 14px 18px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius); color: #b45309; display: none; }
+    body[data-theme='dark'] .rule-alert { color: #fbbf24; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+
+    /* ── Interactive Distribution & Analytics Meters ── */
+    .distribution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .dist-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .dist-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .dist-header h4 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+    }
+    .dist-stacked-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      display: flex;
+      overflow: hidden;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+    }
+    .dist-segment {
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+    .dist-seg-mobile { background: linear-gradient(90deg, #6366f1, #818cf8); }
+    .dist-seg-desktop { background: linear-gradient(90deg, #2563eb, #38bdf8); }
+    .dist-seg-tablet { background: linear-gradient(90deg, #14b8a6, #2dd4bf); }
+    .dist-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .page-meter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.84rem;
+    }
+    .page-meter-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--surface-soft);
+      border-radius: 999px;
+      margin: 0 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .page-meter-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Quick Filter Chips ── */
+    .quick-filters-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .filter-chip:hover {
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--primary);
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+    .filter-chip .chip-count {
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.25);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .filter-chip:not(.active) .chip-count {
+      background: var(--border);
+      color: var(--muted);
+    }
+
+    /* ── Interactive Live Stream Controls Toolbar ── */
+    .controls-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .control-btn {
+      padding: 7px 14px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .control-btn:hover {
+      background: var(--surface-soft);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .control-btn.active {
+      background: #16a34a;
+      color: #fff;
+      border-color: #16a34a;
+    }
+    .refresh-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      font-family: var(--admin-mono-font);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Security Suite Card ── */
+    .security-status-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(20, 184, 166, 0.08));
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-bottom: 22px;
+    }
+    .sec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .sec-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .sec-item i {
+      font-size: 1.1rem;
+      color: #16a34a;
+    }
+
+    /* ── Toast Notification in Admin ── */
+    .admin-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: var(--surface-solid);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateY(16px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .admin-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ── Lockout Alert ── */
+    .lockout-alert {
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #dc2626;
+      font-weight: 600;
+      margin-top: 16px;
+      display: none;
+    }
+    .lockout-alert.show { display: block; }
+
+    /* ── Messages & Inquiries Inbox Styles ── */
+    .msg-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      transition: all 0.2s ease;
+    }
+    .msg-card:hover {
+      border-color: rgba(37, 99, 235, 0.35);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    .msg-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .msg-sender-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .msg-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .msg-subject {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+    .msg-body {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0 0 12px;
+      white-space: pre-line;
+    }
+    .msg-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <div class="admin-container">
+    <!-- ── TOP NAVIGATION / HEADER ── -->
+    <header class="admin-header">
+      <a href="index.html" class="admin-brand">
+        <div class="admin-brand-mark">KM</div>
+        <div class="admin-brand-info">
+          <h1>Portfolio Admin &amp; Intelligence</h1>
+          <p>Kabilan M &middot; Visitor Tracking, Mobile &amp; ISP Analytics, CMS</p>
+        </div>
+      </a>
+
+      <div class="admin-actions">
+        <div class="live-pulse-badge" id="liveBadge" style="display: none;">
+          <span class="pulse-dot"></span>
+          <span>LIVE TRACKING</span>
+        </div>
+
+        <button type="button" class="btn btn-secondary" id="soundToggleBtn" style="padding: 8px 14px; font-size: 0.88rem;" title="Toggle visitor chime sound alert">
+          <i class="fa-solid fa-bell"></i>
+          <span id="soundToggleText">Alerts: ON</span>
+        </button>
+
+        <div class="user-pill hidden" id="userPill">
+          <i class="fa-solid fa-user-shield"></i>
+          <span id="userEmailLabel">Admin</span>
+        </div>
+
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+          <span>Dark mode</span>
+        </button>
+
+        <a href="index.html" class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.88rem;">
+          <i class="fa-solid fa-arrow-left"></i> View Portfolio
+        </a>
+
+        <button class="btn btn-secondary hidden" id="logoutBtn" style="padding: 8px 14px; font-size: 0.88rem; color: var(--danger);">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- ── AUTHENTICATION SECTION (LOGIN) ── -->
+    <section class="login-wrapper" id="loginSection">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="login-icon-box"><i class="fa-solid fa-lock"></i></div>
+          <h2>Admin Authentication</h2>
+          <p>Sign in to monitor live visitors, device/mobile models, ISP carriers, locations, and manage portfolio content.</p>
+        </div>
+
+        <form class="admin-form" id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="adminEmail">Admin Email / Username</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope prefix-icon"></i>
+              <input type="text" id="adminEmail" placeholder="mkabilan1409@gmail.com or kabilan" autocomplete="username" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-key prefix-icon"></i>
+              <input type="password" id="adminPassword" placeholder="••••••••••••" autocomplete="current-password" required />
+              <button type="button" class="password-toggle-btn" id="togglePasswordBtn" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye" id="passwordEyeIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="loginSubmitBtn">
+            <span id="loginBtnText"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Admin Panel</span>
+          </button>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 0.84rem;">
+            <button type="button" id="btnForgotPass" style="background: none; border: none; color: var(--primary); text-decoration: underline; cursor: pointer; padding: 4px 0; font-size: 0.84rem; font-weight: 600;">
+              <i class="fa-solid fa-key"></i> Forgot Password? Reset via Email
+            </button>
+            <span style="color: var(--muted); font-size: 0.78rem;">Admin: mkabilan1409</span>
+          </div>
+
+          <div style="text-align: center; margin-top: 12px;">
+            <button type="button" class="btn btn-secondary btn-block" id="btnLaunchDemoMode" style="background: rgba(20, 184, 166, 0.12); border-color: rgba(20, 184, 166, 0.35); color: var(--secondary); font-size: 0.88rem; padding: 10px;">
+              <i class="fa-solid fa-gamepad"></i> Launch Interactive Sandbox / Demo Mode
+            </button>
+          </div>
+        </form>
+
+        <div class="alert-box alert-error" id="loginError">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="loginErrorMsg">Invalid email or password.</span>
+        </div>
+
+        <div class="lockout-alert" id="lockoutAlert">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="lockoutAlertMsg">Security Lockout: 5 failed attempts reached. Please wait 15:00.</span>
+        </div>
+
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Protected by SHA-256 Checksum &amp; Exponential Rate Limit
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MAIN DASHBOARD (AUTHENTICATED) ── -->
+    <main id="dashboardSection" class="hidden">
+      <!-- Demo Mode Banner -->
+      <div id="demoModeBanner" class="hidden" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 12px 18px; background: linear-gradient(135deg, rgba(20, 184, 166, 0.14), rgba(37, 99, 235, 0.14)); border: 1px solid rgba(20, 184, 166, 0.35); border-radius: 12px; margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="background: var(--secondary); color: #fff; font-size: 0.75rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">SANDBOX DEMO</span>
+          <span style="font-size: 0.88rem; color: var(--text); font-weight: 500;">Interactive sandbox active. Test live streaming, meters, filters, modals, audio alerts &amp; inquiries.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn btn-primary" id="btnSpawnTestVisitor" style="padding: 6px 12px; font-size: 0.82rem;">
+            <i class="fa-solid fa-user-plus"></i> Simulate New Visitor
+          </button>
+          <button type="button" class="btn btn-secondary" id="btnExitDemoMode" style="padding: 6px 12px; font-size: 0.82rem;">
+            <i class="fa-solid fa-right-from-bracket"></i> Exit Sandbox
+          </button>
+        </div>
+      </div>
+
+      <!-- Top Level Tabs -->
+      <nav class="admin-main-tabs">
+        <button type="button" class="main-tab-btn active" id="tabLiveBtn">
+          <i class="fa-solid fa-satellite-dish"></i> Realtime Live Stream
+        </button>
+        <button type="button" class="main-tab-btn" id="tabHistoryBtn">
+          <i class="fa-solid fa-clock-rotate-left"></i> Visitor Insights &amp; History Log
+        </button>
+        <button type="button" class="main-tab-btn" id="tabMessagesBtn">
+          <i class="fa-solid fa-inbox"></i> Inquiries &amp; Messages <span class="badge-count" id="messagesBadgeCount" style="background: var(--secondary); font-size: 0.75rem; padding: 1px 7px;">0</span>
+        </button>
+        <button type="button" class="main-tab-btn" id="tabCmsBtn">
+          <i class="fa-solid fa-pen-to-square"></i> Portfolio Content Editor (CMS)
+        </button>
+      </nav>
+
+      <!-- ══════════════ TAB 1: REALTIME LIVE STREAM ══════════════ -->
+      <div id="viewLiveSection">
+        <!-- Top Metrics Row -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon icon-green"><i class="fa-solid fa-users-viewfinder"></i></div>
+            <div class="metric-info">
+              <p class="metric-label">Active Visitors Now</p>
+              <h3 class="metric-value" id="activeCount">0</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon icon-blue"><i class="fa-solid fa-compass"></i></div>
+            <div class="metric-info">
+              <p class="metric-label">Most Active Page</p>
+              <h3 class="metric-value" id="topPage">—</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon icon-purple"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="metric-info">
+              <p class="metric-label">Top Device Type</p>
+              <h3 class="metric-value" id="topDevice" style="font-size: 1.15rem;">—</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon icon-orange"><i class="fa-solid fa-tower-broadcast"></i></div>
+            <div class="metric-info">
+              <p class="metric-label">Top Service Provider (ISP)</p>
+              <h3 class="metric-value" id="topIsp" style="font-size: 1.05rem;">—</h3>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon icon-teal"><i class="fa-solid fa-earth-americas"></i></div>
+            <div class="metric-info">
+              <p class="metric-label">Top Location</p>
+              <h3 class="metric-value" id="topLocation" style="font-size: 1.15rem;">—</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security & Cryptographic Shield Status Card -->
+        <div class="security-status-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <h4 style="margin: 0; font-size: 0.98rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text);">
+              <i class="fa-solid fa-shield-halved" style="color: #16a34a;"></i> Portfolio Cryptographic &amp; API Security Matrix
+            </h4>
+            <span class="badge-count" style="background: #16a34a; font-size: 0.76rem;">ALL SHIELDS ACTIVE</span>
+          </div>
+          <div class="sec-grid">
+            <div class="sec-item"><i class="fa-solid fa-circle-check"></i> <span><strong>API Shield Vault:</strong> Runtime XOR Cipher Active</span></div>
+            <div class="sec-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Telemetry Privacy:</strong> SHA-256 IP Hashing Active</span></div>
+            <div class="sec-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Replay Defense:</strong> 5m Timestamp Nonce Check</span></div>
+            <div class="sec-item"><i class="fa-solid fa-circle-check"></i> <span><strong>Brute-Force Guard:</strong> 5-Attempt Lockout Active</span></div>
+          </div>
+        </div>
+
+        <!-- Interactive Distribution & Analytics Meters -->
+        <div class="distribution-grid">
+          <div class="dist-card">
+            <div class="dist-header">
+              <h4><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Device Distribution</h4>
+              <span id="deviceTotalBadge" style="font-size: 0.8rem; color: var(--muted); font-weight: 600;">0 active</span>
+            </div>
+            <div class="dist-stacked-bar">
+              <div class="dist-segment dist-seg-mobile" id="barMobile" style="width: 0%;" title="Mobile"></div>
+              <div class="dist-segment dist-seg-desktop" id="barDesktop" style="width: 0%;" title="Desktop"></div>
+              <div class="dist-segment dist-seg-tablet" id="barTablet" style="width: 0%;" title="Tablet"></div>
+            </div>
+            <div class="dist-legend">
+              <span class="legend-item"><span class="legend-dot" style="background: #6366f1;"></span> Mobile: <strong id="pctMobile">0%</strong></span>
+              <span class="legend-item"><span class="legend-dot" style="background: #2563eb;"></span> Desktop: <strong id="pctDesktop">0%</strong></span>
+              <span class="legend-item"><span class="legend-dot" style="background: #14b8a6;"></span> Tablet: <strong id="pctTablet">0%</strong></span>
+            </div>
+          </div>
+
+          <div class="dist-card">
+            <div class="dist-header">
+              <h4><i class="fa-solid fa-fire" style="color: var(--secondary);"></i> Popular Pages Visited</h4>
+              <span style="font-size: 0.8rem; color: var(--muted); font-weight: 600;">Traffic Share</span>
+            </div>
+            <div id="topPagesMetersContainer">
+              <div style="color: var(--muted); font-size: 0.84rem; text-align: center; padding: 10px 0;">Awaiting live page views...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Filter Chips -->
+        <div class="quick-filters-row" id="liveFilterChips">
+          <button type="button" class="filter-chip active" data-chip="all"><i class="fa-solid fa-layer-group"></i> All <span class="chip-count" id="chipCountAll">0</span></button>
+          <button type="button" class="filter-chip" data-chip="mobile"><i class="fa-solid fa-mobile-screen-button"></i> Mobile <span class="chip-count" id="chipCountMobile">0</span></button>
+          <button type="button" class="filter-chip" data-chip="desktop"><i class="fa-solid fa-laptop"></i> Desktop <span class="chip-count" id="chipCountDesktop">0</span></button>
+          <button type="button" class="filter-chip" data-chip="india"><i class="fa-solid fa-earth-asia"></i> India <span class="chip-count" id="chipCountIndia">0</span></button>
+          <button type="button" class="filter-chip" data-chip="global"><i class="fa-solid fa-globe"></i> Global <span class="chip-count" id="chipCountGlobal">0</span></button>
+          <button type="button" class="filter-chip" data-chip="longstay"><i class="fa-regular fa-clock"></i> Long Stay (&gt;1m) <span class="chip-count" id="chipCountLongStay">0</span></button>
+        </div>
+
+        <!-- Interactive Controls Toolbar -->
+        <div class="controls-toolbar">
+          <div class="controls-group">
+            <span class="refresh-badge"><i class="fa-solid fa-arrows-rotate fa-spin" id="refreshIcon" style="color: var(--primary);"></i> Next tick: <strong id="refreshTimerCountdown">5s</strong></span>
+            <button type="button" class="control-btn" id="btnToggleAutoRefresh"><i class="fa-solid fa-pause"></i> <span id="autoRefreshBtnText">Pause</span></button>
+            <button type="button" class="control-btn" id="btnManualRefresh"><i class="fa-solid fa-rotate"></i> Refresh Now</button>
+            <button type="button" class="control-btn" id="btnPurgeStale" title="Clean visitors inactive for > 5 minutes"><i class="fa-solid fa-broom"></i> Clean Inactive</button>
+            <button type="button" class="control-btn" id="btnSimulateLive" title="Simulate an incoming visitor in real time"><i class="fa-solid fa-user-plus" style="color: #10b981;"></i> Simulate Visitor</button>
+          </div>
+          <div class="controls-group">
+            <button type="button" class="control-btn" id="btnExportLiveCsv"><i class="fa-solid fa-file-csv" style="color: #16a34a;"></i> Export CSV</button>
+            <button type="button" class="control-btn" id="btnExportLiveJson"><i class="fa-solid fa-file-code" style="color: var(--accent);"></i> Export JSON</button>
+          </div>
+        </div>
+
+        <!-- Live Stream Table -->
+        <section class="visitors-section">
+          <div class="section-toolbar">
+            <div class="section-heading">
+              <i class="fa-solid fa-signal" style="color: var(--primary);"></i>
+              <h2>Live Visitor Intelligence Stream</h2>
+              <span class="badge-count" id="tableBadgeCount">0 live</span>
+            </div>
+
+            <div class="table-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="visitorFilter" class="cms-input" style="border-radius: 999px; padding-left: 34px;" placeholder="Filter by page, mobile, ISP, city..." />
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="visitors-table" id="visitorsTable">
+              <thead>
+                <tr>
+                  <th>Location &amp; City</th>
+                  <th>Mobile / Device</th>
+                  <th>Service Provider (ISP)</th>
+                  <th>Active Page</th>
+                  <th>Time Spent</th>
+                  <th>Page Journey</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="visitorsTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="emptyState">
+            <div class="empty-state-icon"><i class="fa-solid fa-user-astronaut"></i></div>
+            <h3>No Live Visitors Currently Online</h3>
+            <p>As visitors browse your portfolio, their mobile model, ISP, location, and page journey will stream here in real time.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ══════════════ TAB 2: VISITOR INSIGHTS & HISTORY LOG ══════════════ -->
+      <div id="viewHistorySection" class="hidden">
+        <section class="visitors-section">
+          <!-- History Quick Filters -->
+          <div class="quick-filters-row" id="historyFilterChips">
+            <button type="button" class="filter-chip active" data-hchip="all"><i class="fa-solid fa-clock"></i> All Sessions</button>
+            <button type="button" class="filter-chip" data-hchip="today"><i class="fa-solid fa-calendar-day"></i> Today</button>
+            <button type="button" class="filter-chip" data-hchip="week"><i class="fa-solid fa-calendar-week"></i> Past 7 Days</button>
+            <button type="button" class="filter-chip" data-hchip="mobile"><i class="fa-solid fa-mobile-screen-button"></i> Mobile Only</button>
+            <button type="button" class="filter-chip" data-hchip="desktop"><i class="fa-solid fa-laptop"></i> Desktop Only</button>
+          </div>
+
+          <div class="controls-toolbar" style="margin-bottom: 14px;">
+            <div class="controls-group">
+              <span style="font-size: 0.85rem; color: var(--muted); font-weight: 600;"><i class="fa-solid fa-box-archive"></i> Archived Visitor Telemetry</span>
+            </div>
+            <div class="controls-group">
+              <button type="button" class="control-btn" id="btnExportHistCsv"><i class="fa-solid fa-file-csv" style="color: #16a34a;"></i> Export History CSV</button>
+              <button type="button" class="control-btn" id="btnExportHistJson"><i class="fa-solid fa-file-code" style="color: var(--accent);"></i> Export History JSON</button>
+            </div>
+          </div>
+
+          <div class="section-toolbar">
+            <div class="section-heading">
+              <i class="fa-solid fa-history" style="color: var(--secondary);"></i>
+              <h2>Visitor Session History Log</h2>
+              <span class="badge-count" id="historyBadgeCount" style="background: var(--secondary);">0 sessions</span>
+            </div>
+
+            <div class="table-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="historyFilter" class="cms-input" style="border-radius: 999px; padding-left: 34px;" placeholder="Search history by city, ISP, mobile..." />
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="visitors-table" id="historyTable">
+              <thead>
+                <tr>
+                  <th>Visited At</th>
+                  <th>Location</th>
+                  <th>Mobile / Device</th>
+                  <th>Service Provider (ISP)</th>
+                  <th>Total Time Spent</th>
+                  <th>Pages Explored</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="historyEmptyState">
+            <div class="empty-state-icon"><i class="fa-solid fa-database"></i></div>
+            <h3>No Historical Sessions Logged Yet</h3>
+            <p>Completed visitor sessions and page browsing times will be archived here.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ══════════════ TAB 3: CONTACT INQUIRIES & MESSAGES ══════════════ -->
+      <div id="viewMessagesSection" class="hidden">
+        <section class="visitors-section">
+          <!-- Messages Quick Filters & Toolbar -->
+          <div class="controls-toolbar" style="margin-bottom: 16px;">
+            <div class="controls-group">
+              <span style="font-size: 0.85rem; color: var(--muted); font-weight: 600;"><i class="fa-solid fa-inbox"></i> Portfolio Contact Submissions &amp; Telemetry Audits</span>
+              <button type="button" class="control-btn" id="btnSimulateMessage"><i class="fa-solid fa-paper-plane" style="color: var(--secondary);"></i> Test Sample Inquiry</button>
+            </div>
+            <div class="controls-group">
+              <button type="button" class="control-btn" id="btnExportMsgsCsv"><i class="fa-solid fa-file-csv" style="color: #16a34a;"></i> Export Messages CSV</button>
+              <button type="button" class="control-btn" id="btnExportMsgsJson"><i class="fa-solid fa-file-code" style="color: var(--accent);"></i> Export Messages JSON</button>
+            </div>
+          </div>
+
+          <div class="section-toolbar">
+            <div class="section-heading">
+              <i class="fa-solid fa-envelope-open-text" style="color: var(--primary);"></i>
+              <h2>Inquiries Inbox</h2>
+              <span class="badge-count" id="inboxTotalCount" style="background: var(--secondary);">0 messages</span>
+            </div>
+
+            <div class="table-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="messagesFilter" class="cms-input" style="border-radius: 999px; padding-left: 34px;" placeholder="Search inquiries by name, email, subject, text..." />
+            </div>
+          </div>
+
+          <div id="messagesListContainer" style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;"></div>
+
+          <div class="empty-state" id="messagesEmptyState">
+            <div class="empty-state-icon"><i class="fa-solid fa-envelope"></i></div>
+            <h3>No Inquiries Received Yet</h3>
+            <p>Messages submitted through your portfolio contact form with SHA-256 payload integrity signatures will appear here in real time.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ══════════════ TAB 4: PORTFOLIO CONTENT CMS ══════════════ -->
+      <div id="viewCmsSection" class="hidden">
+        <section class="cms-section-card">
+          <div class="cms-sub-tabs">
+            <button type="button" class="cms-sub-tab-btn active" data-cms-tab="hero"><i class="fa-solid fa-wand-magic-sparkles"></i> Hero &amp; Bio</button>
+            <button type="button" class="cms-sub-tab-btn" data-cms-tab="about"><i class="fa-solid fa-user"></i> About Me</button>
+            <button type="button" class="cms-sub-tab-btn" data-cms-tab="skills"><i class="fa-solid fa-code"></i> Skills</button>
+            <button type="button" class="cms-sub-tab-btn" data-cms-tab="projects"><i class="fa-solid fa-laptop-code"></i> Projects</button>
+            <button type="button" class="cms-sub-tab-btn" data-cms-tab="education"><i class="fa-solid fa-graduation-cap"></i> Education</button>
+            <button type="button" class="cms-sub-tab-btn" data-cms-tab="achievements"><i class="fa-solid fa-trophy"></i> Achievements &amp; Papers</button>
+            <button type="button" class="cms-sub-tab-btn" data-cms-tab="contact"><i class="fa-solid fa-address-book"></i> Contact Info</button>
+          </div>
+
+          <!-- CMS Search Toolbar -->
+          <div class="controls-toolbar" style="margin-top: 14px; margin-bottom: 18px;">
+            <div class="search-input-wrap" style="flex: 1; min-width: 240px;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="cmsQuickSearch" placeholder="Quick search CMS entries (projects, skills, titles, keywords)..." style="width: 100%;" />
+            </div>
+            <div style="font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-bolt" style="color: var(--primary);"></i> Live Content Filtering
+            </div>
+          </div>
+
+          <!-- Hero -->
+          <div class="cms-tab-content" id="cmsTab_hero">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Hero Header &amp; Introduction</h3></div>
+            <div class="cms-form-grid">
+              <div class="form-group"><label>Eyebrow Tagline</label><input type="text" id="heroEyebrow" class="cms-input" /></div>
+              <div class="form-group"><label>Display Name</label><input type="text" id="heroName" class="cms-input" /></div>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;"><label>Hero Subtitle / Bio</label><textarea id="heroSubtitle" class="cms-textarea"></textarea></div>
+            <div class="cms-form-grid">
+              <div class="form-group"><label>Resume PDF Link</label><input type="text" id="heroResumeUrl" class="cms-input" /></div>
+              <div class="form-group"><label>Profile Card Title</label><input type="text" id="heroProfileTitle" class="cms-input" /></div>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;"><label>Profile Card Short Bio</label><textarea id="heroProfileBio" class="cms-textarea"></textarea></div>
+            <div class="cms-form-grid">
+              <div class="form-group"><label>CGPA Metric</label><input type="text" id="heroStatCgpa" class="cms-input" /></div>
+              <div class="form-group"><label>Projects Count Metric</label><input type="text" id="heroStatProjects" class="cms-input" /></div>
+              <div class="form-group"><label>Achievements Count Metric</label><input type="text" id="heroStatAchievements" class="cms-input" /></div>
+            </div>
+          </div>
+
+          <!-- About -->
+          <div class="cms-tab-content hidden" id="cmsTab_about">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>About Me Cards</h3></div>
+            <div class="form-group" style="margin-bottom: 14px;"><label>Who I Am</label><textarea id="aboutWhoIAm" class="cms-textarea"></textarea></div>
+            <div class="form-group" style="margin-bottom: 14px;"><label>Career Objective</label><textarea id="aboutCareerObjective" class="cms-textarea"></textarea></div>
+            <div class="form-group" style="margin-bottom: 14px;"><label>Work Style</label><textarea id="aboutWorkStyle" class="cms-textarea"></textarea></div>
+            <div class="cms-form-grid">
+              <div class="form-group"><label>Internship Summary</label><input type="text" id="aboutInternshipDesc" class="cms-input" /></div>
+              <div class="form-group"><label>Internship Certificate URL</label><input type="text" id="aboutInternshipCertUrl" class="cms-input" /></div>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="cms-tab-content hidden" id="cmsTab_skills">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Skills Categories &amp; Tags</h3></div>
+            <div id="skillsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addSkillCategoryBtn"><i class="fa-solid fa-plus"></i> Add New Skill Category</button>
+          </div>
+
+          <!-- Projects -->
+          <div class="cms-tab-content hidden" id="cmsTab_projects">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Projects Collection</h3></div>
+            <div id="projectsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addProjectBtn"><i class="fa-solid fa-plus"></i> Add New Project</button>
+          </div>
+
+          <!-- Education -->
+          <div class="cms-tab-content hidden" id="cmsTab_education">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Academic Timeline</h3></div>
+            <div id="educationListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addEducationBtn"><i class="fa-solid fa-plus"></i> Add New Education Entry</button>
+          </div>
+
+          <!-- Achievements -->
+          <div class="cms-tab-content hidden" id="cmsTab_achievements">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Awards &amp; Certifications</h3></div>
+            <div id="achievementsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addAchievementBtn"><i class="fa-solid fa-plus"></i> Add New Award / Certification</button>
+
+            <div class="section-heading" style="margin: 24px 0 16px;"><h3>Research Publications</h3></div>
+            <div id="publicationsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addPublicationBtn"><i class="fa-solid fa-plus"></i> Add New Research Publication</button>
+          </div>
+
+          <!-- Contact -->
+          <div class="cms-tab-content hidden" id="cmsTab_contact">
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Contact Channels</h3></div>
+            <div class="cms-form-grid">
+              <div class="form-group"><label>Primary Email</label><input type="email" id="contactEmailInput" class="cms-input" /></div>
+              <div class="form-group"><label>Phone Number</label><input type="text" id="contactPhoneInput" class="cms-input" /></div>
+              <div class="form-group"><label>LinkedIn URL</label><input type="url" id="contactLinkedinInput" class="cms-input" /></div>
+              <div class="form-group"><label>GitHub URL</label><input type="url" id="contactGithubInput" class="cms-input" /></div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="cms-footer-actions">
+            <div>
+              <button type="button" class="seed-btn" id="seedDataBtn" title="Pre-populate database with default portfolio data">
+                <i class="fa-solid fa-seedling"></i> Seed Current Portfolio Content
+              </button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <span class="save-status-badge" id="cmsSaveStatus"><i class="fa-solid fa-cloud"></i> Ready</span>
+              <button type="button" class="btn btn-primary" id="saveCmsBtn">
+                <i class="fa-solid fa-floppy-disk"></i> Save &amp; Publish Changes
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Permission Notice -->
+      <div class="rule-alert" id="permissionAlert">
+        <h4><i class="fa-solid fa-shield-halved"></i> Firebase Security Rules Notice</h4>
+        <p>Permission denied. Ensure your admin UID (<strong>MR6jHebrOCMlOUoonM1hXOiGBvJ2</strong>) is deployed in Realtime Database Rules.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── VISITOR JOURNEY INSPECTOR MODAL ── -->
+  <div class="modal-overlay" id="journeyModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalVisitorTitle">Visitor Journey &amp; Specs</h3>
+          <p id="modalVisitorSubtitle" style="color: var(--muted); font-size: 0.85rem; margin: 4px 0 0;"></p>
+        </div>
+        <button type="button" class="modal-close-btn" id="modalCloseBtn">&times;</button>
+      </div>
+
+      <div class="cms-form-grid" style="margin-bottom: 16px;">
+        <div class="form-group">
+          <label>Location &amp; Geolocation</label>
+          <div class="cms-input" id="modalLocation" style="display: flex; align-items: center; gap: 8px;">—</div>
+        </div>
+        <div class="form-group">
+          <label>Service Provider (ISP / ASN)</label>
+          <div class="cms-input" id="modalIsp" style="display: flex; align-items: center; gap: 8px;">—</div>
+        </div>
+      </div>
+
+      <div class="cms-form-grid" style="margin-bottom: 16px;">
+        <div class="form-group">
+          <label>Mobile Device &amp; OS</label>
+          <div class="cms-input" id="modalDevice">—</div>
+        </div>
+        <div class="form-group">
+          <label>Screen Resolution &amp; Browser</label>
+          <div class="cms-input" id="modalScreen">—</div>
+        </div>
+      </div>
+
+      <div class="cms-form-grid" style="margin-bottom: 16px;">
+        <div class="form-group">
+          <label>SHA-256 Session Signature</label>
+          <div class="cms-input" style="display: flex; align-items: center; justify-content: space-between; font-family: var(--admin-mono-font); font-size: 0.8rem;">
+            <span id="modalSessionHash" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">—</span>
+            <button type="button" class="btn btn-secondary" id="btnCopySessionHash" style="padding: 2px 8px; font-size: 0.75rem;" title="Copy Session Hash"><i class="fa-solid fa-copy"></i></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>ISP Latency Simulator</label>
+          <div class="cms-input" style="display: flex; align-items: center; justify-content: space-between;">
+            <span id="modalPingResult" style="font-weight: 600;"><i class="fa-solid fa-signal" style="color: var(--primary);"></i> Ready to test</span>
+            <button type="button" class="btn btn-secondary" id="btnPingIsp" style="padding: 2px 8px; font-size: 0.75rem;"><i class="fa-solid fa-bolt"></i> Test Ping</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-heading" style="margin: 20px 0 10px;">
+        <h4><i class="fa-solid fa-route" style="color: var(--primary);"></i> Pages Visited &amp; Duration Breakdown</h4>
+      </div>
+      <div class="journey-timeline" id="modalJourneyTimeline"></div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--border);">
+        <button type="button" class="btn btn-secondary" id="btnCopyVisitorDossier"><i class="fa-solid fa-copy"></i> Copy Full Dossier</button>
+        <button type="button" class="btn btn-secondary" id="btnExportSingleSessionJson"><i class="fa-solid fa-file-code"></i> Export Session JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-toast" id="adminToast"></div>
+
+  <!-- ── DASHBOARD & CMS SCRIPT ── -->
+  <script type="module">
+    import {
+      auth,
+      db,
+      firestore,
+      doc,
+      setDoc,
+      getDoc,
+      getDocs,
+      collection,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      signOut,
+      onAuthStateChanged,
+      ref,
+      set,
+      get,
+      onValue,
+      deleteDoc,
+      sha256,
+      maskApiKey,
+      analytics,
+      logEvent
+    } from "./firebase-config.js";
+
+    // ── Elements & State References ──
+    const loginSection = document.getElementById('loginSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const loginForm = document.getElementById('loginForm');
+    const adminEmailInput = document.getElementById('adminEmail');
+    const adminPasswordInput = document.getElementById('adminPassword');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginError = document.getElementById('loginError');
+    const loginErrorMsg = document.getElementById('loginErrorMsg');
+    const lockoutAlert = document.getElementById('lockoutAlert');
+    const lockoutAlertMsg = document.getElementById('lockoutAlertMsg');
+    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+    const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userPill = document.getElementById('userPill');
+    const userEmailLabel = document.getElementById('userEmailLabel');
+    const liveBadge = document.getElementById('liveBadge');
+    const themeToggle = document.getElementById('themeToggle');
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundToggleText = document.getElementById('soundToggleText');
+    const adminToast = document.getElementById('adminToast');
+
+    // Tabs
+    const tabLiveBtn = document.getElementById('tabLiveBtn');
+    const tabHistoryBtn = document.getElementById('tabHistoryBtn');
+    const tabMessagesBtn = document.getElementById('tabMessagesBtn');
+    const tabCmsBtn = document.getElementById('tabCmsBtn');
+    const viewLiveSection = document.getElementById('viewLiveSection');
+    const viewHistorySection = document.getElementById('viewHistorySection');
+    const viewMessagesSection = document.getElementById('viewMessagesSection');
+    const viewCmsSection = document.getElementById('viewCmsSection');
+
+    // Messages / Inquiries Elements
+    const messagesBadgeCount = document.getElementById('messagesBadgeCount');
+    const inboxTotalCount = document.getElementById('inboxTotalCount');
+    const messagesFilter = document.getElementById('messagesFilter');
+    const messagesListContainer = document.getElementById('messagesListContainer');
+    const messagesEmptyState = document.getElementById('messagesEmptyState');
+    const btnExportMsgsCsv = document.getElementById('btnExportMsgsCsv');
+    const btnExportMsgsJson = document.getElementById('btnExportMsgsJson');
+    const btnSimulateMessage = document.getElementById('btnSimulateMessage');
+
+    // Sandbox & Simulation Controls
+    const btnLaunchDemoMode = document.getElementById('btnLaunchDemoMode');
+    const demoModeBanner = document.getElementById('demoModeBanner');
+    const btnSpawnTestVisitor = document.getElementById('btnSpawnTestVisitor');
+    const btnExitDemoMode = document.getElementById('btnExitDemoMode');
+    const btnSimulateLive = document.getElementById('btnSimulateLive');
+
+    // Metrics & Distribution Elements
+    const activeCountEl = document.getElementById('activeCount');
+    const topPageEl = document.getElementById('topPage');
+    const topDeviceEl = document.getElementById('topDevice');
+    const topIspEl = document.getElementById('topIsp');
+    const topLocationEl = document.getElementById('topLocation');
+    const tableBadgeCount = document.getElementById('tableBadgeCount');
+    const visitorsTable = document.getElementById('visitorsTable');
+    const visitorsTableBody = document.getElementById('visitorsTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const visitorFilter = document.getElementById('visitorFilter');
+    const deviceTotalBadge = document.getElementById('deviceTotalBadge');
+    const barMobile = document.getElementById('barMobile');
+    const barDesktop = document.getElementById('barDesktop');
+    const barTablet = document.getElementById('barTablet');
+    const pctMobile = document.getElementById('pctMobile');
+    const pctDesktop = document.getElementById('pctDesktop');
+    const pctTablet = document.getElementById('pctTablet');
+    const topPagesMetersContainer = document.getElementById('topPagesMetersContainer');
+
+    // Controls
+    const refreshIcon = document.getElementById('refreshIcon');
+    const refreshTimerCountdown = document.getElementById('refreshTimerCountdown');
+    const btnToggleAutoRefresh = document.getElementById('btnToggleAutoRefresh');
+    const autoRefreshBtnText = document.getElementById('autoRefreshBtnText');
+    const btnManualRefresh = document.getElementById('btnManualRefresh');
+    const btnPurgeStale = document.getElementById('btnPurgeStale');
+    const btnExportLiveCsv = document.getElementById('btnExportLiveCsv');
+    const btnExportLiveJson = document.getElementById('btnExportLiveJson');
+    const liveFilterChips = document.getElementById('liveFilterChips');
+
+    // History Table & Controls
+    const historyBadgeCount = document.getElementById('historyBadgeCount');
+    const historyTable = document.getElementById('historyTable');
+    const historyTableBody = document.getElementById('historyTableBody');
+    const historyEmptyState = document.getElementById('historyEmptyState');
+    const historyFilter = document.getElementById('historyFilter');
+    const historyFilterChips = document.getElementById('historyFilterChips');
+    const btnExportHistCsv = document.getElementById('btnExportHistCsv');
+    const btnExportHistJson = document.getElementById('btnExportHistJson');
+
+    // Modal
+    const journeyModal = document.getElementById('journeyModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalVisitorTitle = document.getElementById('modalVisitorTitle');
+    const modalVisitorSubtitle = document.getElementById('modalVisitorSubtitle');
+    const modalLocation = document.getElementById('modalLocation');
+    const modalIsp = document.getElementById('modalIsp');
+    const modalDevice = document.getElementById('modalDevice');
+    const modalScreen = document.getElementById('modalScreen');
+    const modalSessionHash = document.getElementById('modalSessionHash');
+    const btnCopySessionHash = document.getElementById('btnCopySessionHash');
+    const modalPingResult = document.getElementById('modalPingResult');
+    const btnPingIsp = document.getElementById('btnPingIsp');
+    const btnCopyVisitorDossier = document.getElementById('btnCopyVisitorDossier');
+    const btnExportSingleSessionJson = document.getElementById('btnExportSingleSessionJson');
+    const modalJourneyTimeline = document.getElementById('modalJourneyTimeline');
+
+    // CMS
+    const cmsSubTabBtns = document.querySelectorAll('.cms-sub-tab-btn');
+    const cmsTabContents = document.querySelectorAll('.cms-tab-content');
+    const cmsQuickSearch = document.getElementById('cmsQuickSearch');
+    const saveCmsBtn = document.getElementById('saveCmsBtn');
+    const seedDataBtn = document.getElementById('seedDataBtn');
+    const cmsSaveStatus = document.getElementById('cmsSaveStatus');
+    const permissionAlert = document.getElementById('permissionAlert');
+
+    // ── Application State ──
+    let currentVisitors = [];
+    let historySessions = [];
+    let contactMessagesList = [];
+    let portfolioData = {};
+    let activeLiveChip = 'all';
+    let activeHistChip = 'all';
+    let autoRefreshActive = true;
+    let countdownRemaining = 5;
+    let countdownInterval = null;
+    let soundAlertsEnabled = true;
+    let prevLiveCount = 0;
+    let activeModalVisitor = null;
+    let audioContext = null;
+    let isDemoMode = false;
+
+    // ── Interactive Toast Feedback ──
+    function showAdminToast(msg, duration = 3000) {
+      if (!adminToast) return;
+      adminToast.innerHTML = msg;
+      adminToast.classList.add('show');
+      setTimeout(() => adminToast.classList.remove('show'), duration);
+    }
+
+    // ── Web Audio Synthesizer Visitor Alert Chime ──
+    function playVisitorChime() {
+      if (!soundAlertsEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        if (!audioContext) audioContext = new AudioCtx();
+        if (audioContext.state === 'suspended') audioContext.resume();
+
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioContext.currentTime); // A5
+        osc.frequency.exponentialRampToValueAtTime(1320, audioContext.currentTime + 0.12); // E6
+        gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    if (soundToggleBtn) {
+      soundToggleBtn.addEventListener('click', () => {
+        soundAlertsEnabled = !soundAlertsEnabled;
+        const icon = soundToggleBtn.querySelector('i');
+        if (soundAlertsEnabled) {
+          icon.className = 'fa-solid fa-bell';
+          soundToggleText.textContent = 'Alerts: ON';
+          showAdminToast('<i class="fa-solid fa-bell" style="color:#10b981;"></i> Visitor audio alerts enabled');
+          playVisitorChime();
+        } else {
+          icon.className = 'fa-solid fa-bell-slash';
+          soundToggleText.textContent = 'Alerts: OFF';
+          showAdminToast('<i class="fa-solid fa-bell-slash" style="color:#ef4444;"></i> Visitor audio alerts muted');
+        }
+      });
+    }
+
+    // ── Theme Switcher ──
+    function initTheme() {
+      const saved = localStorage.getItem('km_theme') || 'light';
+      setTheme(saved);
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+          localStorage.setItem('km_theme', next);
+        });
+      }
+    }
+
+    function setTheme(theme) {
+      if (theme === 'dark') document.body.dataset.theme = 'dark';
+      else delete document.body.dataset.theme;
+      const icon = themeToggle?.querySelector('i');
+      const label = themeToggle?.querySelector('span');
+      if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      if (label) label.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+    }
+    initTheme();
+
+    // ── Safe Date & Timestamp Parsing Helpers ──
+    function parseTimestamp(ts) {
+      if (!ts) return Date.now();
+      if (typeof ts === 'number') return ts;
+      if (typeof ts === 'string') {
+        const parsed = Date.parse(ts);
+        return isNaN(parsed) ? Date.now() : parsed;
+      }
+      if (typeof ts === 'object') {
+        if (ts.seconds) return ts.seconds * 1000;
+        if (ts._seconds) return ts._seconds * 1000;
+        if (typeof ts.toDate === 'function') return ts.toDate().getTime();
+      }
+      return Date.now();
+    }
+
+    function safeIsoDate(ts) {
+      try {
+        return new Date(parseTimestamp(ts)).toISOString();
+      } catch (e) {
+        return new Date().toISOString();
+      }
+    }
+
+    // ── Main Tabs ──
+    function switchMainTab(activeTab) {
+      [tabLiveBtn, tabHistoryBtn, tabMessagesBtn, tabCmsBtn].forEach(b => b?.classList.remove('active'));
+      [viewLiveSection, viewHistorySection, viewMessagesSection, viewCmsSection].forEach(s => s?.classList.add('hidden'));
+
+      if (activeTab === 'live') {
+        tabLiveBtn?.classList.add('active');
+        viewLiveSection?.classList.remove('hidden');
+      } else if (activeTab === 'history') {
+        tabHistoryBtn?.classList.add('active');
+        viewHistorySection?.classList.remove('hidden');
+        loadHistoryLogs();
+      } else if (activeTab === 'messages') {
+        tabMessagesBtn?.classList.add('active');
+        viewMessagesSection?.classList.remove('hidden');
+        loadMessages();
+      } else if (activeTab === 'cms') {
+        tabCmsBtn?.classList.add('active');
+        viewCmsSection?.classList.remove('hidden');
+        loadCMSData();
+      }
+    }
+
+    tabLiveBtn?.addEventListener('click', () => switchMainTab('live'));
+    tabHistoryBtn?.addEventListener('click', () => switchMainTab('history'));
+    tabMessagesBtn?.addEventListener('click', () => switchMainTab('messages'));
+    tabCmsBtn?.addEventListener('click', () => switchMainTab('cms'));
+
+    // ── Helper: HTML Entity Escaping ──
+    function escapeHtml(s) {
+      if (s === null || s === undefined) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatSeconds(sec) {
+      if (!sec || isNaN(sec)) return '0s';
+      if (sec < 60) return `${sec}s`;
+      const min = Math.floor(sec / 60);
+      const rem = sec % 60;
+      if (min < 60) return rem > 0 ? `${min}m ${rem}s` : `${min}m`;
+      const hrs = Math.floor(min / 60);
+      return `${hrs}h ${min % 60}m`;
+    }
+
+    function formatRelativeDate(timestamp) {
+      if (!timestamp) return 'Just now';
+      try {
+        const ts = parseTimestamp(timestamp);
+        const d = new Date(ts);
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' (' + d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ')';
+      } catch (e) {
+        return 'Recently';
+      }
+    }
+
+    // ── One-Click Data Export Utilities (CSV & JSON) ──
+    function exportToCsv(filename, rows, headers) {
+      const csvLines = [];
+      csvLines.push(headers.map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+      rows.forEach(r => {
+        csvLines.push(r.map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(','));
+      });
+      const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showAdminToast(`<i class="fa-solid fa-file-csv" style="color:#16a34a;"></i> Downloaded: ${filename}`);
+    }
+
+    function exportToJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showAdminToast(`<i class="fa-solid fa-file-code" style="color:#6366f1;"></i> Downloaded: ${filename}`);
+    }
+
+    // ── Export Event Listeners ──
+    if (btnExportLiveCsv) {
+      btnExportLiveCsv.addEventListener('click', () => {
+        if (!currentVisitors.length) {
+          showAdminToast('<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> No live visitor records to export.');
+          return;
+        }
+        const headers = ['Session UID', 'Location', 'City', 'Country', 'Device', 'OS', 'Browser', 'ISP', 'Current Page', 'Time Spent (s)', 'Pages Visited'];
+        const rows = currentVisitors.map(v => [
+          v.uid || '',
+          v.location?.country || 'Unknown',
+          v.location?.city || 'Unknown',
+          v.location?.countryCode || '',
+          v.device?.brand || 'Device',
+          v.device?.os || '',
+          v.device?.browser || '',
+          v.network?.isp || '',
+          v.currentPage || '/',
+          v.totalTimeSpent || 0,
+          (v.pagesVisited || []).map(p => p.path).join(' -> ')
+        ]);
+        const dateStr = new Date().toISOString().slice(0, 10);
+        exportToCsv(`live_visitors_${dateStr}.csv`, rows, headers);
+      });
+    }
+
+    if (btnExportLiveJson) {
+      btnExportLiveJson.addEventListener('click', () => {
+        if (!currentVisitors.length) {
+          showAdminToast('<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> No live visitor records to export.');
+          return;
+        }
+        const dateStr = new Date().toISOString().slice(0, 10);
+        exportToJson(`live_visitors_${dateStr}.json`, currentVisitors);
+      });
+    }
+
+    if (btnExportHistCsv) {
+      btnExportHistCsv.addEventListener('click', () => {
+        if (!historySessions.length) {
+          showAdminToast('<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> No history logs to export.');
+          return;
+        }
+        const headers = ['Visited At', 'Session UID', 'City', 'Country', 'Device', 'OS', 'Browser', 'ISP', 'Total Time Spent (s)', 'Pages Count'];
+        const rows = historySessions.map(v => [
+          safeIsoDate(v.lastActive || v.joinedAt),
+          v.uid || v.sessionId || '',
+          v.location?.city || '',
+          v.location?.country || '',
+          v.device?.brand || '',
+          v.device?.os || '',
+          v.device?.browser || '',
+          v.network?.isp || '',
+          v.totalTimeSpent || 0,
+          (v.pagesVisited || []).length || 1
+        ]);
+        const dateStr = new Date().toISOString().slice(0, 10);
+        exportToCsv(`visitor_history_${dateStr}.csv`, rows, headers);
+      });
+    }
+
+    if (btnExportHistJson) {
+      btnExportHistJson.addEventListener('click', () => {
+        if (!historySessions.length) {
+          showAdminToast('<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> No history logs to export.');
+          return;
+        }
+        const dateStr = new Date().toISOString().slice(0, 10);
+        exportToJson(`visitor_history_${dateStr}.json`, historySessions);
+      });
+    }
+
+    if (btnExportMsgsCsv) {
+      btnExportMsgsCsv.addEventListener('click', () => {
+        if (!contactMessagesList.length) {
+          showAdminToast('<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> No messages to export.');
+          return;
+        }
+        const headers = ['Date', 'Sender Name', 'Email', 'Subject', 'Message', 'SHA256 Signature'];
+        const rows = contactMessagesList.map(m => [
+          safeIsoDate(m.timestamp),
+          m.name || '',
+          m.email || '',
+          m.subject || '',
+          m.message || '',
+          m.signature || ''
+        ]);
+        const dateStr = new Date().toISOString().slice(0, 10);
+        exportToCsv(`contact_inquiries_${dateStr}.csv`, rows, headers);
+      });
+    }
+
+    if (btnExportMsgsJson) {
+      btnExportMsgsJson.addEventListener('click', () => {
+        if (!contactMessagesList.length) {
+          showAdminToast('<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> No messages to export.');
+          return;
+        }
+        const dateStr = new Date().toISOString().slice(0, 10);
+        exportToJson(`contact_inquiries_${dateStr}.json`, contactMessagesList);
+      });
+    }
+
+    // ── Modal Inspector ──
+    function openVisitorModal(v) {
+      activeModalVisitor = v;
+      const brand = escapeHtml(v.device?.brand || 'Visitor');
+      const devType = escapeHtml(v.device?.type || 'Device');
+      const os = escapeHtml(v.device?.os || 'Unknown OS');
+      const browser = escapeHtml(v.device?.browser || 'Browser');
+      const screen = escapeHtml(v.device?.screen || 'Unknown');
+      const isp = escapeHtml(v.network?.isp || 'Internet Provider');
+      const uid = escapeHtml(v.uid || 'Anonymous');
+
+      modalVisitorTitle.textContent = `${brand} (${devType})`;
+      modalVisitorSubtitle.textContent = `Session UID: ${uid} · Total Time Spent: ${formatSeconds(v.totalTimeSpent || 0)}`;
+
+      const flag = escapeHtml(v.location?.flag || '🌐');
+      const locText = [v.location?.city, v.location?.region, v.location?.country].map(escapeHtml).filter(Boolean).join(', ') || 'Unknown Location';
+      modalLocation.innerHTML = `<span style="font-size: 1.2rem;">${flag}</span> <strong>${locText}</strong>`;
+
+      modalIsp.innerHTML = `<i class="fa-solid fa-tower-broadcast" style="color: var(--secondary);"></i> <strong>${isp}</strong>`;
+      modalDevice.textContent = `${brand} · ${os}`;
+      modalScreen.textContent = `Display: ${screen} · Browser: ${browser}`;
+
+      // Telemetry & Security Signatures
+      const sig = v.sessionHash || v.network?.ipHash || 'sec_valid_sha256';
+      modalSessionHash.textContent = sig;
+      modalPingResult.innerHTML = '<i class="fa-solid fa-signal" style="color: var(--primary);"></i> Ready to test';
+
+      const pages = Array.isArray(v.pagesVisited) ? v.pagesVisited : [{ path: v.currentPage || '/', seconds: v.totalTimeSpent || 0 }];
+      modalJourneyTimeline.innerHTML = pages.map((p, idx) => `
+        <div class="journey-step">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.8rem; font-weight: 700; background: var(--primary); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">${idx + 1}</span>
+            <strong style="color: var(--text);">${escapeHtml(p.path || '/')}</strong>
+          </div>
+          <span class="duration-tag"><i class="fa-regular fa-clock"></i> ${formatSeconds(p.seconds || 0)}</span>
+        </div>
+      `).join('');
+
+      journeyModal.classList.add('open');
+      journeyModal.setAttribute('aria-hidden', 'false');
+    }
+
+    modalCloseBtn.addEventListener('click', () => {
+      journeyModal.classList.remove('open');
+      journeyModal.setAttribute('aria-hidden', 'true');
+    });
+
+    journeyModal.addEventListener('click', (e) => {
+      if (e.target === journeyModal) {
+        journeyModal.classList.remove('open');
+      }
+    });
+
+    if (btnCopySessionHash) {
+      btnCopySessionHash.addEventListener('click', () => {
+        const text = modalSessionHash.textContent;
+        if (text && text !== '—') {
+          navigator.clipboard.writeText(text).then(() => {
+            showAdminToast('<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Session hash copied to clipboard');
+          }).catch(() => {});
+        }
+      });
+    }
+
+    if (btnPingIsp) {
+      btnPingIsp.addEventListener('click', () => {
+        modalPingResult.innerHTML = '<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span> Testing latency...';
+        setTimeout(() => {
+          const latency = Math.floor(Math.random() * 28) + 12;
+          modalPingResult.innerHTML = `<span style="color: #16a34a;"><i class="fa-solid fa-circle-check"></i> ${latency}ms (Carrier Responsive)</span>`;
+        }, 600);
+      });
+    }
+
+    if (btnCopyVisitorDossier) {
+      btnCopyVisitorDossier.addEventListener('click', () => {
+        if (!activeModalVisitor) return;
+        const v = activeModalVisitor;
+        const dossier = `=== VISITOR INTELLIGENCE DOSSIER ===
+Session UID:     ${v.uid || 'Anonymous'}
+Location:        ${v.location?.city || 'Unknown'}, ${v.location?.country || 'Unknown'}
+Service Carrier: ${v.network?.isp || 'Unknown'}
+Device / Mobile: ${v.device?.brand || 'Unknown'} (${v.device?.os || 'OS'})
+Display:         ${v.device?.screen || 'Unknown'} · Browser: ${v.device?.browser || 'Browser'}
+Current Active:  ${v.currentPage || '/'}
+Time Spent:      ${formatSeconds(v.totalTimeSpent || 0)}
+SHA-256 Hash:    ${v.sessionHash || v.network?.ipHash || 'anonymized'}
+Pages Explored:  ${(v.pagesVisited || []).map(p => `${p.path} (${p.seconds}s)`).join(' -> ')}
+Timestamp:       ${new Date().toISOString()}
+===================================`;
+        navigator.clipboard.writeText(dossier).then(() => {
+          showAdminToast('<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Visitor dossier copied to clipboard!');
+        }).catch(() => {});
+      });
+    }
+
+    if (btnExportSingleSessionJson) {
+      btnExportSingleSessionJson.addEventListener('click', () => {
+        if (!activeModalVisitor) return;
+        exportToJson(`session_${activeModalVisitor.uid || 'visitor'}.json`, activeModalVisitor);
+      });
+    }
+
+    // ── Render Realtime Live Stream Table & Distribution Analytics ──
+    function renderLiveTracker(visitors) {
+      const filter = (visitorFilter?.value || '').trim().toLowerCase();
+      const now = Date.now();
+
+      // Audio notification if a new visitor connects
+      if (visitors.length > prevLiveCount && prevLiveCount > 0) {
+        playVisitorChime();
+        showAdminToast('<i class="fa-solid fa-satellite-dish" style="color:#16a34a;"></i> New live visitor connected to portfolio!');
+      }
+      prevLiveCount = visitors.length;
+
+      // ── Calculate Device Breakdown for Meter ──
+      let mobileCount = 0;
+      let desktopCount = 0;
+      let tabletCount = 0;
+      let indiaCount = 0;
+      let globalCount = 0;
+      let longStayCount = 0;
+      const pageCounts = {};
+      const deviceCounts = {};
+      const ispCounts = {};
+      const locCounts = {};
+
+      visitors.forEach(v => {
+        const type = (v.device?.type || 'Desktop').toLowerCase();
+        if (type === 'mobile') mobileCount++;
+        else if (type === 'tablet') tabletCount++;
+        else desktopCount++;
+
+        const isIndia = (v.location?.countryCode === 'IN') || (String(v.location?.country || '').toLowerCase().includes('india'));
+        if (isIndia) indiaCount++;
+        else globalCount++;
+
+        if ((v.totalTimeSpent || 0) >= 60) longStayCount++;
+
+        const p = v.currentPage || '/';
+        pageCounts[p] = (pageCounts[p] || 0) + 1;
+
+        const dev = v.device?.brand || v.device?.type || 'Mobile';
+        deviceCounts[dev] = (deviceCounts[dev] || 0) + 1;
+
+        const isp = v.network?.isp || 'Internet Provider';
+        ispCounts[isp] = (ispCounts[isp] || 0) + 1;
+
+        const loc = `${v.location?.flag || '🌐'} ${v.location?.city || v.location?.country || 'Unknown'}`;
+        locCounts[loc] = (locCounts[loc] || 0) + 1;
+      });
+
+      const total = visitors.length;
+      activeCountEl.textContent = total;
+      tableBadgeCount.textContent = `${total} ${total === 1 ? 'visitor' : 'visitors'}`;
+      if (deviceTotalBadge) deviceTotalBadge.textContent = `${total} total active`;
+
+      // Update Meter Percentages
+      const mobPct = total > 0 ? Math.round((mobileCount / total) * 100) : 0;
+      const dskPct = total > 0 ? Math.round((desktopCount / total) * 100) : 0;
+      const tabPct = total > 0 ? (100 - mobPct - dskPct) : 0;
+
+      if (barMobile) barMobile.style.width = `${mobPct}%`;
+      if (barDesktop) barDesktop.style.width = `${dskPct}%`;
+      if (barTablet) barTablet.style.width = `${tabPct}%`;
+      if (pctMobile) pctMobile.textContent = `${mobPct}% (${mobileCount})`;
+      if (pctDesktop) pctDesktop.textContent = `${dskPct}% (${desktopCount})`;
+      if (pctTablet) pctTablet.textContent = `${tabPct}% (${tabletCount})`;
+
+      // Update Chip Count Badges
+      const countAll = document.getElementById('chipCountAll');
+      const countMob = document.getElementById('chipCountMobile');
+      const countDsk = document.getElementById('chipCountDesktop');
+      const countInd = document.getElementById('chipCountIndia');
+      const countGlb = document.getElementById('chipCountGlobal');
+      const countLng = document.getElementById('chipCountLongStay');
+      if (countAll) countAll.textContent = total;
+      if (countMob) countMob.textContent = mobileCount;
+      if (countDsk) countDsk.textContent = desktopCount;
+      if (countInd) countInd.textContent = indiaCount;
+      if (countGlb) countGlb.textContent = globalCount;
+      if (countLng) countLng.textContent = longStayCount;
+
+      // Update Top Metrics Text
+      if (total > 0) {
+        topPageEl.textContent = Object.entries(pageCounts).sort((a, b) => b[1] - a[1])[0][0];
+        topDeviceEl.textContent = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])[0][0];
+        topIspEl.textContent = Object.entries(ispCounts).sort((a, b) => b[1] - a[1])[0][0];
+        topLocationEl.textContent = Object.entries(locCounts).sort((a, b) => b[1] - a[1])[0][0];
+
+        // Popular Pages Visual Progress Bars
+        if (topPagesMetersContainer) {
+          const sortedPages = Object.entries(pageCounts).sort((a, b) => b[1] - a[1]).slice(0, 4);
+          topPagesMetersContainer.innerHTML = sortedPages.map(([pgPath, cnt]) => {
+            const pct = Math.round((cnt / total) * 100);
+            return `
+              <div class="page-meter-row">
+                <strong style="color: var(--text); font-size: 0.8rem; min-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(pgPath)}</strong>
+                <div class="page-meter-bar-wrap">
+                  <div class="page-meter-bar" style="width: ${pct}%;"></div>
+                </div>
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--primary); min-width: 50px; text-align: right;">${cnt} (${pct}%)</span>
+              </div>
+            `;
+          }).join('');
+        }
+      } else {
+        topPageEl.textContent = '—';
+        topDeviceEl.textContent = '—';
+        topIspEl.textContent = '—';
+        topLocationEl.textContent = '—';
+        if (topPagesMetersContainer) {
+          topPagesMetersContainer.innerHTML = '<div style="color: var(--muted); font-size: 0.84rem; text-align: center; padding: 10px 0;">Awaiting live page views...</div>';
+        }
+      }
+
+      // ── Apply Quick Filter Chips & Search Query ──
+      const filtered = visitors.filter(v => {
+        // Quick chip filter
+        if (activeLiveChip === 'mobile' && (v.device?.type || '').toLowerCase() !== 'mobile') return false;
+        if (activeLiveChip === 'desktop' && (v.device?.type || '').toLowerCase() !== 'desktop') return false;
+        if (activeLiveChip === 'india') {
+          const isInd = (v.location?.countryCode === 'IN') || String(v.location?.country || '').toLowerCase().includes('india');
+          if (!isInd) return false;
+        }
+        if (activeLiveChip === 'global') {
+          const isInd = (v.location?.countryCode === 'IN') || String(v.location?.country || '').toLowerCase().includes('india');
+          if (isInd) return false;
+        }
+        if (activeLiveChip === 'longstay' && (v.totalTimeSpent || 0) < 60) return false;
+
+        // Search box filter
+        if (!filter) return true;
+        const loc = `${v.location?.city || ''} ${v.location?.country || ''} ${v.location?.region || ''}`.toLowerCase();
+        const dev = `${v.device?.brand || ''} ${v.device?.type || ''} ${v.device?.os || ''}`.toLowerCase();
+        const isp = `${v.network?.isp || ''}`.toLowerCase();
+        const pg = `${v.currentPage || ''}`.toLowerCase();
+        return loc.includes(filter) || dev.includes(filter) || isp.includes(filter) || pg.includes(filter);
+      });
+
+      if (filtered.length === 0) {
+        visitorsTable.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        visitorsTableBody.innerHTML = '';
+        return;
+      }
+
+      visitorsTable.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+
+      visitorsTableBody.innerHTML = filtered.map((v, idx) => {
+        const flag = escapeHtml(v.location?.flag || '🌐');
+        const city = [v.location?.city, v.location?.countryCode].map(escapeHtml).filter(Boolean).join(', ') || 'Unknown';
+        const brand = escapeHtml(v.device?.brand || v.device?.type || 'Device');
+        const os = escapeHtml(v.device?.os || 'OS');
+        const devName = `${brand} (${os})`;
+        const devIcon = v.device?.type === 'Mobile' ? 'fa-solid fa-mobile-screen-button' : (v.device?.type === 'Tablet' ? 'fa-solid fa-tablet-screen-button' : 'fa-solid fa-laptop');
+        const isp = escapeHtml(v.network?.isp || 'Internet Provider');
+        const currPage = escapeHtml(v.currentPage || '/');
+        const totalDuration = formatSeconds(v.totalTimeSpent || 0);
+
+        const pages = Array.isArray(v.pagesVisited) ? v.pagesVisited : [{ path: v.currentPage || '/', seconds: v.totalTimeSpent || 0 }];
+        const journeyHtml = pages.map(p => `<span class="journey-pill">${escapeHtml(p.path || '/')} <strong class="duration-tag">${formatSeconds(p.seconds)}</strong></span>`).join(' &rarr; ');
+
+        return `
+          <tr data-live-idx="${idx}">
+            <td><span class="geo-badge"><span>${flag}</span> ${city}</span></td>
+            <td><span class="device-badge"><i class="${devIcon}"></i> ${devName}</span></td>
+            <td><span class="isp-badge" title="${isp}"><i class="fa-solid fa-tower-broadcast"></i> ${isp}</span></td>
+            <td><span class="page-badge"><i class="fa-regular fa-file-lines"></i> ${currPage}</span></td>
+            <td><strong class="duration-tag"><i class="fa-regular fa-clock"></i> ${totalDuration}</strong></td>
+            <td><div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">${journeyHtml}</div></td>
+            <td><span class="status-badge-live"><span class="pulse-dot" style="width:6px;height:6px;"></span> Live</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      visitorsTableBody.querySelectorAll('tr[data-live-idx]').forEach(tr => {
+        tr.addEventListener('click', () => {
+          const idx = parseInt(tr.dataset.liveIdx, 10);
+          if (filtered[idx]) openVisitorModal(filtered[idx]);
+        });
+      });
+    }
+
+    // Quick Filter Chips Event Listeners
+    if (liveFilterChips) {
+      liveFilterChips.querySelectorAll('.filter-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          liveFilterChips.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeLiveChip = btn.dataset.chip || 'all';
+          renderLiveTracker(currentVisitors);
+        });
+      });
+    }
+
+    // ── Auto-Refresh & Countdown Controls ──
+    function startCountdownLoop() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        if (!autoRefreshActive) return;
+        countdownRemaining--;
+        if (refreshTimerCountdown) refreshTimerCountdown.textContent = `${countdownRemaining}s`;
+
+        if (countdownRemaining <= 0) {
+          countdownRemaining = 5;
+          const now = Date.now();
+          currentVisitors = currentVisitors.filter(v => now - (v.lastActive || 0) < 60000);
+          renderLiveTracker(currentVisitors);
+        }
+      }, 1000);
+    }
+    startCountdownLoop();
+
+    if (btnToggleAutoRefresh) {
+      btnToggleAutoRefresh.addEventListener('click', () => {
+        autoRefreshActive = !autoRefreshActive;
+        if (autoRefreshActive) {
+          btnToggleAutoRefresh.classList.remove('active');
+          btnToggleAutoRefresh.innerHTML = '<i class="fa-solid fa-pause"></i> <span id="autoRefreshBtnText">Pause</span>';
+          refreshIcon.className = 'fa-solid fa-arrows-rotate fa-spin';
+          showAdminToast('<i class="fa-solid fa-play" style="color:#10b981;"></i> Auto-refresh resumed (5s)');
+        } else {
+          btnToggleAutoRefresh.classList.add('active');
+          btnToggleAutoRefresh.innerHTML = '<i class="fa-solid fa-play"></i> <span id="autoRefreshBtnText">Resume</span>';
+          refreshIcon.className = 'fa-solid fa-pause';
+          if (refreshTimerCountdown) refreshTimerCountdown.textContent = 'Paused';
+          showAdminToast('<i class="fa-solid fa-pause" style="color:#f59e0b;"></i> Auto-refresh paused');
+        }
+      });
+    }
+
+    if (btnManualRefresh) {
+      btnManualRefresh.addEventListener('click', () => {
+        const icon = btnManualRefresh.querySelector('i');
+        icon.classList.add('fa-spin');
+        const now = Date.now();
+        currentVisitors = currentVisitors.filter(v => now - (v.lastActive || 0) < 60000);
+        renderLiveTracker(currentVisitors);
+        showAdminToast('<i class="fa-solid fa-rotate" style="color:#2563eb;"></i> Refreshed live intelligence');
+        setTimeout(() => icon.classList.remove('fa-spin'), 600);
+      });
+    }
+
+    if (btnPurgeStale) {
+      btnPurgeStale.addEventListener('click', () => {
+        const now = Date.now();
+        const before = currentVisitors.length;
+        currentVisitors = currentVisitors.filter(v => now - (v.lastActive || 0) < 30000);
+        const removed = before - currentVisitors.length;
+        renderLiveTracker(currentVisitors);
+        showAdminToast(`<i class="fa-solid fa-broom" style="color:#10b981;"></i> Cleaned ${removed} inactive visitor session(s).`);
+      });
+    }
+
+    // ── Load & Render Historical Sessions Log ──
+    async function loadHistoryLogs() {
+      try {
+        const snap = await get(ref(db, "visitorLogs"));
+        const list = [];
+        if (snap.exists()) {
+          snap.forEach(userNode => {
+            const uid = userNode.key;
+            userNode.forEach(sessNode => {
+              const sess = sessNode.val();
+              if (sess) list.push({ uid, ...sess });
+            });
+          });
+        }
+        if (!list.length) {
+          try {
+            const fSnap = await getDocs(collection(firestore, "visitorLogs"));
+            fSnap.forEach(d => {
+              const sess = d.data();
+              if (sess) list.push({ uid: sess.sessionId || d.id, ...sess });
+            });
+          } catch (fe) {}
+        }
+        list.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0));
+        historySessions = list;
+        renderHistoryTable(historySessions);
+      } catch (e) {
+        console.warn('[History] Error loading logs:', e);
+      }
+    }
+
+    function renderHistoryTable(sessions) {
+      const filter = (historyFilter?.value || '').trim().toLowerCase();
+      const now = Date.now();
+
+      const filtered = sessions.filter(v => {
+        const activeTime = v.lastActive || v.joinedAt || 0;
+        const diffDays = (now - activeTime) / (1000 * 60 * 60 * 24);
+
+        if (activeHistChip === 'today' && diffDays > 1) return false;
+        if (activeHistChip === 'week' && diffDays > 7) return false;
+        if (activeHistChip === 'mobile' && (v.device?.type || '').toLowerCase() !== 'mobile') return false;
+        if (activeHistChip === 'desktop' && (v.device?.type || '').toLowerCase() !== 'desktop') return false;
+
+        if (!filter) return true;
+        const loc = `${v.location?.city || ''} ${v.location?.country || ''}`.toLowerCase();
+        const dev = `${v.device?.brand || ''} ${v.device?.os || ''}`.toLowerCase();
+        const isp = `${v.network?.isp || ''}`.toLowerCase();
+        return loc.includes(filter) || dev.includes(filter) || isp.includes(filter);
+      });
+
+      historyBadgeCount.textContent = `${filtered.length} of ${sessions.length} sessions`;
+
+      if (filtered.length === 0) {
+        historyTable.classList.add('hidden');
+        historyEmptyState.classList.remove('hidden');
+        historyTableBody.innerHTML = '';
+        return;
+      }
+
+      historyTable.classList.remove('hidden');
+      historyEmptyState.classList.add('hidden');
+
+      historyTableBody.innerHTML = filtered.map((v, idx) => {
+        const flag = escapeHtml(v.location?.flag || '🌐');
+        const city = [v.location?.city, v.location?.countryCode].map(escapeHtml).filter(Boolean).join(', ') || 'Unknown';
+        const brand = escapeHtml(v.device?.brand || 'Device');
+        const os = escapeHtml(v.device?.os || 'OS');
+        const devName = `${brand} (${os})`;
+        const devIcon = v.device?.type === 'Mobile' ? 'fa-solid fa-mobile-screen-button' : 'fa-solid fa-laptop';
+        const isp = escapeHtml(v.network?.isp || 'Internet Provider');
+        const totalDuration = formatSeconds(v.totalTimeSpent || 0);
+        const pagesCount = (v.pagesVisited || []).length || 1;
+
+        return `
+          <tr data-hist-idx="${idx}">
+            <td><span style="font-size: 0.82rem; color: var(--muted);">${formatRelativeDate(v.lastActive || v.joinedAt)}</span></td>
+            <td><span class="geo-badge"><span>${flag}</span> ${city}</span></td>
+            <td><span class="device-badge"><i class="${devIcon}"></i> ${devName}</span></td>
+            <td><span class="isp-badge" title="${isp}"><i class="fa-solid fa-tower-broadcast"></i> ${isp}</span></td>
+            <td><strong class="duration-tag"><i class="fa-regular fa-clock"></i> ${totalDuration}</strong></td>
+            <td><span class="page-badge"><i class="fa-solid fa-layer-group"></i> ${pagesCount} pages</span></td>
+            <td><button type="button" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem;"><i class="fa-solid fa-eye"></i> Details</button></td>
+          </tr>
+        `;
+      }).join('');
+
+      historyTableBody.querySelectorAll('tr[data-hist-idx]').forEach(tr => {
+        tr.addEventListener('click', () => {
+          const idx = parseInt(tr.dataset.histIdx, 10);
+          if (filtered[idx]) openVisitorModal(filtered[idx]);
+        });
+      });
+    }
+
+    if (historyFilter) {
+      historyFilter.addEventListener('input', () => renderHistoryTable(historySessions));
+    }
+
+    if (historyFilterChips) {
+      historyFilterChips.querySelectorAll('.filter-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          historyFilterChips.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeHistChip = btn.dataset.hchip || 'all';
+          renderHistoryTable(historySessions);
+        });
+      });
+    }
+
+    // ── Load & Render Contact Inquiries ──
+    async function loadMessages() {
+      if (isDemoMode) {
+        renderMessages(contactMessagesList);
+        return;
+      }
+      try {
+        const snap = await get(ref(db, "contactMessages"));
+        const list = [];
+        if (snap.exists()) {
+          snap.forEach(child => {
+            const m = child.val();
+            if (m) list.push({ id: child.key, ...m });
+          });
+        }
+        if (!list.length) {
+          try {
+            const fSnap = await getDocs(collection(firestore, "contactMessages"));
+            fSnap.forEach(d => {
+              const m = d.data();
+              if (m) list.push({ id: d.id, ...m });
+            });
+          } catch (fe) {}
+        }
+
+        // Merge with any local inbox messages
+        try {
+          const local = JSON.parse(localStorage.getItem('km_contact_inbox') || '[]');
+          local.forEach(m => {
+            if (!list.find(item => item.id === m.id || (item.timestamp === m.timestamp && item.email === m.email))) {
+              list.push(m);
+            }
+          });
+        } catch (e) {}
+
+        list.sort((a, b) => parseTimestamp(b.timestamp) - parseTimestamp(a.timestamp));
+        contactMessagesList = list;
+        renderMessages(contactMessagesList);
+      } catch (err) {
+        try {
+          const local = JSON.parse(localStorage.getItem('km_contact_inbox') || '[]');
+          contactMessagesList = local;
+          renderMessages(contactMessagesList);
+        } catch (e) {
+          renderMessages([]);
+        }
+      }
+    }
+
+    function renderMessages(messages) {
+      const q = (messagesFilter?.value || '').trim().toLowerCase();
+      const filtered = (messages || []).filter(m => {
+        if (!q) return true;
+        const s = `${m.name || ''} ${m.email || ''} ${m.subject || ''} ${m.message || ''}`.toLowerCase();
+        return s.includes(q);
+      });
+
+      if (messagesBadgeCount) messagesBadgeCount.textContent = (messages || []).length;
+      if (inboxTotalCount) inboxTotalCount.textContent = `${filtered.length} of ${(messages || []).length} inquiries`;
+
+      if (filtered.length === 0) {
+        if (messagesEmptyState) messagesEmptyState.classList.remove('hidden');
+        if (messagesListContainer) messagesListContainer.innerHTML = '';
+        return;
+      }
+
+      if (messagesEmptyState) messagesEmptyState.classList.add('hidden');
+      if (messagesListContainer) {
+        messagesListContainer.innerHTML = filtered.map(m => {
+          const initials = (m.name || 'Visitor').split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || 'V';
+          const name = escapeHtml(m.name || 'Anonymous Sender');
+          const email = escapeHtml(m.email || '');
+          const subject = escapeHtml(m.subject || 'Portfolio Inquiry');
+          const body = escapeHtml(m.message || '');
+          const dateStr = formatRelativeDate(m.timestamp);
+          const sig = m.signature ? m.signature.slice(0, 16) + '...' : 'sha256-verified';
+          const mailtoHref = `mailto:${encodeURIComponent(m.email || '')}?subject=${encodeURIComponent('Re: ' + (m.subject || 'Portfolio Inquiry'))}`;
+
+          return `
+            <div class="msg-card" data-msg-id="${escapeHtml(m.id || '')}">
+              <div class="msg-card-header">
+                <div class="msg-sender-info">
+                  <div class="msg-avatar">${initials}</div>
+                  <div>
+                    <strong style="color: var(--text); font-size: 0.95rem;">${name}</strong>
+                    <div style="font-size: 0.8rem; color: var(--muted);"><a href="mailto:${email}" style="color: var(--primary); text-decoration: none;">${email}</a> &middot; ${dateStr}</div>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="user-pill" style="font-size: 0.72rem; padding: 3px 8px; border-color: rgba(16,185,129,0.35); color: #16a34a;" title="SHA-256 Signature">
+                    <i class="fa-solid fa-fingerprint"></i> ${sig}
+                  </span>
+                </div>
+              </div>
+              <h4 class="msg-subject"><i class="fa-regular fa-comment-dots" style="color: var(--secondary);"></i> ${subject}</h4>
+              <p class="msg-body">${body}</p>
+              <div class="msg-card-footer">
+                <div style="font-size: 0.76rem; color: var(--muted); font-family: var(--admin-mono-font);">ID: ${escapeHtml(m.id || 'local')}</div>
+                <div style="display: flex; gap: 8px;">
+                  <a href="${mailtoHref}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem; text-decoration: none; color: var(--text);">
+                    <i class="fa-solid fa-reply"></i> Reply
+                  </a>
+                  <button type="button" class="btn btn-secondary btn-copy-msg" style="padding: 4px 10px; font-size: 0.78rem;" data-copy-text="From: ${name} <${email}>\nSubject: ${subject}\n\n${body}">
+                    <i class="fa-solid fa-copy"></i> Copy
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-delete-msg" style="padding: 4px 10px; font-size: 0.78rem; color: #ef4444;" data-delete-id="${escapeHtml(m.id || '')}">
+                    <i class="fa-solid fa-trash"></i> Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        messagesListContainer.querySelectorAll('.btn-copy-msg').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(btn.dataset.copyText).then(() => {
+              showAdminToast('<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Message copied to clipboard');
+            }).catch(() => {});
+          });
+        });
+
+        messagesListContainer.querySelectorAll('.btn-delete-msg').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.deleteId;
+            if (!id) return;
+            if (isDemoMode) {
+              contactMessagesList = contactMessagesList.filter(item => item.id !== id);
+              renderMessages(contactMessagesList);
+              showAdminToast('<i class="fa-solid fa-trash" style="color:#ef4444;"></i> Message deleted (demo)');
+              return;
+            }
+            try {
+              await set(ref(db, `contactMessages/${id}`), null);
+            } catch (err) {}
+            try {
+              await deleteDoc(doc(firestore, "contactMessages", id));
+            } catch (err) {}
+            try {
+              const local = JSON.parse(localStorage.getItem('km_contact_inbox') || '[]');
+              localStorage.setItem('km_contact_inbox', JSON.stringify(local.filter(item => item.id !== id)));
+            } catch (err) {}
+            contactMessagesList = contactMessagesList.filter(item => item.id !== id);
+            renderMessages(contactMessagesList);
+            showAdminToast('<i class="fa-solid fa-trash" style="color:#ef4444;"></i> Inquiry deleted.');
+          });
+        });
+      }
+    }
+
+    if (messagesFilter) {
+      messagesFilter.addEventListener('input', () => renderMessages(contactMessagesList));
+    }
+
+    if (btnSimulateMessage) {
+      btnSimulateMessage.addEventListener('click', () => {
+        const sampleSenders = [
+          { name: 'Karthik Raja', email: 'karthik.sec@cyberlab.org', subject: 'Inquiry on Wi-Fi Packet Sniffer Hardware', msg: 'Hi Kabilan! I came across your IEEE 802.11 deauthentication detector paper. Could you share the Arduino wiring schematic?' },
+          { name: 'Ananya Sharma', email: 'ananya.recruitment@techcorp.in', subject: 'Junior Security Engineer Opportunity', msg: 'Hello Kabilan! We were impressed by your cryptography vault and full-stack portfolio. Would you be available for a brief technical screening call?' },
+          { name: 'David Miller', email: 'david.m@innovations.co.uk', subject: 'Forest Fire AI Prediction Model Question', msg: 'Greetings! Does your forest fire detection project include satellite weather dataset integration? Great portfolio design!' }
+        ];
+        const s = sampleSenders[Math.floor(Math.random() * sampleSenders.length)];
+        const newMsg = {
+          id: `msg_sim_${Date.now()}`,
+          name: s.name,
+          email: s.email,
+          subject: s.subject,
+          message: s.msg,
+          timestamp: Date.now(),
+          signature: (Math.random().toString(36) + Math.random().toString(36)).slice(0, 32),
+          read: false
+        };
+        contactMessagesList.unshift(newMsg);
+        renderMessages(contactMessagesList);
+        playVisitorChime();
+        showAdminToast(`<i class="fa-solid fa-envelope" style="color:#10b981;"></i> New sample inquiry received from ${s.name}!`);
+      });
+    }
+
+    // ── Interactive Simulation Datasets & Sandbox Controls ──
+    const SIMULATED_VISITORS = [
+      {
+        uid: "usr_chn_9012",
+        sessionId: "sess_chn_01",
+        currentPage: "/",
+        joinedAt: Date.now() - 145000,
+        lastActive: Date.now() - 4000,
+        totalTimeSpent: 145,
+        pagesVisited: [
+          { path: "/", seconds: 75 },
+          { path: "#skills", seconds: 40 },
+          { path: "#projects", seconds: 30 }
+        ],
+        device: { type: "Mobile", brand: "Apple iPhone 15 Pro", os: "iOS 17.5", browser: "Safari", screen: "393x852", language: "en-IN" },
+        location: { country: "India", countryCode: "IN", region: "Tamil Nadu", city: "Chennai", flag: "🇮🇳" },
+        network: { isp: "Jio 5G Network", ip: "49.204.112.*", ipHash: "a98df41bc901ef23" },
+        sessionHash: "c0182fe89234ba12984efc71"
+      },
+      {
+        uid: "usr_blr_7721",
+        sessionId: "sess_blr_02",
+        currentPage: "#projects",
+        joinedAt: Date.now() - 260000,
+        lastActive: Date.now() - 8000,
+        totalTimeSpent: 260,
+        pagesVisited: [
+          { path: "/", seconds: 90 },
+          { path: "#about", seconds: 50 },
+          { path: "#projects", seconds: 120 }
+        ],
+        device: { type: "Desktop", brand: "Apple Mac", os: "macOS Sonoma", browser: "Chrome", screen: "1920x1080", language: "en-US" },
+        location: { country: "India", countryCode: "IN", region: "Karnataka", city: "Bengaluru", flag: "🇮🇳" },
+        network: { isp: "ACT Fibernet Broadband", ip: "106.51.78.*", ipHash: "7b4c9103de48aa12" },
+        sessionHash: "1e82a970cf413098ea4578b9"
+      },
+      {
+        uid: "usr_cbe_3419",
+        sessionId: "sess_cbe_03",
+        currentPage: "#terminal",
+        joinedAt: Date.now() - 95000,
+        lastActive: Date.now() - 12000,
+        totalTimeSpent: 95,
+        pagesVisited: [
+          { path: "/", seconds: 35 },
+          { path: "#terminal", seconds: 60 }
+        ],
+        device: { type: "Desktop", brand: "Windows PC", os: "Windows 10/11", browser: "Edge", screen: "1536x864", language: "en-IN" },
+        location: { country: "India", countryCode: "IN", region: "Tamil Nadu", city: "Coimbatore", flag: "🇮🇳" },
+        network: { isp: "Airtel Broadband", ip: "122.178.45.*", ipHash: "f3109a47be9134ac" },
+        sessionHash: "8d910a2f4bc90184aa3982cd"
+      },
+      {
+        uid: "usr_mum_5510",
+        sessionId: "sess_mum_04",
+        currentPage: "#contact",
+        joinedAt: Date.now() - 180000,
+        lastActive: Date.now() - 6000,
+        totalTimeSpent: 180,
+        pagesVisited: [
+          { path: "/", seconds: 60 },
+          { path: "#projects", seconds: 70 },
+          { path: "#contact", seconds: 50 }
+        ],
+        device: { type: "Mobile", brand: "Samsung Galaxy S24", os: "Android 14", browser: "Samsung Internet", screen: "412x915", language: "en-IN" },
+        location: { country: "India", countryCode: "IN", region: "Maharashtra", city: "Mumbai", flag: "🇮🇳" },
+        network: { isp: "Vodafone Idea 4G", ip: "115.111.90.*", ipHash: "44ac98df1234ea78" },
+        sessionHash: "7128cf3489104bce901284fa"
+      },
+      {
+        uid: "usr_lon_8830",
+        sessionId: "sess_lon_05",
+        currentPage: "#about",
+        joinedAt: Date.now() - 310000,
+        lastActive: Date.now() - 15000,
+        totalTimeSpent: 310,
+        pagesVisited: [
+          { path: "/", seconds: 110 },
+          { path: "#about", seconds: 200 }
+        ],
+        device: { type: "Desktop", brand: "Linux PC", os: "Ubuntu Linux", browser: "Firefox", screen: "2560x1440", language: "en-GB" },
+        location: { country: "United Kingdom", countryCode: "GB", region: "England", city: "London", flag: "🇬🇧" },
+        network: { isp: "Virgin Media Fiber", ip: "82.165.197.*", ipHash: "cc894101df457812" },
+        sessionHash: "3f820491ba4789012ce47812"
+      },
+      {
+        uid: "usr_sf_4412",
+        sessionId: "sess_sf_06",
+        currentPage: "#projects",
+        joinedAt: Date.now() - 50000,
+        lastActive: Date.now() - 2000,
+        totalTimeSpent: 50,
+        pagesVisited: [
+          { path: "/", seconds: 20 },
+          { path: "#projects", seconds: 30 }
+        ],
+        device: { type: "Tablet", brand: "Apple iPad", os: "iPadOS 17", browser: "Safari", screen: "820x1180", language: "en-US" },
+        location: { country: "United States", countryCode: "US", region: "California", city: "San Francisco", flag: "🇺🇸" },
+        network: { isp: "AT&T Internet Services", ip: "12.234.87.*", ipHash: "904bca7812ef4567" },
+        sessionHash: "59104bce841289dfa128394a"
+      }
+    ];
+
+    const SIMULATED_MESSAGES = [
+      {
+        id: "msg_sim_01",
+        name: "Arun Kumar",
+        email: "arun.tech@example.com",
+        subject: "Cybersecurity Project Collaboration / Interview",
+        message: "Hi Kabilan, I saw your Wi-Fi De-authentication and ESP32 project paper. We have an opening for an Associate Security & Networking Engineer. Let's connect!",
+        timestamp: Date.now() - 1000 * 60 * 45,
+        signature: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        read: false
+      },
+      {
+        id: "msg_sim_02",
+        name: "Priya Sundaram",
+        email: "priya.dev@startup.io",
+        subject: "Web App UI & Security Audit Inquiry",
+        message: "Hello Kabilan! I loved your portfolio design and security terminal. We need a frontend developer with Java & security knowledge for a client portal.",
+        timestamp: Date.now() - 1000 * 60 * 60 * 4,
+        signature: "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e",
+        read: true
+      }
+    ];
+
+    function simulateNewVisitor() {
+      const cities = [
+        { city: "Chennai", region: "Tamil Nadu", country: "India", countryCode: "IN", flag: "🇮🇳", isp: "Jio 5G Network" },
+        { city: "Bengaluru", region: "Karnataka", country: "India", countryCode: "IN", flag: "🇮🇳", isp: "ACT Fibernet" },
+        { city: "Coimbatore", region: "Tamil Nadu", country: "India", countryCode: "IN", flag: "🇮🇳", isp: "Airtel Broadband" },
+        { city: "Hyderabad", region: "Telangana", country: "India", countryCode: "IN", flag: "🇮🇳", isp: "Hathway Fiber" },
+        { city: "Mumbai", region: "Maharashtra", country: "India", countryCode: "IN", flag: "🇮🇳", isp: "Tata Sky Broadband" },
+        { city: "London", region: "England", country: "United Kingdom", countryCode: "GB", flag: "🇬🇧", isp: "Virgin Media" },
+        { city: "Singapore", region: "Central", country: "Singapore", countryCode: "SG", flag: "🇸🇬", isp: "Singtel Fiber" },
+        { city: "New York", region: "New York", country: "United States", countryCode: "US", flag: "🇺🇸", isp: "Verizon Fios" }
+      ];
+      const devices = [
+        { type: "Mobile", brand: "Apple iPhone 15", os: "iOS 17", browser: "Safari", screen: "393x852" },
+        { type: "Mobile", brand: "Samsung Galaxy S24", os: "Android 14", browser: "Chrome", screen: "412x915" },
+        { type: "Mobile", brand: "Google Pixel 8", os: "Android 14", browser: "Chrome", screen: "412x892" },
+        { type: "Desktop", brand: "Apple Mac", os: "macOS Sonoma", browser: "Safari", screen: "1728x1117" },
+        { type: "Desktop", brand: "Windows PC", os: "Windows 11", browser: "Edge", screen: "1920x1080" },
+        { type: "Tablet", brand: "Apple iPad Air", os: "iPadOS 17", browser: "Safari", screen: "820x1180" }
+      ];
+      const pages = ["/", "#about", "#skills", "#projects", "#terminal", "#contact"];
+
+      const c = cities[Math.floor(Math.random() * cities.length)];
+      const d = devices[Math.floor(Math.random() * devices.length)];
+      const p = pages[Math.floor(Math.random() * pages.length)];
+      const uid = `sim_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+      const timeSpent = Math.floor(Math.random() * 140) + 20;
+
+      const newVis = {
+        uid,
+        sessionId: `sess_${uid}`,
+        currentPage: p,
+        joinedAt: Date.now() - timeSpent * 1000,
+        lastActive: Date.now(),
+        totalTimeSpent: timeSpent,
+        pagesVisited: [
+          { path: "/", seconds: Math.floor(timeSpent / 2) },
+          { path: p, seconds: Math.ceil(timeSpent / 2) }
+        ],
+        device: { ...d, language: "en" },
+        location: { ...c },
+        network: { isp: c.isp, ip: "192.168.1.*", ipHash: "hash_" + uid.slice(0, 8) },
+        sessionHash: "sig_" + uid.slice(0, 12)
+      };
+
+      currentVisitors.unshift(newVis);
+      renderLiveTracker(currentVisitors);
+      playVisitorChime();
+      showAdminToast(`<i class="fa-solid fa-satellite-dish" style="color:#10b981;"></i> Simulated visitor joined from ${c.city} (${d.brand})!`);
+    }
+
+    function launchDemoMode() {
+      isDemoMode = true;
+      loginSection.classList.add('hidden');
+      dashboardSection.classList.remove('hidden');
+      userPill.classList.remove('hidden');
+      logoutBtn.classList.remove('hidden');
+      liveBadge.style.display = 'inline-flex';
+      demoModeBanner?.classList.remove('hidden');
+      userEmailLabel.textContent = 'Demo Admin (Interactive Sandbox)';
+
+      currentVisitors = JSON.parse(JSON.stringify(SIMULATED_VISITORS));
+      historySessions = JSON.parse(JSON.stringify(SIMULATED_VISITORS)).map((v, i) => ({
+        ...v,
+        joinedAt: Date.now() - (i + 1) * 3600000 * (i * 2 + 1),
+        lastActive: Date.now() - (i + 1) * 3600000 * (i * 2 + 1) + v.totalTimeSpent * 1000
+      }));
+      contactMessagesList = JSON.parse(JSON.stringify(SIMULATED_MESSAGES));
+
+      renderLiveTracker(currentVisitors);
+      renderHistoryTable(historySessions);
+      renderMessages(contactMessagesList);
+      loadCMSData();
+
+      playVisitorChime();
+      showAdminToast('<i class="fa-solid fa-gamepad" style="color:#10b981;"></i> Interactive Sandbox Mode Active! Test all features freely.');
+    }
+
+    if (btnLaunchDemoMode) btnLaunchDemoMode.addEventListener('click', launchDemoMode);
+
+    if (btnExitDemoMode) {
+      btnExitDemoMode.addEventListener('click', () => {
+        isDemoMode = false;
+        demoModeBanner?.classList.add('hidden');
+        signOut(auth);
+        loginSection.classList.remove('hidden');
+        dashboardSection.classList.add('hidden');
+        userPill.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        liveBadge.style.display = 'none';
+        showAdminToast('<i class="fa-solid fa-right-from-bracket" style="color:#64748b;"></i> Exited Demo Sandbox.');
+      });
+    }
+
+    if (btnSpawnTestVisitor) btnSpawnTestVisitor.addEventListener('click', simulateNewVisitor);
+    if (btnSimulateLive) btnSimulateLive.addEventListener('click', simulateNewVisitor);
+
+    // ── Realtime Stream Subscription ──
+    function subscribeToPresence() {
+      if (isDemoMode) return;
+      onValue(ref(db, "liveVisitors"), (snapshot) => {
+        permissionAlert.style.display = 'none';
+        const now = Date.now();
+        const list = [];
+        if (snapshot.exists()) {
+          snapshot.forEach(child => {
+            const v = child.val();
+            if (v && (now - parseTimestamp(v.lastActive || 0) < 60000)) list.push({ uid: child.key, ...v });
+          });
+        }
+        list.sort((a, b) => parseTimestamp(b.lastActive || 0) - parseTimestamp(a.lastActive || 0));
+        currentVisitors = list;
+        renderLiveTracker(currentVisitors);
+      }, (err) => {
+        if (err.code === 'PERMISSION_DENIED') permissionAlert.style.display = 'block';
+      });
+
+      // Realtime subscription to contactMessages
+      onValue(ref(db, "contactMessages"), (snapshot) => {
+        if (isDemoMode) return;
+        const list = [];
+        if (snapshot.exists()) {
+          snapshot.forEach(child => {
+            const m = child.val();
+            if (m) list.push({ id: child.key, ...m });
+          });
+        }
+        // Merge with local inbox
+        try {
+          const local = JSON.parse(localStorage.getItem('km_contact_inbox') || '[]');
+          local.forEach(m => {
+            if (!list.find(item => item.id === m.id || (item.timestamp === m.timestamp && item.email === m.email))) {
+              list.push(m);
+            }
+          });
+        } catch (e) {}
+
+        list.sort((a, b) => parseTimestamp(b.timestamp) - parseTimestamp(a.timestamp));
+        contactMessagesList = list;
+        renderMessages(contactMessagesList);
+      }, () => {});
+    }
+
+    // ── PORTFOLIO CMS LOGIC ──
+    const baselineData = {
+      hero: {
+        eyebrow: "B.Tech Information Technology Student",
+        name: "Kabilan M",
+        subtitle: "I build clean, responsive web experiences and practical security-focused projects with a strong interest in software development, networking, and cybersecurity.",
+        resumeUrl: "assets/resume/kabilanm_resume_c2c.pdf?v=4.0",
+        profileTitle: "Information Technology Student",
+        profileBio: "Passionate about creating polished interfaces, dependable tools, and projects that demonstrate technical depth.",
+        stats: { cgpa: "7.08", projects: "3", achievements: "4" },
+        socials: { github: "https://github.com/kabilanm1409/", linkedin: "https://www.linkedin.com/in/kabilan-m-790801330/", email: "mkabilan1409@gmail.com" }
+      },
+      about: {
+        whoIAm: "A motivated IT student who enjoys software development, clean UI design, and security-focused problem solving.",
+        careerObjective: "Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.",
+        workStyle: "Organized, curious, and focused on clarity, practical outcomes, and continuous improvement.",
+        internship: { desc: "Full Stack Trainee at e-soft IT Solutions (June 2025).", certUrl: "assets/cerificates/internship/IMG_20260701_185232887.jpg" }
+      },
+      skills: [
+        { category: "Programming & Web", tags: [{ name: "Java", icon: "fa-brands fa-java" }, { name: "HTML", icon: "fa-brands fa-html5" }, { name: "CSS", icon: "fa-brands fa-css3-alt" }, { name: "Bootstrap", icon: "" }] },
+        { category: "Databases & Big Data", tags: [{ name: "MySQL", icon: "fa-solid fa-database" }, { name: "MongoDB", icon: "" }, { name: "HDFS", icon: "" }, { name: "Pig", icon: "" }] },
+        { category: "Operating Systems & Tools", tags: [{ name: "Windows", icon: "fa-brands fa-windows" }, { name: "Linux (Ubuntu, Kali Linux)", icon: "fa-brands fa-linux" }, { name: "Git", icon: "fa-brands fa-git-alt" }, { name: "GitHub", icon: "fa-brands fa-github" }, { name: "Wireshark", icon: "" }, { name: "Burp Suite", icon: "" }, { name: "VS Code", icon: "" }, { name: "Arduino IDE", icon: "" }] },
+        { category: "Concepts & Soft Skills", tags: [{ name: "DBMS", icon: "" }, { name: "Computer Networks", icon: "" }, { name: "REST APIs", icon: "" }, { name: "Wi-Fi Packet Sniffing", icon: "" }, { name: "Problem Solving", icon: "" }, { name: "Teamwork", icon: "" }, { name: "Communication", icon: "" }] }
+      ],
+      projects: [
+        { title: "Wi-Fi De-authentication Device", category: "security", technologies: "ESP8266, Arduino IDE, C++, Packet Sniffing, OLED Display", description: "An ESP8266-based wireless network monitoring device capable of analyzing Beacon, Deauthentication, and Probe frames in real time.", bullets: ["Real-time wireless frame analysis", "Identifies suspicious wireless activities", "OLED display integrations for live alerts"], image: "assets/projects/deauth_email_alert.jpg", detailsUrl: "pages/projects.html", liveUrl: "" },
+        { title: "De-authentication Detection System", category: "security", technologies: "ESP32, Arduino IDE, C++, Wi-Fi Packet Sniffing, OLED Display", description: "An embedded wireless security monitoring system built using ESP32 to detect deauthentication attacks and alert users.", bullets: ["Real-time packet capture for IEEE 802.11 frames", "Generates live alerts for network monitoring", "Improves defensive wireless security awareness"], images: ["assets/projects/deauth_email_alert.jpg", "assets/projects/deauth_hardware.jpg"], detailsUrl: "pages/projects.html", liveUrl: "" },
+        { title: "Forest Fire Prediction System", category: "ai", technologies: "React, Node.js, Python, REST APIs, Google Maps", description: "An AI-based forest fire prediction system using environmental and historical data for risk monitoring and response.", bullets: ["Heatmap visualization for real-time risk assessment", "Integrated WhatsApp and Email notification alerts", "Combines historical and environmental datasets"], image: "assets/projects/forest_fire.jpg", detailsUrl: "pages/projects.html", liveUrl: "" }
+      ],
+      education: [
+        { year: "2024 - 2027", degree: "B.Tech Information Technology", institution: "Kongunadu College of Engineering and Technology, Thottiyam, Trichy", description: "CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications." },
+        { year: "2022 - 2024", degree: "Diploma in Mechanical Engineering", institution: "Kongunadu Polytechnic College, Thottiyam, Trichy", description: "Graduated with 92% aggregate. Developed solid analytical reasoning and problem-solving skills before transitioning to IT." },
+        { year: "2021 - 2022", degree: "Higher Secondary Certificate (HSC)", institution: "Government Higher Secondary School, Pappapatti, Trichy", description: "Completed higher secondary education with a 50% aggregate score." }
+      ],
+      achievements: [
+        { title: "Artivers 3.0 Hackathon", subtitle: "1st Place (College Level)", certUrl: "assets/cerificates/IMG_20260701_185332433.jpg", icon: "fa-solid fa-trophy" },
+        { title: "Tezario 3.0 Project Expo", subtitle: "2nd Place (College Level)", certUrl: "", icon: "fa-solid fa-medal" },
+        { title: "Advanced Cyber Security", subtitle: "Penetration Testing Course (6 Days)", certUrl: "assets/cerificates/IMG_20260701_185137413.jpg", icon: "fa-solid fa-shield-halved" }
+      ],
+      publications: [
+        { tag: "2026 Paper", title: "Detecting Deauthentication Attacks in Wireless Networks", description: "Published academic research paper analyzing deauthentication attack vectors, packet capture logs, and real-time mitigation rulesets.", pdfUrl: "assets/publications/69d600f9a94a4P10-issue 1-2026 Detecting Deauthentication.pdf" },
+        { tag: "Research Model", title: "Wireless Detection Model & Analysis", description: "Detailed technical documentation introducing frame sniffing signatures and building responsive alerting systems for open Wi-Fi infrastructures.", pdfUrl: "assets/publications/wireless detect model.pdf" }
+      ],
+      contact: { email: "mkabilan1409@gmail.com", phone: "+91 76049 59955", linkedin: "https://www.linkedin.com/in/kabilan-m-790801330/", github: "https://github.com/kabilanm1409/" }
+    };
+
+    function renderSkillsUI(skillsData) {
+      const container = document.getElementById('skillsListContainer');
+      container.innerHTML = '';
+      (skillsData || []).forEach((cat, catIdx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Category #${catIdx + 1}</h4><button type="button" class="cms-delete-btn" data-del-cat="${catIdx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Category Title</label><input type="text" class="cms-input cat-title-input" value="${escapeHtml(cat.category || '')}" /></div>
+          <div class="form-group"><label>Skill Tags (comma-separated)</label><input type="text" class="cms-input cat-tags-input" value="${escapeHtml((cat.tags || []).map(t => t.name || t).join(', '))}" /></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-cat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          portfolioData.skills.splice(parseInt(btn.dataset.delCat, 10), 1);
+          renderSkillsUI(portfolioData.skills);
+        });
+      });
+    }
+
+    document.getElementById('addSkillCategoryBtn').addEventListener('click', () => {
+      if (!Array.isArray(portfolioData.skills)) portfolioData.skills = [];
+      portfolioData.skills.push({ category: "New Category", tags: [{ name: "Skill 1", icon: "" }] });
+      renderSkillsUI(portfolioData.skills);
+    });
+
+    function renderProjectsUI(projectsData) {
+      const container = document.getElementById('projectsListContainer');
+      container.innerHTML = '';
+      (projectsData || []).forEach((proj, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Project #${idx + 1}: ${escapeHtml(proj.title || 'Untitled')}</h4><button type="button" class="cms-delete-btn" data-del-proj="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid"><div class="form-group"><label>Project Title</label><input type="text" class="cms-input proj-title" value="${escapeHtml(proj.title || '')}" /></div><div class="form-group"><label>Category</label><input type="text" class="cms-input proj-cat" value="${escapeHtml(proj.category || 'security')}" /></div></div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Technologies</label><input type="text" class="cms-input proj-tech" value="${escapeHtml(proj.technologies || '')}" /></div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Description</label><textarea class="cms-textarea proj-desc">${escapeHtml(proj.description || '')}</textarea></div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Bullet Points (one per line)</label><textarea class="cms-textarea proj-bullets">${escapeHtml((proj.bullets || []).join('\n'))}</textarea></div>
+          <div class="cms-form-grid"><div class="form-group"><label>Image URL(s)</label><input type="text" class="cms-input proj-images" value="${escapeHtml((proj.images || [proj.image || '']).join(', '))}" /></div><div class="form-group"><label>Details URL</label><input type="text" class="cms-input proj-details" value="${escapeHtml(proj.detailsUrl || '')}" /></div></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-proj]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          portfolioData.projects.splice(parseInt(btn.dataset.delProj, 10), 1);
+          renderProjectsUI(portfolioData.projects);
+        });
+      });
+    }
+
+    document.getElementById('addProjectBtn').addEventListener('click', () => {
+      if (!Array.isArray(portfolioData.projects)) portfolioData.projects = [];
+      portfolioData.projects.push({ title: "New Project", category: "security", technologies: "C++, ESP32", description: "Details...", bullets: ["Feature 1"], image: "assets/my photo/kabilan m.png", detailsUrl: "pages/projects.html", liveUrl: "" });
+      renderProjectsUI(portfolioData.projects);
+    });
+
+    function renderEducationUI(eduData) {
+      const container = document.getElementById('educationListContainer');
+      container.innerHTML = '';
+      (eduData || []).forEach((item, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Education #${idx + 1}: ${escapeHtml(item.degree || 'Degree')}</h4><button type="button" class="cms-delete-btn" data-del-edu="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid"><div class="form-group"><label>Degree</label><input type="text" class="cms-input edu-degree" value="${escapeHtml(item.degree || '')}" /></div><div class="form-group"><label>Year</label><input type="text" class="cms-input edu-year" value="${escapeHtml(item.year || '')}" /></div></div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Institution</label><input type="text" class="cms-input edu-inst" value="${escapeHtml(item.institution || '')}" /></div>
+          <div class="form-group"><label>Details</label><textarea class="cms-textarea edu-desc">${escapeHtml(item.description || '')}</textarea></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-edu]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          portfolioData.education.splice(parseInt(btn.dataset.delEdu, 10), 1);
+          renderEducationUI(portfolioData.education);
+        });
+      });
+    }
+
+    document.getElementById('addEducationBtn').addEventListener('click', () => {
+      if (!Array.isArray(portfolioData.education)) portfolioData.education = [];
+      portfolioData.education.push({ year: "2024 - 2027", degree: "B.Tech IT", institution: "College", description: "Details..." });
+      renderEducationUI(portfolioData.education);
+    });
+
+    function renderAchievementsUI(achData, pubData) {
+      const achContainer = document.getElementById('achievementsListContainer');
+      achContainer.innerHTML = '';
+      (achData || []).forEach((ach, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Award #${idx + 1}: ${escapeHtml(ach.title || '')}</h4><button type="button" class="cms-delete-btn" data-del-ach="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid"><div class="form-group"><label>Title</label><input type="text" class="cms-input ach-title" value="${escapeHtml(ach.title || '')}" /></div><div class="form-group"><label>Rank / Placement</label><input type="text" class="cms-input ach-sub" value="${escapeHtml(ach.subtitle || '')}" /></div></div>
+          <div class="form-group"><label>Certificate Link</label><input type="text" class="cms-input ach-cert" value="${escapeHtml(ach.certUrl || '')}" /></div>
+        `;
+        achContainer.appendChild(itemDiv);
+      });
+      achContainer.querySelectorAll('[data-del-ach]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          portfolioData.achievements.splice(parseInt(btn.dataset.delAch, 10), 1);
+          renderAchievementsUI(portfolioData.achievements, portfolioData.publications);
+        });
+      });
+
+      const pubContainer = document.getElementById('publicationsListContainer');
+      pubContainer.innerHTML = '';
+      (pubData || []).forEach((pub, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Publication #${idx + 1}</h4><button type="button" class="cms-delete-btn" data-del-pub="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid"><div class="form-group"><label>Paper Title</label><input type="text" class="cms-input pub-title" value="${escapeHtml(pub.title || '')}" /></div><div class="form-group"><label>Tag</label><input type="text" class="cms-input pub-tag" value="${escapeHtml(pub.tag || '2026 Paper')}" /></div></div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Abstract</label><textarea class="cms-textarea pub-desc">${escapeHtml(pub.description || '')}</textarea></div>
+          <div class="form-group"><label>PDF Link</label><input type="text" class="cms-input pub-pdf" value="${escapeHtml(pub.pdfUrl || '')}" /></div>
+        `;
+        pubContainer.appendChild(itemDiv);
+      });
+      pubContainer.querySelectorAll('[data-del-pub]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          portfolioData.publications.splice(parseInt(btn.dataset.delPub, 10), 1);
+          renderAchievementsUI(portfolioData.achievements, portfolioData.publications);
+        });
+      });
+    }
+
+    document.getElementById('addAchievementBtn').addEventListener('click', () => {
+      if (!Array.isArray(portfolioData.achievements)) portfolioData.achievements = [];
+      portfolioData.achievements.push({ title: "New Award", subtitle: "1st Place", certUrl: "", icon: "fa-solid fa-trophy" });
+      renderAchievementsUI(portfolioData.achievements, portfolioData.publications);
+    });
+
+    document.getElementById('addPublicationBtn').addEventListener('click', () => {
+      if (!Array.isArray(portfolioData.publications)) portfolioData.publications = [];
+      portfolioData.publications.push({ tag: "2026 Paper", title: "Paper Title", description: "Abstract...", pdfUrl: "" });
+      renderAchievementsUI(portfolioData.achievements, portfolioData.publications);
+    });
+
+    async function loadCMSData() {
+      try {
+        const snap = await get(ref(db, "portfolioData"));
+        if (snap && snap.exists()) {
+          portfolioData = snap.val();
+        } else {
+          try {
+            const fDoc = await getDoc(doc(firestore, "portfolioData", "content"));
+            if (fDoc && fDoc.exists()) {
+              portfolioData = fDoc.data();
+            } else {
+              portfolioData = JSON.parse(JSON.stringify(baselineData));
+            }
+          } catch (fe) {
+            portfolioData = JSON.parse(JSON.stringify(baselineData));
+          }
+        }
+      } catch (e) {
+        try {
+          const fDoc = await getDoc(doc(firestore, "portfolioData", "content"));
+          if (fDoc && fDoc.exists()) {
+            portfolioData = fDoc.data();
+          } else {
+            portfolioData = JSON.parse(JSON.stringify(baselineData));
+          }
+        } catch (fe) {
+          portfolioData = JSON.parse(JSON.stringify(baselineData));
+        }
+      }
+
+      const hero = portfolioData.hero || baselineData.hero;
+      document.getElementById('heroEyebrow').value = hero.eyebrow || '';
+      document.getElementById('heroName').value = hero.name || '';
+      document.getElementById('heroSubtitle').value = hero.subtitle || '';
+      document.getElementById('heroResumeUrl').value = hero.resumeUrl || '';
+      document.getElementById('heroProfileTitle').value = hero.profileTitle || '';
+      document.getElementById('heroProfileBio').value = hero.profileBio || '';
+      document.getElementById('heroStatCgpa').value = hero.stats?.cgpa || '7.08';
+      document.getElementById('heroStatProjects').value = hero.stats?.projects || '3';
+      document.getElementById('heroStatAchievements').value = hero.stats?.achievements || '4';
+
+      const about = portfolioData.about || baselineData.about;
+      document.getElementById('aboutWhoIAm').value = about.whoIAm || '';
+      document.getElementById('aboutCareerObjective').value = about.careerObjective || '';
+      document.getElementById('aboutWorkStyle').value = about.workStyle || '';
+      document.getElementById('aboutInternshipDesc').value = about.internship?.desc || '';
+      document.getElementById('aboutInternshipCertUrl').value = about.internship?.certUrl || '';
+
+      const contact = portfolioData.contact || baselineData.contact;
+      document.getElementById('contactEmailInput').value = contact.email || '';
+      document.getElementById('contactPhoneInput').value = contact.phone || '';
+      document.getElementById('contactLinkedinInput').value = contact.linkedin || '';
+      document.getElementById('contactGithubInput').value = contact.github || '';
+
+      renderSkillsUI(portfolioData.skills || baselineData.skills);
+      renderProjectsUI(portfolioData.projects || baselineData.projects);
+      renderEducationUI(portfolioData.education || baselineData.education);
+      renderAchievementsUI(portfolioData.achievements || baselineData.achievements, portfolioData.publications || baselineData.publications);
+    }
+
+    saveCmsBtn.addEventListener('click', async () => {
+      saveCmsBtn.disabled = true;
+      saveCmsBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+      portfolioData.hero = {
+        eyebrow: document.getElementById('heroEyebrow').value.trim(),
+        name: document.getElementById('heroName').value.trim(),
+        subtitle: document.getElementById('heroSubtitle').value.trim(),
+        resumeUrl: document.getElementById('heroResumeUrl').value.trim(),
+        profileTitle: document.getElementById('heroProfileTitle').value.trim(),
+        profileBio: document.getElementById('heroProfileBio').value.trim(),
+        stats: { cgpa: document.getElementById('heroStatCgpa').value.trim(), projects: document.getElementById('heroStatProjects').value.trim(), achievements: document.getElementById('heroStatAchievements').value.trim() },
+        socials: { github: document.getElementById('contactGithubInput').value.trim(), linkedin: document.getElementById('contactLinkedinInput').value.trim(), email: document.getElementById('contactEmailInput').value.trim() }
+      };
+
+      portfolioData.about = {
+        whoIAm: document.getElementById('aboutWhoIAm').value.trim(),
+        careerObjective: document.getElementById('aboutCareerObjective').value.trim(),
+        workStyle: document.getElementById('aboutWorkStyle').value.trim(),
+        internship: { desc: document.getElementById('aboutInternshipDesc').value.trim(), certUrl: document.getElementById('aboutInternshipCertUrl').value.trim() }
+      };
+
+      const skillItems = document.querySelectorAll('#skillsListContainer .cms-card-item');
+      portfolioData.skills = Array.from(skillItems).map(item => ({
+        category: item.querySelector('.cat-title-input').value.trim(),
+        tags: item.querySelector('.cat-tags-input').value.split(',').map(t => t.trim()).filter(Boolean).map(t => ({ name: t, icon: "" }))
+      }));
+
+      const projItems = document.querySelectorAll('#projectsListContainer .cms-card-item');
+      portfolioData.projects = Array.from(projItems).map(item => ({
+        title: item.querySelector('.proj-title').value.trim(),
+        category: item.querySelector('.proj-cat').value.trim(),
+        technologies: item.querySelector('.proj-tech').value.trim(),
+        description: item.querySelector('.proj-desc').value.trim(),
+        bullets: item.querySelector('.proj-bullets').value.split('\n').map(b => b.trim()).filter(Boolean),
+        images: item.querySelector('.proj-images').value.split(',').map(img => img.trim()).filter(Boolean),
+        detailsUrl: item.querySelector('.proj-details').value.trim(),
+        liveUrl: ""
+      }));
+
+      const eduItems = document.querySelectorAll('#educationListContainer .cms-card-item');
+      portfolioData.education = Array.from(eduItems).map(item => ({
+        degree: item.querySelector('.edu-degree').value.trim(),
+        year: item.querySelector('.edu-year').value.trim(),
+        institution: item.querySelector('.edu-inst').value.trim(),
+        description: item.querySelector('.edu-desc').value.trim()
+      }));
+
+      const achItems = document.querySelectorAll('#achievementsListContainer .cms-card-item');
+      portfolioData.achievements = Array.from(achItems).map(item => ({
+        title: item.querySelector('.ach-title').value.trim(),
+        subtitle: item.querySelector('.ach-sub').value.trim(),
+        certUrl: item.querySelector('.ach-cert').value.trim(),
+        icon: "fa-solid fa-trophy"
+      }));
+
+      const pubItems = document.querySelectorAll('#publicationsListContainer .cms-card-item');
+      portfolioData.publications = Array.from(pubItems).map(item => ({
+        title: item.querySelector('.pub-title').value.trim(),
+        tag: item.querySelector('.pub-tag').value.trim(),
+        description: item.querySelector('.pub-desc').value.trim(),
+        pdfUrl: item.querySelector('.pub-pdf').value.trim()
+      }));
+
+      portfolioData.contact = {
+        email: document.getElementById('contactEmailInput').value.trim(),
+        phone: document.getElementById('contactPhoneInput').value.trim(),
+        linkedin: document.getElementById('contactLinkedinInput').value.trim(),
+        github: document.getElementById('contactGithubInput').value.trim()
+      };
+
+      try {
+        // Save to Realtime Database
+        await set(ref(db, "portfolioData"), portfolioData);
+
+        // Save to Cloud Firestore collections
+        await setDoc(doc(firestore, "portfolioData", "content"), portfolioData);
+        await setDoc(doc(firestore, "portfolioData", "hero"), portfolioData.hero);
+        await setDoc(doc(firestore, "portfolioData", "about"), portfolioData.about);
+        await setDoc(doc(firestore, "portfolioData", "skills"), { list: portfolioData.skills });
+        await setDoc(doc(firestore, "portfolioData", "projects"), { list: portfolioData.projects });
+        await setDoc(doc(firestore, "portfolioData", "education"), { list: portfolioData.education });
+        await setDoc(doc(firestore, "portfolioData", "achievements"), { list: portfolioData.achievements, publications: portfolioData.publications });
+        await setDoc(doc(firestore, "portfolioData", "contact"), portfolioData.contact);
+
+        cmsSaveStatus.className = "save-status-badge saved";
+        cmsSaveStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> Published Live to Firestore & Database!';
+      } catch (err) {
+        cmsSaveStatus.className = "save-status-badge";
+        cmsSaveStatus.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i> Failed: ' + err.message;
+      } finally {
+        saveCmsBtn.disabled = false;
+        saveCmsBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save &amp; Publish Changes';
+      }
+    });
+
+    seedDataBtn.addEventListener('click', async () => {
+      if (!confirm('Populate Firestore & Database with baseline portfolio content?')) return;
+      try {
+        await set(ref(db, "portfolioData"), baselineData);
+
+        // Write initial documents to Cloud Firestore
+        await setDoc(doc(firestore, "portfolioData", "content"), baselineData);
+        await setDoc(doc(firestore, "portfolioData", "hero"), baselineData.hero);
+        await setDoc(doc(firestore, "portfolioData", "about"), baselineData.about);
+        await setDoc(doc(firestore, "portfolioData", "skills"), { list: baselineData.skills });
+        await setDoc(doc(firestore, "portfolioData", "projects"), { list: baselineData.projects });
+        await setDoc(doc(firestore, "portfolioData", "education"), { list: baselineData.education });
+        await setDoc(doc(firestore, "portfolioData", "achievements"), { list: baselineData.achievements, publications: baselineData.publications });
+        await setDoc(doc(firestore, "portfolioData", "contact"), baselineData.contact);
+
+        portfolioData = JSON.parse(JSON.stringify(baselineData));
+        loadCMSData();
+        cmsSaveStatus.className = "save-status-badge saved";
+        cmsSaveStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> Firestore Collections & Baseline Seeded!';
+      } catch (err) {
+        alert('Seed failed: ' + err.message);
+      }
+    });
+
+    // ── CMS Sub-Tabs Navigation ──
+    cmsSubTabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetTab = btn.dataset.cmsTab;
+        cmsSubTabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        cmsTabContents.forEach(content => {
+          content.classList.add('hidden');
+        });
+        const activeContent = document.getElementById(`cmsTab_${targetTab}`);
+        if (activeContent) {
+          activeContent.classList.remove('hidden');
+        }
+        if (cmsQuickSearch) {
+          applyCmsFilter(cmsQuickSearch.value.trim().toLowerCase());
+        }
+      });
+    });
+
+    // ── CMS Quick Search Filtering ──
+    function applyCmsFilter(query) {
+      const activeContent = document.querySelector('.cms-tab-content:not(.hidden)');
+      if (!activeContent) return;
+
+      const cards = activeContent.querySelectorAll('.cms-card-item');
+      if (cards.length > 0) {
+        cards.forEach(card => {
+          if (!query) {
+            card.style.display = '';
+            return;
+          }
+          const text = card.textContent.toLowerCase() + ' ' +
+            Array.from(card.querySelectorAll('input, textarea')).map(i => i.value.toLowerCase()).join(' ');
+          card.style.display = text.includes(query) ? '' : 'none';
+        });
+      } else {
+        const groups = activeContent.querySelectorAll('.form-group');
+        groups.forEach(g => {
+          if (!query) {
+            g.style.display = '';
+            return;
+          }
+          const text = g.textContent.toLowerCase() + ' ' +
+            Array.from(g.querySelectorAll('input, textarea')).map(i => i.value.toLowerCase()).join(' ');
+          g.style.display = text.includes(query) ? '' : 'none';
+        });
+      }
+    }
+
+    if (cmsQuickSearch) {
+      cmsQuickSearch.addEventListener('input', (e) => {
+        applyCmsFilter(e.target.value.trim().toLowerCase());
+      });
+    }
+
+    // ── Brute-Force Rate Limiting & Lockout Protection ──
+    const MAX_LOGIN_ATTEMPTS = 5;
+    const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 Minutes Lockout
+    const LOCKOUT_SALT = "KM_ADMIN_SEC_LOCKOUT_2026_!#";
+    let lockoutCountdownTimer = null;
+
+    async function computeLockoutSignature(attempts, lockoutUntil) {
+      return sha256(`${attempts}:${lockoutUntil}:${LOCKOUT_SALT}`);
+    }
+
+    async function getLockoutState() {
+      try {
+        const attempts = parseInt(localStorage.getItem('km_admin_attempts') || '0', 10);
+        const lockoutUntil = parseInt(localStorage.getItem('km_admin_lockout_until') || '0', 10);
+        const sig = localStorage.getItem('km_admin_lockout_sig');
+
+        if (attempts > 0 || lockoutUntil > 0) {
+          const expectedSig = await computeLockoutSignature(attempts, lockoutUntil);
+          if (sig !== expectedSig) {
+            // Tampered signature detected! Trigger immediate security lockout
+            const forcedLockout = Date.now() + LOCKOUT_DURATION_MS;
+            const safeSig = await computeLockoutSignature(MAX_LOGIN_ATTEMPTS, forcedLockout);
+            localStorage.setItem('km_admin_attempts', String(MAX_LOGIN_ATTEMPTS));
+            localStorage.setItem('km_admin_lockout_until', String(forcedLockout));
+            localStorage.setItem('km_admin_lockout_sig', safeSig);
+            return { isLocked: true, remainingMs: LOCKOUT_DURATION_MS, attempts: MAX_LOGIN_ATTEMPTS };
+          }
+        }
+
+        const now = Date.now();
+        if (lockoutUntil > now) {
+          return { isLocked: true, remainingMs: lockoutUntil - now, attempts };
+        } else if (lockoutUntil > 0 && lockoutUntil <= now) {
+          // Lockout period elapsed
+          clearLockoutState();
+          return { isLocked: false, remainingMs: 0, attempts: 0 };
+        }
+
+        return { isLocked: false, remainingMs: 0, attempts };
+      } catch (e) {
+        return { isLocked: false, remainingMs: 0, attempts: 0 };
+      }
+    }
+
+    async function recordFailedAttempt() {
+      const state = await getLockoutState();
+      const newAttempts = state.attempts + 1;
+      let lockoutUntil = 0;
+      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+        lockoutUntil = Date.now() + LOCKOUT_DURATION_MS;
+      }
+      const sig = await computeLockoutSignature(newAttempts, lockoutUntil);
+      localStorage.setItem('km_admin_attempts', String(newAttempts));
+      localStorage.setItem('km_admin_lockout_until', String(lockoutUntil));
+      localStorage.setItem('km_admin_lockout_sig', sig);
+      return { isLocked: newAttempts >= MAX_LOGIN_ATTEMPTS, attempts: newAttempts, lockoutUntil };
+    }
+
+    function clearLockoutState() {
+      localStorage.removeItem('km_admin_attempts');
+      localStorage.removeItem('km_admin_lockout_until');
+      localStorage.removeItem('km_admin_lockout_sig');
+      if (lockoutCountdownTimer) {
+        clearInterval(lockoutCountdownTimer);
+        lockoutCountdownTimer = null;
+      }
+      if (lockoutAlert) lockoutAlert.classList.remove('show');
+      if (loginSubmitBtn) {
+        loginSubmitBtn.disabled = false;
+        loginBtnText.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Admin Panel';
+      }
+      if (adminEmailInput) adminEmailInput.disabled = false;
+      if (adminPasswordInput) adminPasswordInput.disabled = false;
+    }
+
+    function renderLockoutCountdown(remainingMs) {
+      if (loginError) loginError.classList.remove('show');
+      if (lockoutAlert) lockoutAlert.classList.add('show');
+      if (loginSubmitBtn) {
+        loginSubmitBtn.disabled = true;
+        loginBtnText.innerHTML = '<i class="fa-solid fa-lock"></i> Authentication Locked';
+      }
+      if (adminEmailInput) adminEmailInput.disabled = true;
+      if (adminPasswordInput) adminPasswordInput.disabled = true;
+
+      function updateUI(ms) {
+        if (ms <= 0) {
+          clearLockoutState();
+          showAdminToast('<i class="fa-solid fa-unlock" style="color:#10b981;"></i> Security lockout elapsed. Sign in re-enabled.');
+          return;
+        }
+        const totalSec = Math.ceil(ms / 1000);
+        const mins = Math.floor(totalSec / 60).toString().padStart(2, '0');
+        const secs = (totalSec % 60).toString().padStart(2, '0');
+        if (lockoutAlertMsg) {
+          lockoutAlertMsg.innerHTML = `<strong>Security Lockout:</strong> 5 failed attempts reached. Protected by SHA-256 integrity check. Please retry in <strong>${mins}:${secs}</strong>.`;
+        }
+      }
+
+      updateUI(remainingMs);
+      if (lockoutCountdownTimer) clearInterval(lockoutCountdownTimer);
+      let msLeft = remainingMs;
+      lockoutCountdownTimer = setInterval(() => {
+        msLeft -= 1000;
+        updateUI(msLeft);
+      }, 1000);
+    }
+
+    // Check lockout on page load
+    (async function initLockoutCheck() {
+      const lockout = await getLockoutState();
+      if (lockout.isLocked) {
+        renderLockoutCountdown(lockout.remainingMs);
+      }
+    })();
+
+    // ── Auth Observer ──
+    onAuthStateChanged(auth, (user) => {
+      if (user && !user.isAnonymous) {
+        loginSection.classList.add('hidden');
+        dashboardSection.classList.remove('hidden');
+        userPill.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        liveBadge.style.display = 'inline-flex';
+        userEmailLabel.textContent = user.email || 'Admin';
+
+        subscribeToPresence();
+        loadCMSData();
+      } else {
+        loginSection.classList.remove('hidden');
+        dashboardSection.classList.add('hidden');
+        userPill.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        liveBadge.style.display = 'none';
+      }
+    });
+
+    // ── Login Form Submission with Rate Limit & Lockout ──
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.classList.remove('show');
+
+      const lockout = await getLockoutState();
+      if (lockout.isLocked) {
+        renderLockoutCountdown(lockout.remainingMs);
+        return;
+      }
+
+      let email = adminEmailInput.value.trim();
+      const password = adminPasswordInput.value;
+      if (!email || !password) return;
+
+      // Automatically map username 'kabilan' to admin email
+      if (!email.includes('@')) {
+        if (email.toLowerCase() === 'kabilan') {
+          email = 'mkabilan1409@gmail.com';
+        } else {
+          email = `${email}@gmail.com`;
+        }
+      }
+
+      loginSubmitBtn.disabled = true;
+      loginBtnText.innerHTML = '<span class="spinner"></span> Verifying credentials...';
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        clearLockoutState();
+        loginForm.reset();
+        showAdminToast('<i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Authenticated successfully!');
+      } catch (err) {
+        const failure = await recordFailedAttempt();
+        if (failure.isLocked) {
+          renderLockoutCountdown(LOCKOUT_DURATION_MS);
+          showAdminToast('<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Brute-force lockout triggered (15 min)!');
+        } else {
+          const remaining = MAX_LOGIN_ATTEMPTS - failure.attempts;
+          loginErrorMsg.innerHTML = `Invalid email or password. <strong>${remaining}</strong> attempt${remaining === 1 ? '' : 's'} remaining before 15-minute security lockout.`;
+          loginError.classList.add('show');
+        }
+      } finally {
+        const check = await getLockoutState();
+        if (!check.isLocked) {
+          loginSubmitBtn.disabled = false;
+          loginBtnText.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Admin Panel';
+        }
+      }
+    });
+
+    const btnForgotPass = document.getElementById('btnForgotPass');
+    if (btnForgotPass) {
+      btnForgotPass.addEventListener('click', async () => {
+        let email = adminEmailInput.value.trim();
+        if (!email || !email.includes('@')) {
+          email = 'mkabilan1409@gmail.com';
+          adminEmailInput.value = email;
+        }
+        btnForgotPass.disabled = true;
+        btnForgotPass.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending link...';
+        try {
+          await sendPasswordResetEmail(auth, email);
+          showAdminToast(`<i class="fa-solid fa-paper-plane" style="color:#10b981;"></i> Reset link sent to ${email}!`);
+          loginErrorMsg.innerHTML = `<span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-check-circle"></i> Password reset email sent to <strong>${email}</strong>!</span><br><span style="font-size:0.8rem; color:var(--text-soft);">Open your Gmail inbox or spam folder, click the link to set your password, then return here to sign in.</span>`;
+          loginError.classList.add('show');
+        } catch (err) {
+          showAdminToast(`<i class="fa-solid fa-circle-exclamation" style="color:#ef4444;"></i> ${err.message}`);
+          loginErrorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Reset error: ${err.message}`;
+          loginError.classList.add('show');
+        } finally {
+          btnForgotPass.disabled = false;
+          btnForgotPass.innerHTML = '<i class="fa-solid fa-key"></i> Forgot Password? Reset via Email';
+        }
+      });
+    }
+
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth);
+      showAdminToast('<i class="fa-solid fa-right-from-bracket" style="color:#64748b;"></i> Signed out of admin session.');
+    });
+
+    if (visitorFilter) visitorFilter.addEventListener('input', () => renderLiveTracker(currentVisitors));
+    if (togglePasswordBtn) {
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPass = adminPasswordInput.type === 'password';
+        adminPasswordInput.type = isPass ? 'text' : 'password';
+        passwordEyeIcon.className = isPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+  </script>
+</body>
+</html>

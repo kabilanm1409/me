@@ -1,61 +1,69 @@
-# 🚀 Deployment Guide: GitHub Pages
+# 🔥 Deployment Guide: Firebase Hosting & Security Rules
 
-Follow this guide to deploy your portfolio live at:
-**`https://kabilanm1409.github.io/me/`**
+Your portfolio and interactive admin panel are configured for **Firebase Hosting**, **Firebase Realtime Database**, and **Cloud Firestore**.
 
----
-
-## 🔹 Option 1: Drag & Drop (Easiest - No Commands Needed)
-
-1. Open your web browser and go to: **[https://github.com/new](https://github.com/new)** (Log in if prompted).
-2. Create a new repository:
-   * **Repository name**: `me`
-   * **Public/Private**: Select **Public**
-   * **Initialize**: Leave all checkboxes (Readme, .gitignore, license) **unchecked**.
-   * Click **Create repository**.
-3. On the setup screen, click the link that says: **"uploading an existing file"** (near the top).
-4. Drag and drop the following files and folders from `C:\Users\ELCOT\portfolio` into the browser box:
-   * 📂 `assets/` (make sure all subfolders: `resume`, `my photo`, `projects`, `publications` are uploaded)
-   * 📂 `pages/`
-   * 📄 `index.html`
-   * 📄 `script.js`
-   * 📄 `style.css`
-5. Click **Commit changes** (this will upload all files).
-6. Go to **Settings** (tab at the top of your repository page) ➔ **Pages** (in the left sidebar).
-7. Under **Build and deployment** ➔ **Branch**:
-   * Change "None" to **`main`** (or `master`).
-   * Click **Save**.
-8. Wait 1-2 minutes. Refresh the settings page, and your live URL will appear at the top:
-   👉 **`https://kabilanm1409.github.io/me/`**
+* **Firebase Project ID:** `kabilanportfolio-ab851`
+* **Live Website URL:** [https://kabilanportfolio-ab851.web.app](https://kabilanportfolio-ab851.web.app) (or `https://kabilanportfolio-ab851.firebaseapp.com`)
+* **Admin Dashboard URL:** [https://kabilanportfolio-ab851.web.app/admin.html](https://kabilanportfolio-ab851.web.app/admin.html)
 
 ---
 
-## 🔹 Option 2: Using Git Terminal (Command Line)
+## ⚡ Quick Deployment (Single Command)
 
-If you have Git installed on your laptop's main command prompt, open your terminal inside the `C:\Users\ELCOT\portfolio` directory and run these commands:
+To deploy everything (Hosting + Database Rules + Firestore Rules):
 
 ```bash
-# 1. Initialize git repository
-git init
-
-# 2. Add all portfolio files
-git add .
-
-# 3. Create initial commit
-git commit -m "Deploy portfolio version 1.0"
-
-# 4. Rename default branch to main
-git branch -M main
-
-# 5. Create the repository named 'me' on GitHub first, then run:
-git remote add origin https://github.com/kabilanm1409/me.git
-
-# 6. Push files to GitHub
-git push -u origin main
+firebase deploy
+# or
+npm run deploy
 ```
 
-### Enable GitHub Pages:
-1. Go to your repository on GitHub: `https://github.com/kabilanm1409/me`
-2. Go to **Settings** ➔ **Pages**.
-3. Set source branch to **`main`** and click **Save**.
-4. Your site will go live at: **`https://kabilanm1409.github.io/me/`**
+You can also run selective deploys:
+```bash
+npm run deploy:hosting   # Website files only
+npm run deploy:rules     # RTDB & Firestore rules only
+```
+
+---
+
+## 🔹 Selective Deployment Options
+
+### 1. Deploy Only Website / Hosting (HTML, CSS, JS, Assets)
+If you made changes only to your web pages, styles, scripts, or admin panel:
+```bash
+firebase deploy --only hosting
+```
+
+### 2. Deploy Only Security Rules
+If you updated `database.rules.json` or `firestore.rules`:
+```bash
+firebase deploy --only database,firestore
+```
+
+---
+
+## 🛡️ Built-in Security on Firebase Hosting
+
+Your `firebase.json` is configured with enterprise security:
+1. **HTTP Security Headers**: Automatically applies `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `X-XSS-Protection`, `Referrer-Policy`, and `Permissions-Policy`.
+2. **File Shielding (Ignore List)**: The following sensitive files are **blocked** from public download:
+   * `.env*` (Environment secrets)
+   * `server.js` (Backend server code)
+   * `database.rules.json` & `firestore.rules` (Raw rules definitions)
+   * `package.json` & `node_modules`
+3. **Cache Policy**:
+   * `admin.html` is configured with `no-cache, no-store, must-revalidate` so admin changes are immediately visible.
+   * Static assets (CSS, images, fonts) are cached for 7 days for fast performance.
+
+---
+
+## 🧪 Local Testing Before Deploying
+
+To test your portfolio locally with Firebase server emulation:
+
+```bash
+firebase serve
+# or
+firebase emulators:start
+```
+Your local preview will run at: `http://localhost:5000` (or `http://localhost:5002`).

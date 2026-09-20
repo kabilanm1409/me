@@ -18,10 +18,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-  <link rel="stylesheet" href="style.css?v=1.0.1" />
+  <link rel="stylesheet" href="style.css?v=2.1.0" />
   <script defer src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script defer src="script.js?v=1.0.1"></script>
+  <script defer src="script.js?v=2.1.0"></script>
+  <script type="module" src="tracker.js"></script>
+  <script type="module" src="portfolio-cms.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -29,8 +31,8 @@
     "name": "Kabilan M",
     "jobTitle": "B.Tech Information Technology Student",
     "sameAs": [
-      "https://github.com/",
-      "https://www.linkedin.com/"
+      "https://github.com/kabilanm1409/",
+      "https://www.linkedin.com/in/kabilan-m-790801330/"
     ]
   }
   </script>
@@ -378,6 +380,315 @@
         </article>
       </div>
 
+      <!-- =====================================================
+           ANIMATED INFINITE 3D FLOATING CERTIFICATE RIBBON (R2)
+           ===================================================== -->
+      <div class="cert-ribbon-wrapper" id="certRibbonWrapper" aria-label="Interactive Certificate Showcase">
+        <div class="cert-ribbon-header">
+          <span class="cert-ribbon-badge"><i class="fa-solid fa-ribbon" aria-hidden="true"></i> Verified Credentials</span>
+          <h3 class="cert-ribbon-title">Interactive Certificate Gallery</h3>
+          <p class="cert-ribbon-subtitle">Continuous 3D floating showcase &bull; Hover to pause &bull; Click to inspect credentials</p>
+        </div>
+
+        <div class="cert-ribbon-viewport" id="certRibbonViewport" tabindex="0" role="region" aria-label="Scrollable certificate gallery">
+          <div class="cert-ribbon-track" id="certRibbonTrack" role="marquee" aria-live="off">
+            <!-- ── Primary Sequence (Cards 1 to 7) ───────────────── -->
+            <article class="cert-card card" data-cert-id="C1" data-cert-type="image" data-cert-src="assets/cerificates/IMG_20260701_185332433.jpg" data-cert-title="Artiverse 3.0 Intra-College Hackathon - 1st Place" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb">
+                  <img src="assets/cerificates/IMG_20260701_185332433.jpg" alt="Artiverse 3.0 Intra-College Hackathon Certificate - 1st Place" loading="lazy" />
+                  <span class="cert-media-type"><i class="fa-solid fa-image" aria-hidden="true"></i> JPG</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-gold"><i class="fa-solid fa-trophy" aria-hidden="true"></i> 1st Place</span>
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-code" aria-hidden="true"></i> Hackathon</span>
+                  </div>
+                  <h4 class="cert-title">Artiverse 3.0 Hackathon</h4>
+                  <p class="cert-org"><i class="fa-solid fa-building-columns" aria-hidden="true"></i> Intra-College Level &bull; 1st Place Winner</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="Preview Artiverse 3.0 Certificate"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                    <a href="assets/cerificates/IMG_20260701_185332433.jpg" target="_blank" rel="noopener noreferrer" class="btn-cert-external" title="Open certificate image in new tab" aria-label="Open Artiverse 3.0 certificate in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C2" data-cert-type="image" data-cert-src="assets/cerificates/IMG_20260701_185137413.jpg" data-cert-title="Advanced Cyber Security - Penetration Testing Course" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb">
+                  <img src="assets/cerificates/IMG_20260701_185137413.jpg" alt="Advanced Cyber Security Penetration Testing Certificate" loading="lazy" />
+                  <span class="cert-media-type"><i class="fa-solid fa-image" aria-hidden="true"></i> JPG</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-purple"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Security</span>
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                  </div>
+                  <h4 class="cert-title">Advanced Cyber Security</h4>
+                  <p class="cert-org"><i class="fa-solid fa-user-shield" aria-hidden="true"></i> Penetration Testing Course &bull; 6 Days Hands-on</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="Preview Advanced Cyber Security Certificate"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                    <a href="assets/cerificates/IMG_20260701_185137413.jpg" target="_blank" rel="noopener noreferrer" class="btn-cert-external" title="Open certificate image in new tab" aria-label="Open Advanced Cyber Security certificate in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C7" data-cert-type="synthetic" data-cert-src="" data-cert-title="Tezario 3.0 Project Expo - 2nd Place" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-synthetic">
+                  <div class="synthetic-badge-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-award" aria-hidden="true"></i> Credential</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-silver"><i class="fa-solid fa-medal" aria-hidden="true"></i> 2nd Place</span>
+                    <span class="cert-badge badge-teal"><i class="fa-solid fa-microchip" aria-hidden="true"></i> Project Expo</span>
+                  </div>
+                  <h4 class="cert-title">Tezario 3.0 Project Expo</h4>
+                  <p class="cert-org"><i class="fa-solid fa-wifi" aria-hidden="true"></i> College Level &bull; Wireless Deauth Alert Node</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="View Tezario 3.0 Credential Details"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C4" data-cert-type="pdf" data-cert-src="assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf" data-cert-title="Infosys Springboard — HTML5 Certification" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-doc">
+                  <div class="doc-icon-preview html-accent"><i class="fa-brands fa-html5" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                    <span class="cert-badge badge-orange"><i class="fa-brands fa-html5" aria-hidden="true"></i> Web Dev</span>
+                  </div>
+                  <h4 class="cert-title">Infosys Springboard HTML5</h4>
+                  <p class="cert-org"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Infosys Springboard &bull; HTML5 Specialist</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="Preview HTML5 Certificate PDF"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Inspect PDF</button>
+                    <a href="assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf" target="_blank" rel="noopener noreferrer" class="btn-cert-external" title="Open PDF in new tab" aria-label="Open HTML5 certificate PDF in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C5" data-cert-type="pdf" data-cert-src="assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf" data-cert-title="Infosys Springboard — CSS3 Certification" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-doc">
+                  <div class="doc-icon-preview css-accent"><i class="fa-brands fa-css3-alt" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                    <span class="cert-badge badge-blue"><i class="fa-brands fa-css3-alt" aria-hidden="true"></i> Web Dev</span>
+                  </div>
+                  <h4 class="cert-title">Infosys Springboard CSS3</h4>
+                  <p class="cert-org"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Infosys Springboard &bull; CSS3 Specialist</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="Preview CSS3 Certificate PDF"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Inspect PDF</button>
+                    <a href="assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf" target="_blank" rel="noopener noreferrer" class="btn-cert-external" title="Open PDF in new tab" aria-label="Open CSS3 certificate PDF in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C6" data-cert-type="pdf" data-cert-src="assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf" data-cert-title="Infosys Springboard — JavaScript Certification" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-doc">
+                  <div class="doc-icon-preview js-accent"><i class="fa-brands fa-js" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                    <span class="cert-badge badge-yellow"><i class="fa-brands fa-js" aria-hidden="true"></i> JavaScript</span>
+                  </div>
+                  <h4 class="cert-title">Infosys Springboard JavaScript</h4>
+                  <p class="cert-org"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Infosys Springboard &bull; JavaScript Specialist</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="Preview JavaScript Certificate PDF"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Inspect PDF</button>
+                    <a href="assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf" target="_blank" rel="noopener noreferrer" class="btn-cert-external" title="Open PDF in new tab" aria-label="Open JavaScript certificate PDF in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C3" data-cert-type="image" data-cert-src="assets/cerificates/internship/IMG_20260701_185232887.jpg" data-cert-title="e-soft IT Solutions - Full Stack Developer Trainee" tabindex="0">
+              <div class="cert-card-inner">
+                <div class="cert-thumb">
+                  <img src="assets/cerificates/internship/IMG_20260701_185232887.jpg" alt="e-soft IT Solutions Full Stack Developer Trainee Certificate" loading="lazy" />
+                  <span class="cert-media-type"><i class="fa-solid fa-image" aria-hidden="true"></i> JPG</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-indigo"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Internship</span>
+                    <span class="cert-badge badge-teal"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Full Stack</span>
+                  </div>
+                  <h4 class="cert-title">e-soft Full Stack Internship</h4>
+                  <p class="cert-org"><i class="fa-solid fa-building" aria-hidden="true"></i> e-soft IT Solutions &bull; Developer Trainee (June 2025)</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" aria-label="Preview Full Stack Internship Certificate"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                    <a href="assets/cerificates/internship/IMG_20260701_185232887.jpg" target="_blank" rel="noopener noreferrer" class="btn-cert-external" title="Open certificate image in new tab" aria-label="Open Full Stack Internship certificate in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- ── Cloned Duplicate Sequence for Seamless Infinite Scroll ───────────────── -->
+            <article class="cert-card card" data-cert-id="C1-clone" data-cert-type="image" data-cert-src="assets/cerificates/IMG_20260701_185332433.jpg" data-cert-title="Artiverse 3.0 Intra-College Hackathon - 1st Place" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb">
+                  <img src="assets/cerificates/IMG_20260701_185332433.jpg" alt="Artiverse 3.0 Intra-College Hackathon Certificate - 1st Place (Clone)" loading="lazy" />
+                  <span class="cert-media-type"><i class="fa-solid fa-image" aria-hidden="true"></i> JPG</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-gold"><i class="fa-solid fa-trophy" aria-hidden="true"></i> 1st Place</span>
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-code" aria-hidden="true"></i> Hackathon</span>
+                  </div>
+                  <h4 class="cert-title">Artiverse 3.0 Hackathon</h4>
+                  <p class="cert-org"><i class="fa-solid fa-building-columns" aria-hidden="true"></i> Intra-College Level &bull; 1st Place Winner</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="Preview Artiverse 3.0 Certificate"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                    <a href="assets/cerificates/IMG_20260701_185332433.jpg" target="_blank" rel="noopener noreferrer" tabindex="-1" class="btn-cert-external" title="Open certificate image in new tab" aria-label="Open Artiverse 3.0 certificate in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C2-clone" data-cert-type="image" data-cert-src="assets/cerificates/IMG_20260701_185137413.jpg" data-cert-title="Advanced Cyber Security - Penetration Testing Course" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb">
+                  <img src="assets/cerificates/IMG_20260701_185137413.jpg" alt="Advanced Cyber Security Penetration Testing Certificate (Clone)" loading="lazy" />
+                  <span class="cert-media-type"><i class="fa-solid fa-image" aria-hidden="true"></i> JPG</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-purple"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Security</span>
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                  </div>
+                  <h4 class="cert-title">Advanced Cyber Security</h4>
+                  <p class="cert-org"><i class="fa-solid fa-user-shield" aria-hidden="true"></i> Penetration Testing Course &bull; 6 Days Hands-on</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="Preview Advanced Cyber Security Certificate"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                    <a href="assets/cerificates/IMG_20260701_185137413.jpg" target="_blank" rel="noopener noreferrer" tabindex="-1" class="btn-cert-external" title="Open certificate image in new tab" aria-label="Open Advanced Cyber Security certificate in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C7-clone" data-cert-type="synthetic" data-cert-src="" data-cert-title="Tezario 3.0 Project Expo - 2nd Place" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-synthetic">
+                  <div class="synthetic-badge-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-award" aria-hidden="true"></i> Credential</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-silver"><i class="fa-solid fa-medal" aria-hidden="true"></i> 2nd Place</span>
+                    <span class="cert-badge badge-teal"><i class="fa-solid fa-microchip" aria-hidden="true"></i> Project Expo</span>
+                  </div>
+                  <h4 class="cert-title">Tezario 3.0 Project Expo</h4>
+                  <p class="cert-org"><i class="fa-solid fa-wifi" aria-hidden="true"></i> College Level &bull; Wireless Deauth Alert Node</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="View Tezario 3.0 Credential Details"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C4-clone" data-cert-type="pdf" data-cert-src="assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf" data-cert-title="Infosys Springboard — HTML5 Certification" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-doc">
+                  <div class="doc-icon-preview html-accent"><i class="fa-brands fa-html5" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                    <span class="cert-badge badge-orange"><i class="fa-brands fa-html5" aria-hidden="true"></i> Web Dev</span>
+                  </div>
+                  <h4 class="cert-title">Infosys Springboard HTML5</h4>
+                  <p class="cert-org"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Infosys Springboard &bull; HTML5 Specialist</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="Preview HTML5 Certificate PDF"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Inspect PDF</button>
+                    <a href="assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf" target="_blank" rel="noopener noreferrer" tabindex="-1" class="btn-cert-external" title="Open PDF in new tab" aria-label="Open HTML5 certificate PDF in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C5-clone" data-cert-type="pdf" data-cert-src="assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf" data-cert-title="Infosys Springboard — CSS3 Certification" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-doc">
+                  <div class="doc-icon-preview css-accent"><i class="fa-brands fa-css3-alt" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                    <span class="cert-badge badge-blue"><i class="fa-brands fa-css3-alt" aria-hidden="true"></i> Web Dev</span>
+                  </div>
+                  <h4 class="cert-title">Infosys Springboard CSS3</h4>
+                  <p class="cert-org"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Infosys Springboard &bull; CSS3 Specialist</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="Preview CSS3 Certificate PDF"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Inspect PDF</button>
+                    <a href="assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf" target="_blank" rel="noopener noreferrer" tabindex="-1" class="btn-cert-external" title="Open PDF in new tab" aria-label="Open CSS3 certificate PDF in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C6-clone" data-cert-type="pdf" data-cert-src="assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf" data-cert-title="Infosys Springboard — JavaScript Certification" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb cert-thumb-doc">
+                  <div class="doc-icon-preview js-accent"><i class="fa-brands fa-js" aria-hidden="true"></i></div>
+                  <span class="cert-media-type"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-cyan"><i class="fa-solid fa-certificate" aria-hidden="true"></i> Certified</span>
+                    <span class="cert-badge badge-yellow"><i class="fa-brands fa-js" aria-hidden="true"></i> JavaScript</span>
+                  </div>
+                  <h4 class="cert-title">Infosys Springboard JavaScript</h4>
+                  <p class="cert-org"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Infosys Springboard &bull; JavaScript Specialist</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="Preview JavaScript Certificate PDF"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Inspect PDF</button>
+                    <a href="assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf" target="_blank" rel="noopener noreferrer" tabindex="-1" class="btn-cert-external" title="Open PDF in new tab" aria-label="Open JavaScript certificate PDF in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cert-card card" data-cert-id="C3-clone" data-cert-type="image" data-cert-src="assets/cerificates/internship/IMG_20260701_185232887.jpg" data-cert-title="e-soft IT Solutions - Full Stack Developer Trainee" aria-hidden="true" tabindex="-1">
+              <div class="cert-card-inner">
+                <div class="cert-thumb">
+                  <img src="assets/cerificates/internship/IMG_20260701_185232887.jpg" alt="e-soft IT Solutions Full Stack Developer Trainee Certificate (Clone)" loading="lazy" />
+                  <span class="cert-media-type"><i class="fa-solid fa-image" aria-hidden="true"></i> JPG</span>
+                </div>
+                <div class="cert-card-content">
+                  <div class="cert-badges">
+                    <span class="cert-badge badge-indigo"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Internship</span>
+                    <span class="cert-badge badge-teal"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Full Stack</span>
+                  </div>
+                  <h4 class="cert-title">e-soft Full Stack Internship</h4>
+                  <p class="cert-org"><i class="fa-solid fa-building" aria-hidden="true"></i> e-soft IT Solutions &bull; Developer Trainee (June 2025)</p>
+                  <div class="cert-card-actions">
+                    <button type="button" class="btn-cert-preview" tabindex="-1" aria-label="Preview Full Stack Internship Certificate"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i> Inspect</button>
+                    <a href="assets/cerificates/internship/IMG_20260701_185232887.jpg" target="_blank" rel="noopener noreferrer" tabindex="-1" class="btn-cert-external" title="Open certificate image in new tab" aria-label="Open Full Stack Internship certificate in new tab"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
       <div class="publications-heading">
         <h3>Research Publications</h3>
         <p>Published papers and wireless security analysis models</p>
@@ -420,7 +731,7 @@
           <div class="terminal-title">security@kabilan:~/monitor</div>
           <div class="terminal-badge"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Active Monitor</div>
         </div>
-        <div class="terminal-body" id="terminalBody">
+        <div class="terminal-body" id="terminalBody" role="log" aria-live="polite">
           <div class="t-line">Welcome to Kabilan's Interactive Lab Terminal [Sniffer v1.0.4]</div>
           <div class="t-line">System status: <span class="t-green">ONLINE</span> | Packet Sniffing Node: <span class="t-green">ESP32-WROOM-32</span></div>
           <div class="t-line">Type <span class="t-cyan">help</span> to list available commands.</div>
@@ -431,7 +742,7 @@
           <input type="text" id="terminalInput" placeholder="Type a command..." autocomplete="off" spellcheck="false" aria-label="Terminal Input" />
         </div>
       </div>
-      <p class="terminal-hint">Try typing or clicking: <span class="cmd-chip">help</span> <span class="cmd-chip">resume</span> <span class="cmd-chip">ls</span> <span class="cmd-chip">skills</span> <span class="cmd-chip">projects</span> <span class="cmd-chip">sniff</span> <span class="cmd-chip">clear</span></p>
+      <p class="terminal-hint">Try typing or clicking: <span class="cmd-chip">help</span> <span class="cmd-chip">resume</span> <span class="cmd-chip">hash</span> <span class="cmd-chip">security</span> <span class="cmd-chip">vault</span> <span class="cmd-chip">skills</span> <span class="cmd-chip">projects</span> <span class="cmd-chip">sniff</span> <span class="cmd-chip">clear</span></p>
     </section>
 
     <!-- CONTACT -->
@@ -449,6 +760,8 @@
           <a href="https://github.com/kabilanm1409/" target="_blank" rel="noopener noreferrer" id="contactGithub"><i class="fa-brands fa-github" aria-hidden="true"></i> GitHub Profile</a>
         </div>
         <form class="contact-form card" id="contactForm" novalidate>
+          <!-- Anti-bot honeypot field -->
+          <input type="text" name="website" style="display:none !important; visibility:hidden !important; opacity:0; position:absolute; left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="field-row">
             <input type="text" id="formName" name="name" placeholder="Your Name" autocomplete="name" required aria-required="true" />
             <input type="email" id="formEmail" name="email" placeholder="Your Email" autocomplete="email" required aria-required="true" />
@@ -456,7 +769,7 @@
           <input type="text" id="formSubject" name="subject" placeholder="Subject" required aria-required="true" />
           <textarea id="formMessage" name="message" rows="6" placeholder="Tell me about your project or opportunity..." required aria-required="true"></textarea>
           <button class="btn btn-primary" type="submit" id="contactSubmitBtn"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Message</button>
-          <p class="form-note">Your message is sent securely and privately — no email client required.</p>
+          <p class="form-note">Your message is sent securely and privately — with SHA-256 payload integrity.</p>
         </form>
       </div>
     </section>
@@ -475,11 +788,37 @@
     </p>
   </footer>
 
-  <!-- Lightbox Modal -->
-  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-label="Image viewer">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
-    <div class="lightbox-content">
-      <img id="lightboxImage" src="" alt="Full screen preview" />
+  <!-- Lightbox Modal (Dual-Mode: JPG & PDF & Credential) -->
+  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Credential viewer">
+    <div class="lightbox-header">
+      <div class="lightbox-header-info">
+        <span id="lightboxBadge" class="lightbox-badge"><i class="fa-solid fa-award" aria-hidden="true"></i> Verified Credential</span>
+        <span id="lightboxType" class="lightbox-type">Official Certificate</span>
+      </div>
+      <div class="lightbox-controls">
+        <a id="lightboxActionBtn" class="lightbox-btn" href="#" target="_blank" rel="noopener noreferrer" title="Open original document in new tab">
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Open Original
+        </a>
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
+      </div>
+    </div>
+    <div class="lightbox-content" id="lightboxContent">
+      <!-- Image Mode -->
+      <img id="lightboxImage" src="" alt="Full screen certificate preview" />
+      <!-- PDF Document Mode -->
+      <iframe id="lightboxFrame" src="" title="PDF Document Viewer" style="display: none;" frameborder="0"></iframe>
+      <!-- Synthetic Credential Card Mode (e.g. Tezario 3.0 Project Expo) -->
+      <div id="lightboxCustomCard" class="lightbox-custom-card" style="display: none;">
+        <div class="custom-card-emblem"><i class="fa-solid fa-medal" aria-hidden="true"></i></div>
+        <h3>Tezario 3.0 Project Expo</h3>
+        <p class="award-rank">2nd Place &bull; College Level Recognition</p>
+        <p class="award-summary">Honored for presenting the ESP32 Wi-Fi De-Authentication Alert &amp; Detection hardware node.</p>
+        <div class="award-tags">
+          <span>Hardware &amp; IoT</span>
+          <span>Network Security</span>
+          <span>Award Winner</span>
+        </div>
+      </div>
     </div>
     <div id="lightboxCaption" class="lightbox-caption"></div>
   </div>

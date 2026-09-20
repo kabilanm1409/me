@@ -1,0 +1,44 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Portfolio CMS Content Collections (Public Read, Admin UID Write Only)
+    match /portfolioData/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == 'MR6jHebrOCMlOUoonM1hXOiGBvJ2';
+    }
+
+    // 2. Live Visitors Collection (Admin UID Read Only, Individual Anonymous Visitor Session Write with Schema Validation)
+    match /liveVisitors/{uid} {
+      allow read: if request.auth != null && request.auth.uid == 'MR6jHebrOCMlOUoonM1hXOiGBvJ2';
+      allow delete: if request.auth != null && (request.auth.uid == uid || request.auth.uid == 'MR6jHebrOCMlOUoonM1hXOiGBvJ2');
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.currentPage is string
+        && request.resource.data.currentPage.size() <= 200;
+    }
+
+    // 3. Historical Visitor Logs Collection (Admin UID Read Only, Visitor Session Write with Schema Validation)
+    match /visitorLogs/{docId} {
+      allow read: if request.auth != null && request.auth.uid == 'MR6jHebrOCMlOUoonM1hXOiGBvJ2';
+      allow delete: if request.auth != null && request.auth.uid == 'MR6jHebrOCMlOUoonM1hXOiGBvJ2';
+      allow create, update: if request.auth != null
+        && request.resource.data.currentPage is string
+        && request.resource.data.currentPage.size() <= 200
+        && request.resource.data.sessionId is string
+        && request.resource.data.sessionId.size() <= 100;
+    }
+
+    // 4. Contact Messages Collection (Public Create, Admin Read and Delete Only)
+    match /contactMessages/{msgId} {
+      allow read, delete: if request.auth != null && request.auth.uid == 'MR6jHebrOCMlOUoonM1hXOiGBvJ2';
+      allow create: if request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.message is string;
+    }
+
+    // 5. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

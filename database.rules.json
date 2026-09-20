@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "liveVisitors": {
+      ".read": "auth != null && auth.uid === 'MR6jHebrOCMlOUoonM1hXOiGBvJ2'",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['currentPage', 'lastActive']) && newData.child('currentPage').isString() && newData.child('currentPage').val().length <= 200 && (!newData.hasChild('totalTimeSpent') || newData.child('totalTimeSpent').isNumber())"
+      }
+    },
+    "visitorLogs": {
+      ".read": "auth != null && auth.uid === 'MR6jHebrOCMlOUoonM1hXOiGBvJ2'",
+      "$uid": {
+        "$sessionId": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['currentPage', 'sessionId']) && newData.child('currentPage').isString() && newData.child('currentPage').val().length <= 200 && newData.child('sessionId').isString() && newData.child('sessionId').val().length <= 100"
+        }
+      }
+    },
+    "contactMessages": {
+      ".read": "auth != null && auth.uid === 'MR6jHebrOCMlOUoonM1hXOiGBvJ2'",
+      "$msgId": {
+        ".write": "!data.exists() || (auth != null && auth.uid === 'MR6jHebrOCMlOUoonM1hXOiGBvJ2')",
+        ".validate": "newData.hasChildren(['name', 'email', 'message', 'timestamp']) && newData.child('name').isString() && newData.child('email').isString() && newData.child('message').isString()"
+      }
+    },
+    "portfolioData": {
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'MR6jHebrOCMlOUoonM1hXOiGBvJ2'"
+    }
+  }
+}

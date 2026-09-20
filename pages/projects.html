@@ -13,10 +13,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-  <link rel="stylesheet" href="../style.css?v=1.0.1" />
+  <link rel="stylesheet" href="../style.css?v=2.1.0" />
   <script defer src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script defer src="../script.min.js?v=2.0.0"></script>
+  <script defer src="../script.js?v=2.1.0"></script>
+  <script type="module" src="../tracker.js"></script>
+  <script type="module" src="../portfolio-cms.js"></script>
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
@@ -152,9 +154,20 @@
   </footer>
 
   <!-- Lightbox Modal -->
-  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-label="Image viewer">
-    <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
-    <div class="lightbox-content">
+  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project image viewer">
+    <div class="lightbox-header">
+      <div class="lightbox-header-info">
+        <span id="lightboxBadge" class="lightbox-badge"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> Project Showcase</span>
+        <span id="lightboxType" class="lightbox-type">Project Preview</span>
+      </div>
+      <div class="lightbox-controls">
+        <a id="lightboxActionBtn" class="lightbox-btn" href="#" target="_blank" rel="noopener noreferrer" title="Open original image in new tab">
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Open Original
+        </a>
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">&times;</button>
+      </div>
+    </div>
+    <div class="lightbox-content" id="lightboxContent">
       <img id="lightboxImage" src="" alt="Full screen preview" />
     </div>
     <div id="lightboxCaption" class="lightbox-caption"></div>

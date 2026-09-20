@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070c18" />
+      <stop offset="50%" stop-color="#0b1329" />
+      <stop offset="100%" stop-color="#050811" />
+    </linearGradient>
+
+    <!-- Glowing Accents -->
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.9" />
+    </linearGradient>
+
+    <linearGradient id="chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="metalShield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="50%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#475569" />
+    </linearGradient>
+
+    <linearGradient id="oledBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#02141a" />
+      <stop offset="100%" stop-color="#010b0f" />
+    </linearGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Tech Grid Pattern -->
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1e293b" stroke-width="0.8" stroke-opacity="0.4" />
+    </pattern>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="900" height="600" fill="url(#bgGrad)" />
+  <rect width="900" height="600" fill="url(#grid)" />
+
+  <!-- Ambient Light Orbs -->
+  <circle cx="200" cy="180" r="160" fill="#06b6d4" opacity="0.08" filter="url(#glow)" />
+  <circle cx="720" cy="420" r="180" fill="#3b82f6" opacity="0.07" filter="url(#glow)" />
+  <circle cx="450" cy="280" r="220" fill="#10b981" opacity="0.05" filter="url(#glow)" />
+
+  <!-- Outer HUD Frame -->
+  <rect x="25" y="25" width="850" height="550" rx="16" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-opacity="0.8" />
+  <path d="M 25 55 L 55 25 M 875 55 L 845 25 M 25 545 L 55 575 M 875 545 L 845 575" stroke="#06b6d4" stroke-width="2" stroke-opacity="0.7" fill="none" />
+
+  <!-- Top Header HUD -->
+  <g transform="translate(45, 50)">
+    <rect x="0" y="0" width="8" height="24" rx="2" fill="#06b6d4" filter="url(#softGlow)" />
+    <text x="18" y="17" fill="#f8fafc" font-family="'Inter', -apple-system, sans-serif" font-size="16" font-weight="700" letter-spacing="1.5">HARDWARE SECURITY SUITE</text>
+    <rect x="680" y="0" width="130" height="26" rx="13" fill="#06b6d4" fill-opacity="0.12" stroke="#06b6d4" stroke-width="1" />
+    <circle cx="695" cy="13" r="4" fill="#10b981" filter="url(#softGlow)" />
+    <text x="706" y="18" fill="#38bdf8" font-family="'JetBrains Mono', monospace, sans-serif" font-size="11" font-weight="600">802.11 MONITOR</text>
+  </g>
+
+  <!-- Central Circuit Board Base (ESP8266 PCB) -->
+  <g transform="translate(140, 110)">
+    <!-- Board Drop Shadow -->
+    <rect x="6" y="6" width="620" height="370" rx="18" fill="#000000" opacity="0.5" filter="url(#glow)" />
+    
+    <!-- PCB Substrate -->
+    <rect x="0" y="0" width="620" height="370" rx="18" fill="url(#chipGrad)" stroke="#334155" stroke-width="2" />
+
+    <!-- Corner Mounting Holes with Copper Rings -->
+    <circle cx="22" cy="22" r="8" fill="#0b1329" stroke="#d97706" stroke-width="2.5" />
+    <circle cx="598" cy="22" r="8" fill="#0b1329" stroke="#d97706" stroke-width="2.5" />
+    <circle cx="22" cy="348" r="8" fill="#0b1329" stroke="#d97706" stroke-width="2.5" />
+    <circle cx="598" cy="348" r="8" fill="#0b1329" stroke="#d97706" stroke-width="2.5" />
+
+    <!-- Copper Traces -->
+    <g stroke="#06b6d4" stroke-width="1.2" stroke-opacity="0.4" fill="none">
+      <path d="M 220 70 L 250 70 L 270 90 L 320 90" />
+      <path d="M 220 120 L 260 120 L 280 140 L 320 140" />
+      <path d="M 220 220 L 250 220 L 280 250 L 320 250" />
+      <path d="M 220 270 L 270 270 L 290 290 L 320 290" />
+      <path d="M 520 90 L 560 90 L 580 120" />
+      <path d="M 520 250 L 560 250 L 580 220" />
+    </g>
+
+    <!-- ESP-12F RF Module Shield (Left) -->
+    <g transform="translate(45, 55)">
+      <!-- Antenna Trace Area -->
+      <rect x="0" y="0" width="150" height="60" rx="6" fill="#1e3a5f" stroke="#0284c7" stroke-width="1.5" />
+      <path d="M 15 35 L 25 35 L 25 15 L 40 15 L 40 35 L 55 35 L 55 15 L 70 15 L 70 35 L 85 35 L 85 15 L 100 15 L 100 35 L 115 35 L 115 15 L 130 15 L 130 35" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" />
+      <text x="75" y="52" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle" font-weight="600">2.4GHz ANTENNA</text>
+
+      <!-- Metal Shield Can -->
+      <rect x="0" y="68" width="150" height="180" rx="6" fill="url(#metalShield)" stroke="#cbd5e1" stroke-width="1.5" />
+      
+      <!-- Shield Markings -->
+      <text x="75" y="110" fill="#0f172a" font-family="'Inter', sans-serif" font-size="14" font-weight="800" text-anchor="middle">ESP8266MOD</text>
+      <text x="75" y="128" fill="#1e293b" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">ISM 2.4GHz</text>
+      <text x="75" y="145" fill="#334155" font-family="'JetBrains Mono', monospace" font-size="9" text-anchor="middle">FCC ID: 2AHMR-ESP12F</text>
+      
+      <circle cx="75" cy="185" r="18" fill="none" stroke="#0f172a" stroke-width="1.5" />
+      <path d="M 68 185 L 82 185 M 75 178 L 75 192" stroke="#0f172a" stroke-width="1.5" />
+      <text x="75" y="225" fill="#0f172a" font-family="'Inter', sans-serif" font-size="8" font-weight="700" text-anchor="middle">WiFi 802.11 b/g/n</text>
+
+      <!-- Castellation Soldering Pads -->
+      <g fill="#cbd5e1">
+        <rect x="-6" y="78" width="8" height="6" rx="1" />
+        <rect x="-6" y="98" width="8" height="6" rx="1" />
+        <rect x="-6" y="118" width="8" height="6" rx="1" />
+        <rect x="-6" y="138" width="8" height="6" rx="1" />
+        <rect x="-6" y="158" width="8" height="6" rx="1" />
+        <rect x="-6" y="178" width="8" height="6" rx="1" />
+        <rect x="-6" y="198" width="8" height="6" rx="1" />
+        <rect x="-6" y="218" width="8" height="6" rx="1" />
+
+        <rect x="148" y="78" width="8" height="6" rx="1" />
+        <rect x="148" y="98" width="8" height="6" rx="1" />
+        <rect x="148" y="118" width="8" height="6" rx="1" />
+        <rect x="148" y="138" width="8" height="6" rx="1" />
+        <rect x="148" y="158" width="8" height="6" rx="1" />
+        <rect x="148" y="178" width="8" height="6" rx="1" />
+        <rect x="148" y="198" width="8" height="6" rx="1" />
+        <rect x="148" y="218" width="8" height="6" rx="1" />
+      </g>
+    </g>
+
+    <!-- SSD1306 0.96" OLED Display Module (Right) -->
+    <g transform="translate(255, 45)">
+      <!-- OLED PCB Base -->
+      <rect x="0" y="0" width="320" height="260" rx="10" fill="#0f172a" stroke="#0ea5e9" stroke-width="2" />
+      <text x="160" y="22" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">SSD1306 128x64 OLED I2C</text>
+
+      <!-- Glass Screen -->
+      <rect x="18" y="34" width="284" height="195" rx="6" fill="url(#oledBg)" stroke="#06b6d4" stroke-width="1.5" />
+
+      <!-- Screen Grid Scanlines -->
+      <line x1="18" y1="72" x2="302" y2="72" stroke="#06b6d4" stroke-width="0.8" stroke-opacity="0.4" />
+      
+      <!-- Live Packet Sniffer UI on Screen -->
+      <g transform="translate(30, 56)">
+        <!-- Header status -->
+        <text x="0" y="0" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" filter="url(#softGlow)">[DEAUTH SNIFFER v2.4]</text>
+        <circle cx="210" cy="-4" r="3" fill="#10b981" filter="url(#softGlow)" />
+        <text x="220" y="0" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600">LIVE</text>
+
+        <!-- Metrics -->
+        <text x="0" y="28" fill="#06b6d4" font-family="'JetBrains Mono', monospace" font-size="11">CH: <tspan fill="#f8fafc" font-weight="700">06</tspan> | RSSI: <tspan fill="#f8fafc" font-weight="700">-48 dBm</tspan></text>
+        <text x="0" y="48" fill="#06b6d4" font-family="'JetBrains Mono', monospace" font-size="11">TOTAL PKTS: <tspan fill="#f8fafc" font-weight="700">12,842</tspan></text>
+        
+        <!-- Live Packet Feed -->
+        <rect x="0" y="62" width="254" height="22" rx="3" fill="#082f49" fill-opacity="0.8" stroke="#0284c7" stroke-width="0.8" />
+        <text x="8" y="77" fill="#7dd3fc" font-family="'JetBrains Mono', monospace" font-size="9.5">&gt; BEACON: "Target_Guest" [ok]</text>
+        
+        <rect x="0" y="88" width="254" height="22" rx="3" fill="#450a0a" fill-opacity="0.9" stroke="#ef4444" stroke-width="1" />
+        <text x="8" y="103" fill="#fca5a5" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="700" filter="url(#softGlow)">! DEAUTH DETECTED (Code: 7)</text>
+
+        <text x="0" y="132" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9.5">SRC: E4:95:6E:A4:12:02</text>
+        <text x="0" y="148" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9.5">DST: FF:FF:FF:FF:FF:FF (BROADCAST)</text>
+      </g>
+
+      <!-- OLED Header Pins -->
+      <g transform="translate(90, -12)" fill="#d97706" stroke="#b45309" stroke-width="1">
+        <rect x="0" y="0" width="8" height="12" rx="1" />
+        <rect x="40" y="0" width="8" height="12" rx="1" />
+        <rect x="80" y="0" width="8" height="12" rx="1" />
+        <rect x="120" y="0" width="8" height="12" rx="1" />
+      </g>
+    </g>
+
+    <!-- Micro USB Port & Status LEDs -->
+    <g transform="translate(15, 160)">
+      <rect x="-10" y="0" width="14" height="30" rx="3" fill="#94a3b8" stroke="#475569" stroke-width="1" />
+      <!-- LED indicators -->
+      <circle cx="16" cy="70" r="4" fill="#ef4444" filter="url(#softGlow)" />
+      <text x="26" y="73" fill="#ef4444" font-family="'JetBrains Mono', monospace" font-size="8">PWR</text>
+      
+      <circle cx="16" cy="95" r="4" fill="#06b6d4" filter="url(#softGlow)" />
+      <text x="26" y="98" fill="#06b6d4" font-family="'JetBrains Mono', monospace" font-size="8">ACT</text>
+    </g>
+  </g>
+
+  <!-- Bottom Details Banner -->
+  <g transform="translate(45, 510)">
+    <text x="0" y="18" fill="#f8fafc" font-family="'Inter', -apple-system, sans-serif" font-size="20" font-weight="700">Wi-Fi De-authentication Device</text>
+    <text x="0" y="40" fill="#94a3b8" font-family="'Inter', -apple-system, sans-serif" font-size="13">ESP8266 &bull; Arduino IDE &bull; C++ &bull; 802.11 Frame Sniffing &bull; Real-Time OLED Threat Display</text>
+    
+    <!-- Feature Pill Badges -->
+    <g transform="translate(560, 0)">
+      <rect x="0" y="0" width="110" height="28" rx="14" fill="#06b6d4" fill-opacity="0.12" stroke="#06b6d4" stroke-width="1" />
+      <text x="55" y="18" fill="#38bdf8" font-family="'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">PACKET SNIFFER</text>
+      
+      <rect x="120" y="0" width="120" height="28" rx="14" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-width="1" />
+      <text x="180" y="18" fill="#34d399" font-family="'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">HARDWARE BUILD</text>
+    </g>
+  </g>
+</svg>

@@ -70,8 +70,8 @@ function _unshieldString(b64, k) {
   }
 }
 
-// Dynamically unpack sealed configuration at runtime
-export const firebaseConfig = Object.freeze({
+// Dynamically unpack sealed configuration at runtime into internal private scope
+const _rawConfig = {
   apiKey: _unshieldString(_SHIELDED_CONFIG.apiKey, _VAULT_KEY),
   authDomain: _unshieldString(_SHIELDED_CONFIG.authDomain, _VAULT_KEY),
   databaseURL: _unshieldString(_SHIELDED_CONFIG.databaseURL, _VAULT_KEY),
@@ -80,6 +80,40 @@ export const firebaseConfig = Object.freeze({
   messagingSenderId: _unshieldString(_SHIELDED_CONFIG.messagingSenderId, _VAULT_KEY),
   appId: _unshieldString(_SHIELDED_CONFIG.appId, _VAULT_KEY),
   measurementId: _unshieldString(_SHIELDED_CONFIG.measurementId, _VAULT_KEY)
+};
+
+// ── API Key Masking Utility for Safe Display ───────────────────────────
+export function maskApiKey(str) {
+  if (!str || typeof str !== "string") return "••••••••";
+  if (str.length <= 10) return "••••••••";
+  return str.slice(0, 6) + "••••••••" + str.slice(-4);
+}
+
+// Publicly exposed firebaseConfig object shields raw credentials against DevTools / DOM inspection
+export const firebaseConfig = Object.freeze({
+  get apiKey() {
+    return maskApiKey(_rawConfig.apiKey);
+  },
+  authDomain: _rawConfig.authDomain,
+  get databaseURL() {
+    return _rawConfig.databaseURL ? _rawConfig.databaseURL.replace(/\/\/[^.]+\./, '//***.') : '';
+  },
+  projectId: _rawConfig.projectId,
+  storageBucket: _rawConfig.storageBucket,
+  get messagingSenderId() {
+    return maskApiKey(_rawConfig.messagingSenderId);
+  },
+  get appId() {
+    return maskApiKey(_rawConfig.appId);
+  },
+  measurementId: _rawConfig.measurementId,
+  toJSON: () => ({
+    status: "vault_shielded",
+    projectId: _rawConfig.projectId,
+    apiKey: maskApiKey(_rawConfig.apiKey),
+    shield: "AES/XOR-Vault-Enforced"
+  }),
+  toString: () => "[Shielded Firebase Configuration — Credential Vault Active]"
 });
 
 // ── Cryptographic Hashing Utilities (SHA-256 Web Crypto API) ─────────────
@@ -105,18 +139,71 @@ export async function sha256(message) {
   }
 }
 
-// ── API Key Masking Utility for Safe Display ───────────────────────────
-export function maskApiKey(str) {
-  if (!str || typeof str !== "string") return "••••••••";
-  if (str.length <= 10) return "••••••••";
-  return str.slice(0, 6) + "••••••••" + str.slice(-4);
-}
-
-// Initialize Firebase App singletons
-export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Initialize Firebase App singletons using internal raw configuration
+export const app = getApps().length === 0 ? initializeApp(_rawConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const firestore = getFirestore(app);
+
+// Mask apiKey on app.options so inspecting app object in DevTools cannot read raw key
+try {
+  if (app && app.options) {
+    Object.defineProperty(app.options, 'apiKey', {
+      value: maskApiKey(_rawConfig.apiKey),
+      writable: false,
+      configurable: true,
+      enumerable: true
+    });
+    if (app.options.databaseURL) {
+      Object.defineProperty(app.options, 'databaseURL', {
+        value: "https://***.firebasedatabase.app",
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
+  }
+} catch (e) {}
+
+// ── DevTools Console Shield: Intercept and scrub raw API keys from console output ──
+if (typeof window !== 'undefined' && window.console) {
+  try {
+    const _origLog = console.log;
+    const _origWarn = console.warn;
+    const _origError = console.error;
+    const _origInfo = console.info;
+
+    const _scrubVal = (val) => {
+      if (!val) return val;
+      if (typeof val === 'string') {
+        return val.replace(/AIza[0-9A-Za-z_-]{35}/g, 'AIzaSy••••••••••••••••••••••••••••••••');
+      }
+      if (typeof val === 'object') {
+        try {
+          if (val.apiKey && typeof val.apiKey === 'string') {
+            return Object.assign({}, val, { apiKey: maskApiKey(val.apiKey) });
+          }
+        } catch (err) {}
+      }
+      return val;
+    };
+
+    const _wrapConsole = (fn) => {
+      return function (...args) {
+        const scrubbed = args.map(_scrubVal);
+        return fn.apply(console, scrubbed);
+      };
+    };
+
+    console.log = _wrapConsole(_origLog);
+    console.warn = _wrapConsole(_origWarn);
+    console.error = _wrapConsole(_origError);
+    console.info = _wrapConsole(_origInfo);
+
+    delete window.firebaseConfig;
+    delete window.FIREBASE_CONFIG;
+  } catch (e) {}
+}
 
 // Optional App Check Attestation Enabler
 export function enableAppCheck(recaptchaV3SiteKey) {

@@ -555,6 +555,7 @@
     initLightbox();
     initCertificateRibbon();
     initTerminal();
+    initImageFallbacks();
     initHeaderSearch();
     initScreenshotShield();
     setYear();
@@ -855,10 +856,179 @@
 
   let sniffInterval = null;
   let cmdHistory = [];
+  let historyIndex = -1;
+
+  // ── Virtual File System (VFS) for Interactive Linux Terminal ──
+  const VFS_STORAGE_KEY = 'km_portfolio_vfs_v3';
+
+  function getDefaultVFS() {
+    const isSub = window.location.pathname.includes('/pages/');
+    const pfx = isSub ? '../' : '';
+    return {
+      '/home/kabilan': {
+        type: 'dir',
+        files: {
+          'resume.pdf': {
+            type: 'file',
+            size: '106K',
+            perm: '-rw-r--r--',
+            date: 'Aug 11 12:25',
+            content: 'Kabilan M — Resume\nRole: Security & Networking Engineer / Full Stack Developer\nEducation: B.Tech IT, Kongunadu College of Engineering (CGPA: 7.08)\nCertifications: Infosys Springboard (HTML5, CSS3, JS), Cyber Security Pentest\nContact: mkabilan1409@gmail.com | +91 76049 59955',
+            url: pfx + 'assets/resume/kabilanm_resume without photo.pdf?v=4.0'
+          },
+          'skills.txt': {
+            type: 'file',
+            size: '1.2K',
+            perm: '-rw-r--r--',
+            date: 'Aug 11 12:25',
+            content: 'Languages: Java, C++, Python, HTML5, CSS3, JavaScript\nDatabases: MySQL, MongoDB, Apache HDFS, Apache Pig\nTools: Wireshark, Burp Suite, VS Code, Git, Arduino IDE\nCore: 802.11 Wi-Fi Packet Sniffing, Network Security, Full-Stack Architecture'
+          },
+          'about.txt': {
+            type: 'file',
+            size: '1.5K',
+            perm: '-rw-r--r--',
+            date: 'Aug 11 12:25',
+            content: 'Kabilan M - B.Tech Information Technology student.\nTransitioned from Mechanical Engineering to IT with deep interest in practical wireless security, network defense, and clean web engineering.'
+          },
+          'contact.txt': {
+            type: 'file',
+            size: '480B',
+            perm: '-rw-r--r--',
+            date: 'Aug 11 12:25',
+            content: 'Email: mkabilan1409@gmail.com\nPhone: +91 76049 59955\nLinkedIn: linkedin.com/in/kabilan-m-790801330/\nGitHub: github.com/kabilanm1409'
+          },
+          'portfolio_config.json': {
+            type: 'file',
+            size: '720B',
+            perm: '-rw-r--r--',
+            date: 'Sep 20 14:00',
+            content: '{\n  "owner": "Kabilan M",\n  "system": "Kali-Linux v6.8 Web Terminal",\n  "admin_panel": "admin.html",\n  "status": "Production Live",\n  "hosting": "Firebase Hosting (kabilanportfolio-ab851.web.app)"\n}'
+          },
+          'notes.txt': {
+            type: 'file',
+            size: '640B',
+            perm: '-rw-rw-r--',
+            date: 'Sep 20 14:00',
+            content: 'Linux Lab Terminal is Active.\n- Type "admin" to open Portfolio Admin Console\n- Type "upload" to upload documents\n- Type "touch <name>" to create a file\n- Type "rm <name>" to delete a document\n- Type "update <file> <text>" to modify file\n- Type "help" for full command manual'
+          },
+          'projects': {
+            type: 'dir',
+            files: {
+              'wifi_deauth.txt': {
+                type: 'file',
+                size: '2.4K',
+                perm: '-rw-r--r--',
+                date: 'Aug 11 12:25',
+                content: 'Project 1: Wi-Fi De-authentication Device\nHardware: ESP8266 Microcontroller + 0.96" SSD1306 OLED\nDescription: Wireless frame sniffer monitoring Beacon, Deauth, and Probe frames in real time.'
+              },
+              'deauth_detector.txt': {
+                type: 'file',
+                size: '2.8K',
+                perm: '-rw-r--r--',
+                date: 'Aug 11 12:25',
+                content: 'Project 2: De-authentication Detection System\nHardware: ESP32-WROOM-32\nDescription: Detects deauth attack loops and fires Gmail security alerts in real time.'
+              },
+              'forest_fire.txt': {
+                type: 'file',
+                size: '3.1K',
+                perm: '-rw-r--r--',
+                date: 'Aug 11 12:25',
+                content: 'Project 3: Forest Fire Prediction System\nStack: React, Node.js, Python, XGBoost, Google Maps\nDescription: Geospatial AI wildfire prediction with dynamic contour heatmaps and WhatsApp dispatch alerts.'
+              }
+            }
+          },
+          'certs': {
+            type: 'dir',
+            files: {
+              'hackathon_1st_place.jpg': {
+                type: 'file',
+                size: '1.2M',
+                perm: '-rw-r--r--',
+                date: 'Jul 01 18:53',
+                content: 'Artiverse 3.0 Intra-College Hackathon - 1st Place Winner',
+                url: pfx + 'assets/cerificates/IMG_20260701_185332433.jpg'
+              },
+              'cyber_security.jpg': {
+                type: 'file',
+                size: '1.5M',
+                perm: '-rw-r--r--',
+                date: 'Jul 01 18:51',
+                content: 'Advanced Cyber Security - Penetration Testing Certification (6-day hands on)',
+                url: pfx + 'assets/cerificates/IMG_20260701_185137413.jpg'
+              },
+              'fullstack_internship.jpg': {
+                type: 'file',
+                size: '1.8M',
+                perm: '-rw-r--r--',
+                date: 'Jul 01 18:52',
+                content: 'e-soft IT Solutions Full Stack Developer Trainee Certificate (June 2025)',
+                url: pfx + 'assets/cerificates/internship/IMG_20260701_185232887.jpg'
+              },
+              'infosys_html5.pdf': {
+                type: 'file',
+                size: '420K',
+                perm: '-rw-r--r--',
+                date: 'Jun 15 10:20',
+                content: 'Infosys Springboard - HTML5 Specialist Certificate',
+                url: pfx + 'assets/cerificates/Infosys spring board/1-0873ed08-16af-452e-829d-6639b42222b3.pdf'
+              },
+              'infosys_css3.pdf': {
+                type: 'file',
+                size: '430K',
+                perm: '-rw-r--r--',
+                date: 'Jun 15 10:25',
+                content: 'Infosys Springboard - CSS3 Specialist Certificate',
+                url: pfx + 'assets/cerificates/Infosys spring board/1-1331af90-be4b-4074-bf6a-8db9f0230d64.pdf'
+              },
+              'infosys_javascript.pdf': {
+                type: 'file',
+                size: '445K',
+                perm: '-rw-r--r--',
+                date: 'Jun 15 10:30',
+                content: 'Infosys Springboard - JavaScript Specialist Certificate',
+                url: pfx + 'assets/cerificates/Infosys spring board/1-d4d1128f-a5ea-479d-8dea-c5da93d73668.pdf'
+              }
+            }
+          },
+          'documents': {
+            type: 'dir',
+            files: {
+              'readme.md': {
+                type: 'file',
+                size: '1.8K',
+                perm: '-rw-r--r--',
+                date: 'Aug 11 12:25',
+                content: '# Kabilan M Portfolio Documents\nUpload and manage all portfolio documents, research publications, and credentials here.'
+              }
+            }
+          }
+        }
+      }
+    };
+  }
+
+  function loadVFS() {
+    try {
+      const stored = localStorage.getItem(VFS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed['/home/kabilan']) return parsed;
+      }
+    } catch (e) {}
+    return getDefaultVFS();
+  }
+
+  function saveVFS(vfs) {
+    try {
+      localStorage.setItem(VFS_STORAGE_KEY, JSON.stringify(vfs));
+    } catch (e) {}
+  }
 
   function initTerminal() {
     const tInput = document.getElementById('terminalInput');
     const tBody = document.getElementById('terminalBody');
+    const tPrompt = document.getElementById('terminalPrompt') || document.querySelector('.terminal-input-row .t-prompt');
+    const tFileInput = document.getElementById('terminalFileInput');
     const chips = document.querySelectorAll('.cmd-chip');
     
     if (!tInput || !tBody) return;
@@ -866,10 +1036,28 @@
     if (!tBody.getAttribute('role')) tBody.setAttribute('role', 'log');
     if (!tBody.getAttribute('aria-live')) tBody.setAttribute('aria-live', 'polite');
 
+    let currentDir = '/home/kabilan';
+    let vfs = loadVFS();
+
+    const updatePrompt = () => {
+      if (!tPrompt) return;
+      let displayPath = currentDir;
+      if (displayPath === '/home/kabilan') displayPath = '~';
+      else if (displayPath.startsWith('/home/kabilan/')) displayPath = '~/' + displayPath.slice('/home/kabilan/'.length);
+      tPrompt.textContent = `security@kabilan:${displayPath}$`;
+    };
+
+    updatePrompt();
+
     const getResumeNoPhotoPath = () => {
       const isSubpage = window.location.pathname.includes('/pages/');
       const prefix = isSubpage ? '../' : '';
       return prefix + 'assets/resume/kabilanm_resume without photo.pdf?v=4.0';
+    };
+
+    const getAdminPath = () => {
+      const isSubpage = window.location.pathname.includes('/pages/');
+      return isSubpage ? '../admin.html' : 'admin.html';
     };
 
     const appendLine = (text, type = '') => {
@@ -881,13 +1069,98 @@
       tBody.scrollTop = tBody.scrollHeight;
     };
 
+    // Helper: get directory object in VFS
+    const getDirObject = (path) => {
+      if (path === '/home/kabilan') return vfs['/home/kabilan'];
+      if (path.startsWith('/home/kabilan/')) {
+        const sub = path.slice('/home/kabilan/'.length).split('/')[0];
+        const rootFiles = vfs['/home/kabilan'].files;
+        if (rootFiles[sub] && rootFiles[sub].type === 'dir') {
+          return rootFiles[sub];
+        }
+      }
+      return null;
+    };
+
+    // Document File Picker Upload Handler
+    if (tFileInput) {
+      tFileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const fileName = file.name;
+        const fileSizeKb = (file.size / 1024).toFixed(1);
+        const sizeStr = fileSizeKb > 1024 ? `${(fileSizeKb / 1024).toFixed(1)}M` : `${fileSizeKb}K`;
+        const now = new Date();
+        const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const content = typeof reader.result === 'string' ? reader.result.slice(0, 1000) : `[Binary document: ${fileName}]`;
+          
+          // Store into current directory
+          const targetDir = getDirObject(currentDir) || vfs['/home/kabilan'];
+          targetDir.files = targetDir.files || {};
+          targetDir.files[fileName] = {
+            type: 'file',
+            size: sizeStr,
+            perm: '-rw-r--r--',
+            date: dateStr,
+            content: content,
+            isUploaded: true
+          };
+
+          // Also ensure in /home/kabilan/documents
+          const docsDir = vfs['/home/kabilan'].files['documents'];
+          if (docsDir && docsDir.files) {
+            docsDir.files[fileName] = targetDir.files[fileName];
+          }
+
+          saveVFS(vfs);
+
+          appendLine(`[+] Uploading document: "<b>${escapeHtml(fileName)}</b>" (${sizeStr})...`, 't-cyan');
+          appendLine(`[✓] Document uploaded successfully! Stored in <span class="t-green">${currentDir}/${escapeHtml(fileName)}</span>`, 't-green');
+          appendLine(`[i] Run <span class="t-cyan">ls</span> to list files or <span class="t-cyan">cat ${escapeHtml(fileName)}</span> to inspect.`, 't-log');
+          tFileInput.value = '';
+        };
+
+        if (file.type.startsWith('text/') || file.name.endsWith('.txt') || file.name.endsWith('.md') || file.name.endsWith('.json')) {
+          reader.readAsText(file);
+        } else {
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    const openAdminPanel = () => {
+      const adminUrl = getAdminPath();
+      appendLine(`[+] Authenticating root / administrator clearance...`, 't-cyan');
+      appendLine(`[✓] Access granted: Level 5 Administrator Console.`, 't-green');
+      appendLine(`[+] Launching Portfolio Admin Panel (${escapeHtml(adminUrl)})...`, 't-green');
+      appendLine(`[➔] Redirecting: <a href="${adminUrl}" target="_blank" rel="noopener noreferrer" class="t-cyan" style="text-decoration: underline; font-weight: 700;">[Click here to open Admin Panel]</a>`, 't-cyan');
+      try {
+        const win = window.open(adminUrl, '_blank', 'noopener,noreferrer');
+        if (!win) {
+          window.location.href = adminUrl;
+        }
+      } catch (e) {
+        window.location.href = adminUrl;
+      }
+    };
+
     const handleCommand = (cmd) => {
       const rawCmd = cmd.trim();
       const cleanCmd = rawCmd.toLowerCase();
       if (!cleanCmd) return;
 
       cmdHistory.push(rawCmd);
-      appendLine(`<span class="t-prompt">security@kabilan:~$</span> ${escapeHtml(cmd)}`);
+      historyIndex = cmdHistory.length;
+
+      let displayPath = currentDir;
+      if (displayPath === '/home/kabilan') displayPath = '~';
+      else if (displayPath.startsWith('/home/kabilan/')) displayPath = '~/' + displayPath.slice('/home/kabilan/'.length);
+
+      appendLine(`<span class="t-prompt">security@kabilan:${displayPath}$</span> ${escapeHtml(cmd)}`);
 
       if (sniffInterval && cleanCmd !== 'sniff' && cleanCmd !== 'stop') {
         clearInterval(sniffInterval);
@@ -895,32 +1168,349 @@
         appendLine(`[i] Packet sniffing paused.`, 't-yellow');
       }
 
+      // Check redirection syntax: echo "text" > file or >> file
+      if (/^echo\s+.*>>?\s*\S+$/i.test(rawCmd)) {
+        const isAppend = rawCmd.includes('>>');
+        const sep = isAppend ? '>>' : '>';
+        const [echoPart, targetFileRaw] = rawCmd.split(sep);
+        const textToEcho = echoPart.replace(/^echo\s+/i, '').replace(/^['"]|['"]$/g, '').trim();
+        const targetFileName = targetFileRaw.trim();
+
+        if (targetFileName) {
+          const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          dirObj.files = dirObj.files || {};
+          const existing = dirObj.files[targetFileName];
+          const newContent = (existing && isAppend) ? `${existing.content}\n${textToEcho}` : textToEcho;
+          const now = new Date();
+          const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+          
+          dirObj.files[targetFileName] = {
+            type: 'file',
+            size: `${Math.max(1, Math.round(newContent.length / 1024 * 10) / 10)}K`,
+            perm: '-rw-r--r--',
+            date: dateStr,
+            content: newContent
+          };
+          saveVFS(vfs);
+          appendLine(`[✓] Wrote ${newContent.length} bytes to <span class="t-green">${escapeHtml(targetFileName)}</span>`, 't-green');
+          return;
+        }
+      }
+
       const parts = cleanCmd.split(/\s+/);
       const mainCmd = parts[0];
       const arg = parts.slice(1).join(' ');
+      const rawArg = rawCmd.replace(/^[^\s]+\s*/, '').trim();
 
       switch(mainCmd) {
         case 'help':
-          appendLine(`Available Linux & System Commands:
-  <span class="t-cyan">resume</span>       - Display text resume &amp; open Resume (No Photo version)
-  <span class="t-cyan">ls</span>           - List directory files (resume.pdf, projects/, certs/)
-  <span class="t-cyan">cat &lt;file&gt;</span>   - View file content (cat resume.pdf, cat skills.txt)
-  <span class="t-cyan">whoami</span>       - Display current active user identity
-  <span class="t-cyan">pwd</span>          - Print working directory
-  <span class="t-cyan">uname</span>        - Print system architecture details (-a for full)
-  <span class="t-cyan">ping &lt;host&gt;</span>  - Simulate ICMP ping network diagnostics
-  <span class="t-cyan">ifconfig</span>     - Display network interfaces (ip a)
-  <span class="t-cyan">sniff</span>        - Toggle live Wi-Fi packet monitoring simulation
-  <span class="t-cyan">hash &lt;text&gt;</span>  - Compute real-time cryptographic SHA-256 hash
-  <span class="t-cyan">security</span>     - Display active portfolio cybersecurity suite status
-  <span class="t-cyan">vault</span>        - Inspect shielded API security &amp; anti-scraping vault
-  <span class="t-cyan">skills</span>       - Print core technical skills breakdown
-  <span class="t-cyan">projects</span>     - Display technical projects &amp; hardware builds
-  <span class="t-cyan">publications</span> - List research publications
-  <span class="t-cyan">contact</span>      - Show direct contact channels
-  <span class="t-cyan">date</span>         - Print current system timestamp
-  <span class="t-cyan">history</span>      - View command input history
-  <span class="t-cyan">clear</span>        - Clear terminal history`, 't-log');
+          appendLine(`Available Linux &amp; System Commands:
+  <span class="t-cyan">admin</span>           - Open Portfolio Admin Management Panel (admin.html)
+  <span class="t-cyan">upload</span>          - Upload documents/files to portfolio
+  <span class="t-cyan">touch &lt;file&gt;</span>    - Create a new document/file
+  <span class="t-cyan">rm &lt;file&gt;</span>       - Delete/remove a document or file
+  <span class="t-cyan">ls</span>               - List directory files &amp; documents (ls -la, ls projects)
+  <span class="t-cyan">cat &lt;file&gt;</span>      - View document content (cat resume.pdf, cat skills.txt)
+  <span class="t-cyan">cd &lt;dir&gt;</span>        - Navigate directory (cd projects, cd certs, cd documents)
+  <span class="t-cyan">pwd</span>              - Print current working directory
+  <span class="t-cyan">update &lt;f&gt; [txt]</span> - Update document content or portfolio section
+  <span class="t-cyan">nano &lt;file&gt;</span>      - Edit document inline (or echo "text" &gt; file)
+  <span class="t-cyan">mkdir &lt;dir&gt;</span>      - Create a new folder
+  <span class="t-cyan">rmdir &lt;dir&gt;</span>      - Remove an empty directory
+  <span class="t-cyan">resume</span>           - Display text resume &amp; open Resume (No Photo version)
+  <span class="t-cyan">whoami</span>           - Display active user identity
+  <span class="t-cyan">uname</span>            - Print system architecture details (-a for full)
+  <span class="t-cyan">ping &lt;host&gt;</span>      - Simulate ICMP ping network diagnostics
+  <span class="t-cyan">ifconfig</span>         - Display network interfaces (ip a)
+  <span class="t-cyan">curl &lt;url&gt;</span>       - Fetch API or simulated HTTP request
+  <span class="t-cyan">sniff</span>            - Toggle live Wi-Fi packet monitoring simulation
+  <span class="t-cyan">hash &lt;text&gt;</span>      - Compute real-time cryptographic SHA-256 hash
+  <span class="t-cyan">security</span>         - Display active portfolio cybersecurity suite status
+  <span class="t-cyan">vault</span>            - Inspect shielded API security &amp; anti-scraping vault
+  <span class="t-cyan">skills</span>           - Print core technical skills breakdown
+  <span class="t-cyan">projects</span>         - Display technical projects &amp; hardware builds
+  <span class="t-cyan">publications</span>     - List research publications
+  <span class="t-cyan">contact</span>          - Show direct contact channels
+  <span class="t-cyan">ps</span> / <span class="t-cyan">top</span>        - Display active system process table
+  <span class="t-cyan">date</span>             - Print current system timestamp
+  <span class="t-cyan">history</span>          - View command input history
+  <span class="t-cyan">clear</span>            - Clear terminal history`, 't-log');
+          break;
+
+        case 'admin':
+        case 'open':
+        case 'login':
+          if (mainCmd === 'open' && arg && arg !== 'admin' && arg !== 'admin.html') {
+            if (arg === 'resume' || arg === 'resume.pdf') {
+              handleCommand('resume');
+              return;
+            }
+            appendLine(`open: Opening ${escapeHtml(arg)}...`, 't-log');
+            return;
+          }
+          openAdminPanel();
+          break;
+
+        case 'upload':
+        case 'upload-document':
+        case 'import':
+          if (tFileInput) {
+            appendLine(`[+] Opening document upload dialog... Choose a file from your device.`, 't-cyan');
+            tFileInput.click();
+          } else if (arg) {
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            dirObj.files = dirObj.files || {};
+            dirObj.files[arg] = {
+              type: 'file',
+              size: '1.0K',
+              perm: '-rw-r--r--',
+              date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }),
+              content: `Uploaded Document: ${arg}`
+            };
+            saveVFS(vfs);
+            appendLine(`[✓] Document uploaded successfully: <span class="t-green">${escapeHtml(arg)}</span>`, 't-green');
+          } else {
+            appendLine(`Usage: <span class="t-cyan">upload</span> (opens file picker) or <span class="t-cyan">upload &lt;filename&gt;</span>`, 't-yellow');
+          }
+          break;
+
+        case 'touch':
+          if (!arg) {
+            appendLine(`touch: missing file operand. Example: <span class="t-cyan">touch notes.txt</span>`, 't-yellow');
+          } else {
+            const fileName = arg.split(/\s+/)[0];
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            dirObj.files = dirObj.files || {};
+            const now = new Date();
+            const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+            dirObj.files[fileName] = dirObj.files[fileName] || {
+              type: 'file',
+              size: '0B',
+              perm: '-rw-r--r--',
+              date: dateStr,
+              content: ''
+            };
+            saveVFS(vfs);
+            appendLine(`[+] Created new file: <span class="t-green">${escapeHtml(fileName)}</span>`, 't-green');
+          }
+          break;
+
+        case 'rm':
+        case 'delete':
+          if (!arg) {
+            appendLine(`rm: missing operand. Example: <span class="t-cyan">rm filename.txt</span>`, 't-yellow');
+          } else {
+            const cleanArg = arg.replace(/^-rf?\s+/, '').trim();
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            if (dirObj.files && dirObj.files[cleanArg]) {
+              delete dirObj.files[cleanArg];
+              saveVFS(vfs);
+              appendLine(`[✓] Successfully removed document: <span class="t-green">${escapeHtml(cleanArg)}</span>`, 't-green');
+            } else {
+              appendLine(`rm: cannot remove '${escapeHtml(cleanArg)}': No such file or directory`, 't-red');
+            }
+          }
+          break;
+
+        case 'update':
+          if (!arg || arg === 'portfolio') {
+            appendLine(`[+] Checking Portfolio CMS synchronization...`, 't-cyan');
+            appendLine(`[✓] Cloud connection: Firebase Realtime Database (ONLINE)`, 't-green');
+            appendLine(`[✓] Portfolio telemetry &amp; visitor presence: SYNCHRONIZED`, 't-green');
+            appendLine(`[i] To update specific files, use: <span class="t-cyan">update &lt;file&gt; &lt;new content&gt;</span>`, 't-log');
+          } else {
+            const match = rawArg.match(/^(\S+)\s+(.+)$/);
+            if (match) {
+              const uFile = match[1];
+              const uContent = match[2].replace(/^['"]|['"]$/g, '');
+              const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+              dirObj.files = dirObj.files || {};
+              const now = new Date();
+              const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+              dirObj.files[uFile] = {
+                type: 'file',
+                size: `${Math.max(1, Math.round(uContent.length / 1024 * 10) / 10)}K`,
+                perm: '-rw-r--r--',
+                date: dateStr,
+                content: uContent
+              };
+              saveVFS(vfs);
+              appendLine(`[✓] Updated document <span class="t-green">${escapeHtml(uFile)}</span> (${uContent.length} bytes)`, 't-green');
+            } else {
+              appendLine(`Usage: <span class="t-cyan">update &lt;filename&gt; &lt;content&gt;</span> or <span class="t-cyan">update portfolio</span>`, 't-yellow');
+            }
+          }
+          break;
+
+        case 'nano':
+        case 'vi':
+        case 'vim':
+        case 'edit':
+          if (!arg) {
+            appendLine(`nano: missing filename. Example: <span class="t-cyan">nano notes.txt</span>`, 't-yellow');
+          } else {
+            const fileName = arg.split(/\s+/)[0];
+            const match = rawArg.match(/^(\S+)\s+(.+)$/);
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            dirObj.files = dirObj.files || {};
+            if (match) {
+              const content = match[2].replace(/^['"]|['"]$/g, '');
+              const now = new Date();
+              const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+              dirObj.files[fileName] = {
+                type: 'file',
+                size: `${Math.max(1, Math.round(content.length / 1024 * 10) / 10)}K`,
+                perm: '-rw-r--r--',
+                date: dateStr,
+                content: content
+              };
+              saveVFS(vfs);
+              appendLine(`[✓] File <span class="t-green">${escapeHtml(fileName)}</span> updated and saved.`, 't-green');
+            } else {
+              const cur = dirObj.files[fileName] ? dirObj.files[fileName].content : '(Empty file)';
+              appendLine(`<b>[GNU nano 7.2] File: ${escapeHtml(fileName)}</b>\n<pre style="margin: 4px 0; color: #a5f3fc; font-family: monospace;">${escapeHtml(cur)}</pre>\n[i] Use: <span class="t-cyan">echo "your text" &gt; ${escapeHtml(fileName)}</span> to overwrite or <span class="t-cyan">update ${escapeHtml(fileName)} "content"</span>`, 't-log');
+            }
+          }
+          break;
+
+        case 'cd':
+          if (!arg || arg === '~' || arg === '/home/kabilan') {
+            currentDir = '/home/kabilan';
+            updatePrompt();
+          } else if (arg === '..') {
+            if (currentDir !== '/home/kabilan') {
+              currentDir = '/home/kabilan';
+              updatePrompt();
+            }
+          } else if (arg === 'admin' || arg === '/admin') {
+            openAdminPanel();
+          } else if (['home', 'about', 'skills', 'projects', 'contact', 'achievements'].includes(arg)) {
+            appendLine(`Navigating to section: <span class="t-green">${escapeHtml(arg)}</span>...`, 't-cyan');
+            if (typeof showSection === 'function') {
+              showSection(arg);
+            }
+          } else {
+            const cleanSub = arg.replace(/^\.\//, '').replace(/\/$/, '');
+            const rootFiles = vfs['/home/kabilan'].files;
+            if (rootFiles[cleanSub] && rootFiles[cleanSub].type === 'dir') {
+              currentDir = `/home/kabilan/${cleanSub}`;
+              updatePrompt();
+            } else {
+              appendLine(`bash: cd: ${escapeHtml(arg)}: No such file or directory`, 't-red');
+            }
+          }
+          break;
+
+        case 'pwd':
+          appendLine(currentDir, 't-cyan');
+          break;
+
+        case 'mkdir':
+          if (!arg) {
+            appendLine(`mkdir: missing operand. Example: <span class="t-cyan">mkdir my_docs</span>`, 't-yellow');
+          } else {
+            const dirName = arg.split(/\s+/)[0];
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            dirObj.files = dirObj.files || {};
+            if (dirObj.files[dirName]) {
+              appendLine(`mkdir: cannot create directory '${escapeHtml(dirName)}': File exists`, 't-red');
+            } else {
+              dirObj.files[dirName] = { type: 'dir', files: {} };
+              saveVFS(vfs);
+              appendLine(`[+] Created directory: <span class="t-green">${escapeHtml(dirName)}/</span>`, 't-green');
+            }
+          }
+          break;
+
+        case 'rmdir':
+          if (!arg) {
+            appendLine(`rmdir: missing operand.`, 't-yellow');
+          } else {
+            const dirName = arg.split(/\s+/)[0];
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            if (dirObj.files && dirObj.files[dirName] && dirObj.files[dirName].type === 'dir') {
+              delete dirObj.files[dirName];
+              saveVFS(vfs);
+              appendLine(`[✓] Removed directory: <span class="t-green">${escapeHtml(dirName)}/</span>`, 't-green');
+            } else {
+              appendLine(`rmdir: failed to remove '${escapeHtml(dirName)}': No such directory`, 't-red');
+            }
+          }
+          break;
+
+        case 'grep':
+          if (!arg) {
+            appendLine(`Usage: <span class="t-cyan">grep &lt;pattern&gt; [filename]</span>`, 't-yellow');
+          } else {
+            const partsG = arg.split(/\s+/);
+            const pattern = partsG[0];
+            const targetF = partsG[1];
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            let matches = 0;
+            const searchFile = (name, fObj) => {
+              if (fObj && fObj.content && fObj.content.toLowerCase().includes(pattern.toLowerCase())) {
+                matches++;
+                const lines = fObj.content.split('\n');
+                lines.forEach((l, idx) => {
+                  if (l.toLowerCase().includes(pattern.toLowerCase())) {
+                    appendLine(`<span class="t-cyan">${escapeHtml(name)}:${idx + 1}:</span> ${escapeHtml(l)}`, 't-log');
+                  }
+                });
+              }
+            };
+            if (targetF && dirObj.files && dirObj.files[targetF]) {
+              searchFile(targetF, dirObj.files[targetF]);
+            } else if (dirObj.files) {
+              Object.keys(dirObj.files).forEach(k => {
+                if (dirObj.files[k].type === 'file') searchFile(k, dirObj.files[k]);
+              });
+            }
+            if (matches === 0) {
+              appendLine(`grep: no matches found for "${escapeHtml(pattern)}"`, 't-log');
+            }
+          }
+          break;
+
+        case 'curl':
+        case 'wget':
+          const targetUrl = escapeHtml(arg || 'https://kabilanportfolio-ab851.web.app/api/health');
+          appendLine(`[+] Connecting to ${targetUrl}...`, 't-log');
+          setTimeout(() => {
+            appendLine(`HTTP/2 200 OK\n<b>content-type:</b> application/json; charset=utf-8\n<b>x-shield-status:</b> VAULT_SECURE\n\n{\n  "status": "healthy",\n  "service": "kabilan-portfolio-production",\n  "ssl": "TLSv1.3",\n  "api_shielding": "ACTIVE"\n}`, 't-green');
+          }, 350);
+          break;
+
+        case 'ps':
+        case 'top':
+          appendLine(`  PID TTY          TIME CMD
+ 1042 tty1     00:00:01 systemd
+ 1204 tty1     00:00:03 nginx-edge
+ 1589 tty1     00:00:02 node-portfolio
+ 2140 pts/0    00:00:00 bash
+ 2841 pts/0    00:00:01 packet-sniffer
+ 3012 pts/0    00:00:00 auth-guardian`, 't-log');
+          break;
+
+        case 'kill':
+          if (!arg) {
+            appendLine(`kill: usage: kill &lt;pid&gt;`, 't-yellow');
+          } else {
+            if (arg === '2841' && sniffInterval) {
+              clearInterval(sniffInterval);
+              sniffInterval = null;
+              appendLine(`[✓] Killed process 2841 (packet-sniffer). Sniffing halted.`, 't-green');
+            } else {
+              appendLine(`[✓] Process ${escapeHtml(arg)} terminated.`, 't-green');
+            }
+          }
+          break;
+
+        case 'chmod':
+          if (!arg) {
+            appendLine(`chmod: missing operand. Example: <span class="t-cyan">chmod 755 script.sh</span>`, 't-yellow');
+          } else {
+            appendLine(`[✓] Changed permissions for ${escapeHtml(arg)}`, 't-green');
+          }
           break;
 
         case 'hash':
@@ -967,16 +1557,30 @@
 
         case 'ls':
         case 'dir':
-          appendLine(`drwxr-xr-x 4 kabilan kabilan 4096 Jul 26 15:10 .
-drwxr-xr-x 8 kabilan kabilan 4096 Jul 26 15:10 ..
--rw-r--r-- 1 kabilan kabilan 106K Aug 11 12:25 <a href="${getResumeNoPhotoPath()}" target="_blank" rel="noopener noreferrer" class="t-green">resume.pdf</a> (No Photo version)
--rw-r--r-- 1 kabilan kabilan  30K Aug 11 12:25 index.html
--rw-r--r-- 1 kabilan kabilan  28K Aug 11 12:25 script.js
--rw-r--r-- 1 kabilan kabilan  41K Aug 11 12:25 style.css
--rw-r--r-- 1 kabilan kabilan  1.2K Aug 11 12:25 skills.txt
--rw-r--r-- 1 kabilan kabilan  1.5K Aug 11 12:25 about.txt
-drwxr-xr-x 2 kabilan kabilan 4096 Aug 11 12:25 projects/
-drwxr-xr-x 3 kabilan kabilan 4096 Aug 11 12:25 certs/`, 't-log');
+          const targetDirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          let outputLines = [];
+          outputLines.push(`drwxr-xr-x 4 kabilan kabilan 4096 Jul 26 15:10 .`);
+          outputLines.push(`drwxr-xr-x 8 kabilan kabilan 4096 Jul 26 15:10 ..`);
+
+          if (targetDirObj && targetDirObj.files) {
+            Object.keys(targetDirObj.files).forEach(fName => {
+              const item = targetDirObj.files[fName];
+              if (item.type === 'dir') {
+                outputLines.push(`drwxr-xr-x 2 kabilan kabilan 4096 Aug 11 12:25 <span class="t-cyan" style="font-weight: bold;">${escapeHtml(fName)}/</span>`);
+              } else {
+                const perm = item.perm || '-rw-r--r--';
+                const size = (item.size || '1K').padStart(5, ' ');
+                const date = item.date || 'Aug 11 12:25';
+                if (fName === 'resume.pdf' || item.url) {
+                  const href = item.url || getResumeNoPhotoPath();
+                  outputLines.push(`${perm} 1 kabilan kabilan ${size} ${date} <a href="${href}" target="_blank" rel="noopener noreferrer" class="t-green" style="text-decoration: underline;">${escapeHtml(fName)}</a>`);
+                } else {
+                  outputLines.push(`${perm} 1 kabilan kabilan ${size} ${date} ${escapeHtml(fName)}`);
+                }
+              }
+            });
+          }
+          appendLine(outputLines.join('\n'), 't-log');
           break;
 
         case 'cat':
@@ -996,7 +1600,18 @@ Skills: Java, HTML5, CSS3, MySQL, MongoDB, HDFS, Pig, Wireshark, Linux, Git
           } else if (arg === 'readme.md') {
             appendLine(`# Kabilan M Portfolio\nSecurity &amp; Networking Portfolio with Interactive Terminal Shell`, 't-log');
           } else {
-            appendLine(`cat: ${escapeHtml(arg)}: No such file or directory`, 't-red');
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            if (dirObj.files && dirObj.files[arg]) {
+              const file = dirObj.files[arg];
+              if (file.url) {
+                appendLine(`<b>[cat ${escapeHtml(arg)}]</b>\n${escapeHtml(file.content)}\n[+] Open original document: <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="t-cyan" style="text-decoration: underline;">${escapeHtml(arg)}</a>`, 't-green');
+                window.open(file.url, '_blank', 'noopener,noreferrer');
+              } else {
+                appendLine(`<b>[cat ${escapeHtml(arg)}]</b>\n${escapeHtml(file.content)}`, 't-cyan');
+              }
+            } else {
+              appendLine(`cat: ${escapeHtml(arg)}: No such file or directory`, 't-red');
+            }
           }
           break;
 
@@ -1005,7 +1620,7 @@ Skills: Java, HTML5, CSS3, MySQL, MongoDB, HDFS, Pig, Wireshark, Linux, Git
           break;
 
         case 'pwd':
-          appendLine(`/home/kabilan/portfolio`, 't-cyan');
+          appendLine(currentDir, 't-cyan');
           break;
 
         case 'uname':
@@ -1053,14 +1668,19 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
           break;
 
         case 'sudo':
-          appendLine(`[sudo] password for kabilan: `, 't-red');
-          setTimeout(() => appendLine(`kabilan is not in the sudoers file. This incident will be reported.`, 't-red'), 600);
+          if (arg.startsWith('admin') || arg.startsWith('login') || arg === 'su' || arg.startsWith('su ')) {
+            appendLine(`[sudo] Authenticating root privileges for admin console...`, 't-cyan');
+            openAdminPanel();
+          } else {
+            appendLine(`[sudo] password for kabilan: `, 't-red');
+            setTimeout(() => appendLine(`kabilan is not in the sudoers file. This incident will be reported.`, 't-red'), 600);
+          }
           break;
 
         case 'clear':
           tBody.innerHTML = '';
           appendLine(`Welcome to Kabilan's Interactive Lab Terminal [Kali-Linux v6.8]`, 't-log');
-          appendLine(`System status: <span class="t-green">ONLINE</span> | Type <span class="t-cyan">help</span> or <span class="t-cyan">resume</span>`, 't-log');
+          appendLine(`System status: <span class="t-green">ONLINE</span> | Type <span class="t-cyan">help</span> or <span class="t-cyan">admin</span>`, 't-log');
           break;
 
         case 'skills':
@@ -1133,7 +1753,35 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
       if (e.key === 'Enter') {
         const val = tInput.value;
         tInput.value = '';
+        historyIndex = cmdHistory.length;
         handleCommand(val);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (cmdHistory.length > 0 && historyIndex > 0) {
+          historyIndex--;
+          tInput.value = cmdHistory[historyIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < cmdHistory.length - 1) {
+          historyIndex++;
+          tInput.value = cmdHistory[historyIndex];
+        } else {
+          historyIndex = cmdHistory.length;
+          tInput.value = '';
+        }
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        const currentVal = tInput.value.trim().toLowerCase();
+        if (currentVal) {
+          const suggestions = [
+            'admin', 'help', 'resume', 'ls', 'cat', 'touch', 'rm', 'delete', 'upload',
+            'cd', 'pwd', 'nano', 'update', 'echo', 'grep', 'clear', 'whoami', 'uname',
+            'ping', 'ifconfig', 'sniff', 'hash', 'security', 'vault', 'skills', 'projects'
+          ];
+          const match = suggestions.find(s => s.startsWith(currentVal));
+          if (match) tInput.value = match;
+        }
       }
     });
 
@@ -1146,6 +1794,22 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
         const cmd = chip.textContent.trim();
         tInput.focus();
         handleCommand(cmd);
+      });
+    });
+  }
+
+  function initImageFallbacks() {
+    document.querySelectorAll('img').forEach(img => {
+      img.addEventListener('error', function() {
+        const isSub = window.location.pathname.includes('/pages/');
+        const prefix = isSub ? '../' : '';
+        const altText = (this.alt || '').toLowerCase();
+        const srcText = (this.src || '').toLowerCase();
+        if (altText.includes('wifi') || srcText.includes('wifi') || srcText.includes('deauth')) {
+          this.src = prefix + 'assets/projects/wifi_deauth.svg';
+        } else if (altText.includes('fire') || srcText.includes('fire')) {
+          this.src = prefix + 'assets/projects/forest_fire.svg';
+        }
       });
     });
   }
@@ -1166,13 +1830,19 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
       'contact': 'contact',
       'terminal': 'terminal',
       'lab': 'terminal',
-      'shell': 'terminal'
+      'shell': 'terminal',
+      'admin': 'admin'
     };
 
     const checkQuery = (val) => {
       const query = val.toLowerCase().trim();
       if (searchRoutes.hasOwnProperty(query)) {
         const targetSection = searchRoutes[query];
+        if (targetSection === 'admin') {
+          const adminUrl = isHomepage ? 'admin.html' : '../admin.html';
+          window.location.href = adminUrl;
+          return;
+        }
         if (isHomepage) {
           showSection(targetSection);
         } else {

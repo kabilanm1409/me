@@ -269,6 +269,19 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
     if (data.contact) syncContact(data.contact);
   }
 
+  // Expose applyPortfolioData globally for terminal live synchronization
+  if (typeof window !== 'undefined') {
+    window.__applyPortfolioData = applyPortfolioData;
+  }
+
+  // 0. Check local overrides saved from terminal (km_custom_portfolio_data)
+  try {
+    const localData = localStorage.getItem('km_custom_portfolio_data');
+    if (localData) {
+      applyPortfolioData(JSON.parse(localData));
+    }
+  } catch (e) {}
+
   // 1. Listen to Realtime Database /portfolioData
   try {
     const portfolioRef = ref(db, "portfolioData");

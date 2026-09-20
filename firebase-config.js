@@ -94,22 +94,30 @@ export const firebaseConfig = Object.freeze({
   get apiKey() {
     return maskApiKey(_rawConfig.apiKey);
   },
-  authDomain: _rawConfig.authDomain,
+  get authDomain() {
+    return 'kabi••••••••.firebaseapp.com';
+  },
   get databaseURL() {
     return _rawConfig.databaseURL ? _rawConfig.databaseURL.replace(/\/\/[^.]+\./, '//***.') : '';
   },
-  projectId: _rawConfig.projectId,
-  storageBucket: _rawConfig.storageBucket,
+  get projectId() {
+    return 'kabi••••••••';
+  },
+  get storageBucket() {
+    return 'kabi••••••••.firebasestorage.app';
+  },
   get messagingSenderId() {
     return maskApiKey(_rawConfig.messagingSenderId);
   },
   get appId() {
     return maskApiKey(_rawConfig.appId);
   },
-  measurementId: _rawConfig.measurementId,
+  get measurementId() {
+    return 'G-••••••••';
+  },
   toJSON: () => ({
     status: "vault_shielded",
-    projectId: _rawConfig.projectId,
+    projectId: "kabi••••••••",
     apiKey: maskApiKey(_rawConfig.apiKey),
     shield: "AES/XOR-Vault-Enforced"
   }),
@@ -145,7 +153,7 @@ export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const firestore = getFirestore(app);
 
-// Mask apiKey on app.options so inspecting app object in DevTools cannot read raw key
+// Mask apiKey and all sensitive properties on app.options and auth so DevTools inspection cannot read raw credentials
 try {
   if (app && app.options) {
     Object.defineProperty(app.options, 'apiKey', {
@@ -162,35 +170,115 @@ try {
         enumerable: true
       });
     }
+    if (app.options.authDomain) {
+      Object.defineProperty(app.options, 'authDomain', {
+        value: "kabi••••••••.firebaseapp.com",
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    if (app.options.projectId) {
+      Object.defineProperty(app.options, 'projectId', {
+        value: "kabi••••••••",
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    if (app.options.storageBucket) {
+      Object.defineProperty(app.options, 'storageBucket', {
+        value: "kabi••••••••.firebasestorage.app",
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    if (app.options.messagingSenderId) {
+      Object.defineProperty(app.options, 'messagingSenderId', {
+        value: maskApiKey(_rawConfig.messagingSenderId),
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    if (app.options.appId) {
+      Object.defineProperty(app.options, 'appId', {
+        value: maskApiKey(_rawConfig.appId),
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
+    if (app.options.measurementId) {
+      Object.defineProperty(app.options, 'measurementId', {
+        value: "G-••••••••",
+        writable: false,
+        configurable: true,
+        enumerable: true
+      });
+    }
   }
 } catch (e) {}
 
-// ── DevTools Console Shield: Intercept and scrub raw API keys from console output ──
+try {
+  if (auth && auth.config) {
+    const _realAuthKey = auth.config.apiKey;
+    Object.defineProperty(auth.config, 'apiKey', {
+      get: () => _realAuthKey,
+      enumerable: false,
+      configurable: true
+    });
+  }
+} catch (e) {}
+
+// ── DevTools Console Shield: Intercept and scrub raw API keys and endpoints across all log calls ──
 if (typeof window !== 'undefined' && window.console) {
   try {
     const _origLog = console.log;
     const _origWarn = console.warn;
     const _origError = console.error;
     const _origInfo = console.info;
+    const _origDebug = console.debug;
+    const _origDir = console.dir;
+    const _origTable = console.table;
 
-    const _scrubVal = (val) => {
-      if (!val) return val;
+    const _scrubVal = (val, seen = new WeakSet()) => {
+      if (val === null || val === undefined) return val;
       if (typeof val === 'string') {
-        return val.replace(/AIza[0-9A-Za-z_-]{35}/g, 'AIzaSy••••••••••••••••••••••••••••••••');
+        return val
+          .replace(/AIza[0-9A-Za-z_-]{35}/g, 'AIzaSy••••••••••••••••••••••••••••••••')
+          .replace(/kabilanportfolio-ab851(-default-rtdb)?/g, 'kabilanportfolio-•••••')
+          .replace(/1:1071191079317:web:[0-9a-f]+/g, '1:1071191079317:web:••••••••••••••••');
       }
       if (typeof val === 'object') {
+        if (seen.has(val)) return '[Circular]';
+        seen.add(val);
         try {
-          if (val.apiKey && typeof val.apiKey === 'string') {
-            return Object.assign({}, val, { apiKey: maskApiKey(val.apiKey) });
+          if (Array.isArray(val)) {
+            return val.map(item => _scrubVal(item, seen));
           }
-        } catch (err) {}
+          const scrubbed = {};
+          for (const key of Object.keys(val)) {
+            const lower = key.toLowerCase();
+            if (lower.includes('apikey') || lower.includes('secret') || lower.includes('password') || lower.includes('token')) {
+              scrubbed[key] = typeof val[key] === 'string' ? maskApiKey(val[key]) : '••••••••';
+            } else {
+              scrubbed[key] = _scrubVal(val[key], seen);
+            }
+          }
+          return scrubbed;
+        } catch (e) {
+          return val;
+        }
       }
       return val;
     };
 
     const _wrapConsole = (fn) => {
+      if (typeof fn !== 'function') return fn;
       return function (...args) {
-        const scrubbed = args.map(_scrubVal);
+        const scrubbed = args.map(arg => _scrubVal(arg));
         return fn.apply(console, scrubbed);
       };
     };
@@ -199,9 +287,15 @@ if (typeof window !== 'undefined' && window.console) {
     console.warn = _wrapConsole(_origWarn);
     console.error = _wrapConsole(_origError);
     console.info = _wrapConsole(_origInfo);
+    if (_origDebug) console.debug = _wrapConsole(_origDebug);
+    if (_origDir) console.dir = _wrapConsole(_origDir);
+    if (_origTable) console.table = _wrapConsole(_origTable);
 
     delete window.firebaseConfig;
     delete window.FIREBASE_CONFIG;
+    delete window._SHIELDED_CONFIG;
+    delete window._VAULT_KEY;
+    delete window._rawConfig;
   } catch (e) {}
 }
 

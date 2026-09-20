@@ -902,7 +902,7 @@
             size: '720B',
             perm: '-rw-r--r--',
             date: 'Sep 20 14:00',
-            content: '{\n  "owner": "Kabilan M",\n  "system": "Kali-Linux v6.8 Web Terminal",\n  "admin_panel": "admin.html",\n  "status": "Production Live",\n  "hosting": "Firebase Hosting (kabilanportfolio-ab851.web.app)"\n}'
+            content: '{\n  "owner": "Kabilan M",\n  "system": "Kali-Linux v6.8 Web Terminal",\n  "admin_panel": "admin.html",\n  "status": "Production Live",\n  "hosting": "Firebase Hosting (Encrypted Production Vault)"\n}'
           },
           'notes.txt': {
             type: 'file',
@@ -1082,6 +1082,148 @@
       return null;
     };
 
+    // Portfolio Live Details Updater & Sync Mechanism
+    const updatePortfolioDetail = (key, value) => {
+      let savedOverrides = {};
+      try {
+        savedOverrides = JSON.parse(localStorage.getItem('km_custom_portfolio_data') || '{}');
+      } catch (e) {}
+
+      const k = key.toLowerCase().trim();
+      const val = value.trim();
+
+      if (k === 'name') {
+        const h1 = document.querySelector('.hero-copy h1');
+        if (h1) h1.textContent = val;
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.name = val;
+        const root = vfs['/home/kabilan'];
+        if (root && root.files && root.files['portfolio_config.json']) {
+          try {
+            const cfg = JSON.parse(root.files['portfolio_config.json'].content);
+            cfg.owner = val;
+            root.files['portfolio_config.json'].content = JSON.stringify(cfg, null, 2);
+          } catch(e) {}
+        }
+        appendLine(`[✓] Portfolio owner updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'title' || k === 'role' || k === 'eyebrow') {
+        const eyebrow = document.querySelector('.hero-copy .eyebrow');
+        if (eyebrow) eyebrow.textContent = val;
+        const profTitle = document.querySelector('.hero-panel .profile-card h2');
+        if (profTitle) profTitle.textContent = val;
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.eyebrow = val;
+        savedOverrides.hero.profileTitle = val;
+        appendLine(`[✓] Professional title/role updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'bio' || k === 'subtitle' || k === 'about') {
+        const subtitle = document.querySelector('.hero-copy .hero-subtitle');
+        if (subtitle) subtitle.textContent = val;
+        const firstAboutP = document.querySelector('#about .overview-card p');
+        if (firstAboutP) firstAboutP.textContent = val;
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.subtitle = val;
+        savedOverrides.about = savedOverrides.about || {};
+        savedOverrides.about.whoIAm = val;
+        const root = vfs['/home/kabilan'];
+        if (root && root.files && root.files['about.txt']) {
+          root.files['about.txt'].content = `Kabilan M\n${val}`;
+        }
+        appendLine(`[✓] Portfolio bio/about updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'email') {
+        const mailLinks = [document.getElementById('heroEmailLink'), document.getElementById('contactEmail')];
+        mailLinks.forEach(el => {
+          if (el) {
+            el.setAttribute('href', `mailto:${val}`);
+            if (el.id === 'contactEmail') el.innerHTML = `<i class="fa-solid fa-envelope"></i> ${escapeHtml(val)}`;
+          }
+        });
+        savedOverrides.contact = savedOverrides.contact || {};
+        savedOverrides.contact.email = val;
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.socials = savedOverrides.hero.socials || {};
+        savedOverrides.hero.socials.email = val;
+        const root = vfs['/home/kabilan'];
+        if (root && root.files && root.files['contact.txt']) {
+          root.files['contact.txt'].content = root.files['contact.txt'].content.replace(/Email:\s*\S+/, `Email: ${val}`);
+        }
+        appendLine(`[✓] Contact email updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'phone') {
+        const phoneEl = document.getElementById('contactPhone');
+        if (phoneEl) {
+          phoneEl.setAttribute('href', `tel:${val.replace(/\s+/g, '')}`);
+          phoneEl.innerHTML = `<i class="fa-solid fa-phone"></i> ${escapeHtml(val)}`;
+        }
+        savedOverrides.contact = savedOverrides.contact || {};
+        savedOverrides.contact.phone = val;
+        const root = vfs['/home/kabilan'];
+        if (root && root.files && root.files['contact.txt']) {
+          root.files['contact.txt'].content = root.files['contact.txt'].content.replace(/Phone:\s*[^\n]+/, `Phone: ${val}`);
+        }
+        appendLine(`[✓] Contact phone updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'cgpa') {
+        const cgpaEl = document.getElementById('stat-cgpa');
+        if (cgpaEl) {
+          cgpaEl.textContent = val;
+          cgpaEl.closest('.stat-pill')?.setAttribute('data-counter', val);
+        }
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.stats = savedOverrides.hero.stats || {};
+        savedOverrides.hero.stats.cgpa = val;
+        appendLine(`[✓] CGPA stat updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'projects' || k === 'project_count') {
+        const projEl = document.getElementById('stat-projects');
+        if (projEl) {
+          projEl.textContent = `${val}+`;
+          projEl.closest('.stat-pill')?.setAttribute('data-counter', val);
+        }
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.stats = savedOverrides.hero.stats || {};
+        savedOverrides.hero.stats.projects = val;
+        appendLine(`[✓] Projects stat updated: <span class="t-green">${escapeHtml(val)}+</span>`, 't-green');
+      } else if (k === 'achievements' || k === 'achievement_count') {
+        const achEl = document.getElementById('stat-achievements');
+        if (achEl) {
+          achEl.textContent = `${val}+`;
+          achEl.closest('.stat-pill')?.setAttribute('data-counter', val);
+        }
+        savedOverrides.hero = savedOverrides.hero || {};
+        savedOverrides.hero.stats = savedOverrides.hero.stats || {};
+        savedOverrides.hero.stats.achievements = val;
+        appendLine(`[✓] Achievements stat updated: <span class="t-green">${escapeHtml(val)}+</span>`, 't-green');
+      } else if (k === 'github') {
+        const gitEls = [document.getElementById('heroGithubLink'), document.getElementById('contactGithub')];
+        gitEls.forEach(el => { if (el) el.setAttribute('href', val); });
+        savedOverrides.contact = savedOverrides.contact || {};
+        savedOverrides.contact.github = val;
+        appendLine(`[✓] GitHub profile updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else if (k === 'linkedin') {
+        const linkEls = [document.getElementById('heroLinkedinLink'), document.getElementById('contactLinkedin')];
+        linkEls.forEach(el => { if (el) el.setAttribute('href', val); });
+        savedOverrides.contact = savedOverrides.contact || {};
+        savedOverrides.contact.linkedin = val;
+        appendLine(`[✓] LinkedIn profile updated: <span class="t-green">${escapeHtml(val)}</span>`, 't-green');
+      } else {
+        return false;
+      }
+
+      try {
+        localStorage.setItem('km_custom_portfolio_data', JSON.stringify(savedOverrides));
+        if (typeof window !== 'undefined' && typeof window.__applyPortfolioData === 'function') {
+          window.__applyPortfolioData(savedOverrides);
+        }
+      } catch (e) {}
+      saveVFS(vfs);
+      return true;
+    };
+
+    // Apply any previously saved terminal modifications immediately
+    try {
+      const savedInit = localStorage.getItem('km_custom_portfolio_data');
+      if (savedInit && typeof window !== 'undefined' && typeof window.__applyPortfolioData === 'function') {
+        window.__applyPortfolioData(JSON.parse(savedInit));
+      }
+    } catch (e) {}
+
     // Document File Picker Upload Handler
     if (tFileInput) {
       tFileInput.addEventListener('change', (e) => {
@@ -1096,7 +1238,7 @@
 
         const reader = new FileReader();
         reader.onload = () => {
-          const content = typeof reader.result === 'string' ? reader.result.slice(0, 1000) : `[Binary document: ${fileName}]`;
+          const content = typeof reader.result === 'string' ? reader.result.slice(0, 50000) : `[Binary document: ${fileName}]`;
           
           // Store into current directory
           const targetDir = getDirObject(currentDir) || vfs['/home/kabilan'];
@@ -1174,7 +1316,7 @@
         const sep = isAppend ? '>>' : '>';
         const [echoPart, targetFileRaw] = rawCmd.split(sep);
         const textToEcho = echoPart.replace(/^echo\s+/i, '').replace(/^['"]|['"]$/g, '').trim();
-        const targetFileName = targetFileRaw.trim();
+        const targetFileName = targetFileRaw.replace(/^\.\//, '').trim();
 
         if (targetFileName) {
           const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
@@ -1193,6 +1335,16 @@
           };
           saveVFS(vfs);
           appendLine(`[✓] Wrote ${newContent.length} bytes to <span class="t-green">${escapeHtml(targetFileName)}</span>`, 't-green');
+
+          // Live synchronize portfolio detail if applicable
+          if (targetFileName === 'about.txt') {
+            updatePortfolioDetail('bio', newContent);
+          } else if (targetFileName === 'contact.txt') {
+            const mMail = newContent.match(/Email:\s*(\S+)/i);
+            if (mMail) updatePortfolioDetail('email', mMail[1]);
+            const mPhone = newContent.match(/Phone:\s*([^\n]+)/i);
+            if (mPhone) updatePortfolioDetail('phone', mPhone[1]);
+          }
           return;
         }
       }
@@ -1206,17 +1358,23 @@
         case 'help':
           appendLine(`Available Linux &amp; System Commands:
   <span class="t-cyan">admin</span>           - Open Portfolio Admin Management Panel (admin.html)
-  <span class="t-cyan">upload</span>          - Upload documents/files to portfolio
-  <span class="t-cyan">touch &lt;file&gt;</span>    - Create a new document/file
-  <span class="t-cyan">rm &lt;file&gt;</span>       - Delete/remove a document or file
-  <span class="t-cyan">ls</span>               - List directory files &amp; documents (ls -la, ls projects)
-  <span class="t-cyan">cat &lt;file&gt;</span>      - View document content (cat resume.pdf, cat skills.txt)
-  <span class="t-cyan">cd &lt;dir&gt;</span>        - Navigate directory (cd projects, cd certs, cd documents)
+  <span class="t-cyan">upload</span>          - Upload documents/files to portfolio (/home/kabilan/documents)
+  <span class="t-cyan">update &lt;k&gt; [v]</span>  - Update live portfolio details (name, bio, email, phone, etc.)
+  <span class="t-cyan">touch &lt;file&gt;</span>    - Create a new document or file
+  <span class="t-cyan">rm &lt;file&gt;</span>       - Delete/remove a document or file (rm -rf &lt;path&gt;)
+  <span class="t-cyan">ls [dir]</span>        - List directory files &amp; documents (ls -la, ls projects)
+  <span class="t-cyan">cat &lt;file&gt;</span>      - View document content (cat resume.pdf, cat about.txt)
+  <span class="t-cyan">cd &lt;dir&gt;</span>        - Navigate directory (cd projects, cd certs, cd ..)
   <span class="t-cyan">pwd</span>              - Print current working directory
-  <span class="t-cyan">update &lt;f&gt; [txt]</span> - Update document content or portfolio section
   <span class="t-cyan">nano &lt;file&gt;</span>      - Edit document inline (or echo "text" &gt; file)
-  <span class="t-cyan">mkdir &lt;dir&gt;</span>      - Create a new folder
-  <span class="t-cyan">rmdir &lt;dir&gt;</span>      - Remove an empty directory
+  <span class="t-cyan">cp &lt;src&gt; &lt;dst&gt;</span>  - Copy a document in the filesystem
+  <span class="t-cyan">mv &lt;src&gt; &lt;dst&gt;</span>  - Rename or move a document
+  <span class="t-cyan">man &lt;cmd&gt;</span>        - Display manual page for command (man admin, man update)
+  <span class="t-cyan">head</span> / <span class="t-cyan">tail</span>     - Display first or last 5 lines of a document
+  <span class="t-cyan">find [name]</span>      - Locate files across the portfolio filesystem
+  <span class="t-cyan">mkdir</span> / <span class="t-cyan">rmdir</span>   - Create or remove a folder
+  <span class="t-cyan">df</span> / <span class="t-cyan">free</span>        - Display storage and memory resource statistics
+  <span class="t-cyan">uptime</span>           - Display server and terminal uptime
   <span class="t-cyan">resume</span>           - Display text resume &amp; open Resume (No Photo version)
   <span class="t-cyan">whoami</span>           - Display active user identity
   <span class="t-cyan">uname</span>            - Print system architecture details (-a for full)
@@ -1237,9 +1395,14 @@
   <span class="t-cyan">clear</span>            - Clear terminal history`, 't-log');
           break;
 
+        case 'su':
         case 'admin':
         case 'open':
         case 'login':
+        case 'portal':
+        case './admin':
+        case './admin.html':
+        case 'admin.html':
           if (mainCmd === 'open' && arg && arg !== 'admin' && arg !== 'admin.html') {
             if (arg === 'resume' || arg === 'resume.pdf') {
               handleCommand('resume');
@@ -1278,7 +1441,7 @@
           if (!arg) {
             appendLine(`touch: missing file operand. Example: <span class="t-cyan">touch notes.txt</span>`, 't-yellow');
           } else {
-            const fileName = arg.split(/\s+/)[0];
+            const fileName = arg.split(/\s+/)[0].replace(/^\.\//, '');
             const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
             dirObj.files = dirObj.files || {};
             const now = new Date();
@@ -1297,10 +1460,11 @@
 
         case 'rm':
         case 'delete':
+        case 'unlink':
           if (!arg) {
             appendLine(`rm: missing operand. Example: <span class="t-cyan">rm filename.txt</span>`, 't-yellow');
           } else {
-            const cleanArg = arg.replace(/^-rf?\s+/, '').trim();
+            const cleanArg = arg.replace(/^-rf?\s+/, '').replace(/^-r\s+/, '').replace(/^-f\s+/, '').replace(/^\.\//, '').trim();
             const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
             if (dirObj.files && dirObj.files[cleanArg]) {
               delete dirObj.files[cleanArg];
@@ -1312,35 +1476,86 @@
           }
           break;
 
-        case 'update':
-          if (!arg || arg === 'portfolio') {
+        case 'update': {
+          if (!arg || arg === 'help') {
+            appendLine(`<b>[Portfolio Live System Updater]</b>
+Usage:
+  <span class="t-cyan">update name &lt;name&gt;</span>          - Update portfolio display name
+  <span class="t-cyan">update title &lt;title&gt;</span>        - Update professional title &amp; role
+  <span class="t-cyan">update bio &lt;bio text&gt;</span>       - Update hero bio &amp; about summary
+  <span class="t-cyan">update email &lt;email&gt;</span>         - Update contact &amp; hero email
+  <span class="t-cyan">update phone &lt;number&gt;</span>        - Update contact phone number
+  <span class="t-cyan">update cgpa &lt;score&gt;</span>          - Update CGPA stat pill
+  <span class="t-cyan">update projects &lt;count&gt;</span>     - Update projects count stat
+  <span class="t-cyan">update achievements &lt;count&gt;</span> - Update achievements count stat
+  <span class="t-cyan">update github &lt;url&gt;</span>         - Update GitHub profile URL
+  <span class="t-cyan">update linkedin &lt;url&gt;</span>       - Update LinkedIn profile URL
+  <span class="t-cyan">update &lt;file&gt; &lt;content&gt;</span>     - Update any document in VFS
+  <span class="t-cyan">update reset</span>                 - Reset custom details to defaults
+  <span class="t-cyan">update portfolio</span>             - Check Cloud CMS &amp; RTDB sync`, 't-log');
+            break;
+          }
+
+          if (arg === 'reset') {
+            try {
+              localStorage.removeItem('km_custom_portfolio_data');
+              localStorage.removeItem(VFS_STORAGE_KEY);
+              vfs = getDefaultVFS();
+              saveVFS(vfs);
+              appendLine(`[✓] Portfolio details and VFS reset to default state. Refreshing in 1s...`, 't-green');
+              setTimeout(() => window.location.reload(), 1000);
+            } catch (e) {}
+            break;
+          }
+
+          if (arg === 'portfolio') {
             appendLine(`[+] Checking Portfolio CMS synchronization...`, 't-cyan');
             appendLine(`[✓] Cloud connection: Firebase Realtime Database (ONLINE)`, 't-green');
             appendLine(`[✓] Portfolio telemetry &amp; visitor presence: SYNCHRONIZED`, 't-green');
-            appendLine(`[i] To update specific files, use: <span class="t-cyan">update &lt;file&gt; &lt;new content&gt;</span>`, 't-log');
-          } else {
-            const match = rawArg.match(/^(\S+)\s+(.+)$/);
-            if (match) {
-              const uFile = match[1];
-              const uContent = match[2].replace(/^['"]|['"]$/g, '');
-              const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
-              dirObj.files = dirObj.files || {};
-              const now = new Date();
-              const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
-              dirObj.files[uFile] = {
-                type: 'file',
-                size: `${Math.max(1, Math.round(uContent.length / 1024 * 10) / 10)}K`,
-                perm: '-rw-r--r--',
-                date: dateStr,
-                content: uContent
-              };
-              saveVFS(vfs);
-              appendLine(`[✓] Updated document <span class="t-green">${escapeHtml(uFile)}</span> (${uContent.length} bytes)`, 't-green');
-            } else {
-              appendLine(`Usage: <span class="t-cyan">update &lt;filename&gt; &lt;content&gt;</span> or <span class="t-cyan">update portfolio</span>`, 't-yellow');
+            appendLine(`[✓] Local customizations: ${localStorage.getItem('km_custom_portfolio_data') ? 'ACTIVE' : 'DEFAULT'}`, 't-cyan');
+            break;
+          }
+
+          const match = rawArg.match(/^(\S+)\s+(.+)$/);
+          if (match) {
+            const firstWord = match[1];
+            const restText = match[2].replace(/^['"]|['"]$/g, '');
+
+            // 1. Try updating portfolio live detail
+            const handled = updatePortfolioDetail(firstWord, restText);
+            if (handled) {
+              break;
             }
+
+            // 2. Otherwise update file in VFS
+            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+            dirObj.files = dirObj.files || {};
+            const now = new Date();
+            const dateStr = now.toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+            dirObj.files[firstWord] = {
+              type: 'file',
+              size: `${Math.max(1, Math.round(restText.length / 1024 * 10) / 10)}K`,
+              perm: '-rw-r--r--',
+              date: dateStr,
+              content: restText
+            };
+            saveVFS(vfs);
+            appendLine(`[✓] Updated document <span class="t-green">${escapeHtml(firstWord)}</span> (${restText.length} bytes)`, 't-green');
+
+            // If file was about.txt or contact.txt or portfolio_config.json, sync live
+            if (firstWord === 'about.txt') {
+              updatePortfolioDetail('bio', restText);
+            } else if (firstWord === 'contact.txt') {
+              const mMail = restText.match(/Email:\s*(\S+)/i);
+              if (mMail) updatePortfolioDetail('email', mMail[1]);
+              const mPhone = restText.match(/Phone:\s*([^\n]+)/i);
+              if (mPhone) updatePortfolioDetail('phone', mPhone[1]);
+            }
+          } else {
+            appendLine(`Usage: <span class="t-cyan">update &lt;name|bio|title|email|phone|file&gt; &lt;value&gt;</span>\nType <span class="t-cyan">update help</span> for full guide.`, 't-yellow');
           }
           break;
+        }
 
         case 'nano':
         case 'vi':
@@ -1349,7 +1564,7 @@
           if (!arg) {
             appendLine(`nano: missing filename. Example: <span class="t-cyan">nano notes.txt</span>`, 't-yellow');
           } else {
-            const fileName = arg.split(/\s+/)[0];
+            const fileName = arg.split(/\s+/)[0].replace(/^\.\//, '');
             const match = rawArg.match(/^(\S+)\s+(.+)$/);
             const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
             dirObj.files = dirObj.files || {};
@@ -1366,6 +1581,14 @@
               };
               saveVFS(vfs);
               appendLine(`[✓] File <span class="t-green">${escapeHtml(fileName)}</span> updated and saved.`, 't-green');
+              if (fileName === 'about.txt') {
+                updatePortfolioDetail('bio', content);
+              } else if (fileName === 'contact.txt') {
+                const mMail = content.match(/Email:\s*(\S+)/i);
+                if (mMail) updatePortfolioDetail('email', mMail[1]);
+                const mPhone = content.match(/Phone:\s*([^\n]+)/i);
+                if (mPhone) updatePortfolioDetail('phone', mPhone[1]);
+              }
             } else {
               const cur = dirObj.files[fileName] ? dirObj.files[fileName].content : '(Empty file)';
               appendLine(`<b>[GNU nano 7.2] File: ${escapeHtml(fileName)}</b>\n<pre style="margin: 4px 0; color: #a5f3fc; font-family: monospace;">${escapeHtml(cur)}</pre>\n[i] Use: <span class="t-cyan">echo "your text" &gt; ${escapeHtml(fileName)}</span> to overwrite or <span class="t-cyan">update ${escapeHtml(fileName)} "content"</span>`, 't-log');
@@ -1384,7 +1607,7 @@
             }
           } else if (arg === 'admin' || arg === '/admin') {
             openAdminPanel();
-          } else if (['home', 'about', 'skills', 'projects', 'contact', 'achievements'].includes(arg)) {
+          } else if (['home', 'about', 'skills', 'projects', 'contact', 'achievements', 'education'].includes(arg)) {
             appendLine(`Navigating to section: <span class="t-green">${escapeHtml(arg)}</span>...`, 't-cyan');
             if (typeof showSection === 'function') {
               showSection(arg);
@@ -1409,7 +1632,7 @@
           if (!arg) {
             appendLine(`mkdir: missing operand. Example: <span class="t-cyan">mkdir my_docs</span>`, 't-yellow');
           } else {
-            const dirName = arg.split(/\s+/)[0];
+            const dirName = arg.split(/\s+/)[0].replace(/^\.\//, '');
             const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
             dirObj.files = dirObj.files || {};
             if (dirObj.files[dirName]) {
@@ -1426,7 +1649,7 @@
           if (!arg) {
             appendLine(`rmdir: missing operand.`, 't-yellow');
           } else {
-            const dirName = arg.split(/\s+/)[0];
+            const dirName = arg.split(/\s+/)[0].replace(/^\.\//, '');
             const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
             if (dirObj.files && dirObj.files[dirName] && dirObj.files[dirName].type === 'dir') {
               delete dirObj.files[dirName];
@@ -1436,6 +1659,140 @@
               appendLine(`rmdir: failed to remove '${escapeHtml(dirName)}': No such directory`, 't-red');
             }
           }
+          break;
+
+        case 'cp': {
+          const partsCp = arg.split(/\s+/);
+          if (partsCp.length < 2) {
+            appendLine(`cp: missing destination file operand after '${escapeHtml(arg || '')}'`, 't-yellow');
+            break;
+          }
+          const src = partsCp[0].replace(/^\.\//, '');
+          const dst = partsCp[1].replace(/^\.\//, '');
+          const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          if (dirObj.files && dirObj.files[src]) {
+            dirObj.files[dst] = JSON.parse(JSON.stringify(dirObj.files[src]));
+            saveVFS(vfs);
+            appendLine(`[✓] Copied '${escapeHtml(src)}' to '${escapeHtml(dst)}'`, 't-green');
+          } else {
+            appendLine(`cp: cannot stat '${escapeHtml(src)}': No such file or directory`, 't-red');
+          }
+          break;
+        }
+
+        case 'mv': {
+          const partsMv = arg.split(/\s+/);
+          if (partsMv.length < 2) {
+            appendLine(`mv: missing destination file operand after '${escapeHtml(arg || '')}'`, 't-yellow');
+            break;
+          }
+          const src = partsMv[0].replace(/^\.\//, '');
+          const dst = partsMv[1].replace(/^\.\//, '');
+          const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          if (dirObj.files && dirObj.files[src]) {
+            dirObj.files[dst] = dirObj.files[src];
+            delete dirObj.files[src];
+            saveVFS(vfs);
+            appendLine(`[✓] Renamed/Moved '${escapeHtml(src)}' -> '${escapeHtml(dst)}'`, 't-green');
+          } else {
+            appendLine(`mv: cannot stat '${escapeHtml(src)}': No such file or directory`, 't-red');
+          }
+          break;
+        }
+
+        case 'man': {
+          const manTopic = (arg || '').toLowerCase().trim();
+          const manPages = {
+            'admin': 'ADMIN(1) - Portfolio Admin Panel Launcher\nSYNOPSIS: admin, sudo admin, login\nDESCRIPTION: Launches authenticated administration dashboard (admin.html) to manage live telemetry, messages, and portfolio CMS.',
+            'upload': 'UPLOAD(1) - Portfolio Document Uploader\nSYNOPSIS: upload, upload <filename>\nDESCRIPTION: Triggers browser file selection dialog to upload PDF, images, JSON or text documents into /home/kabilan/documents.',
+            'update': 'UPDATE(1) - Live Portfolio & Document Synchronizer\nSYNOPSIS: update <name|title|bio|email|phone|cgpa|projects|github|linkedin> <value>\n          update <filename> <content>\nDESCRIPTION: Modifies portfolio details in real time on the live page and commits changes to VFS and persistent storage.',
+            'cat': 'CAT(1) - Concatenate and Print Files\nSYNOPSIS: cat <filename>\nDESCRIPTION: Displays file content from the virtual filesystem. Opens links for certificates and documents.',
+            'ls': 'LS(1) - List Directory Contents\nSYNOPSIS: ls [-la] [directory]\nDESCRIPTION: Lists files, folders, permissions, file sizes, and timestamps.',
+            'rm': 'RM(1) - Remove Files or Directories\nSYNOPSIS: rm [-rf] <filename>\nDESCRIPTION: Deletes documents or directories from the virtual filesystem.',
+            'touch': 'TOUCH(1) - Change File Timestamps / Create File\nSYNOPSIS: touch <filename>\nDESCRIPTION: Creates an empty document with current timestamp.',
+            'nano': 'NANO(1) - Nano Editor\nSYNOPSIS: nano <filename> [content]\nDESCRIPTION: View or edit document content inline.',
+            'grep': 'GREP(1) - Print Lines Matching a Pattern\nSYNOPSIS: grep <pattern> [filename]\nDESCRIPTION: Searches for text patterns across files in the directory.'
+          };
+          if (manPages[manTopic]) {
+            appendLine(`<b>GNU Linux Manual: ${escapeHtml(manTopic)}</b>\n<pre style="margin:4px 0; color:#a5f3fc; font-family:monospace;">${escapeHtml(manPages[manTopic])}</pre>`, 't-log');
+          } else if (!manTopic) {
+            appendLine(`What manual page do you want? Example: <span class="t-cyan">man admin</span>, <span class="t-cyan">man update</span>, <span class="t-cyan">man upload</span>`, 't-yellow');
+          } else {
+            appendLine(`No manual entry for ${escapeHtml(manTopic)}`, 't-red');
+          }
+          break;
+        }
+
+        case 'head': {
+          const hParts = (arg || '').split(/\s+/);
+          const hFile = hParts.filter(p => !p.startsWith('-'))[0];
+          if (!hFile) {
+            appendLine(`head: missing file operand`, 't-yellow');
+            break;
+          }
+          const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          if (dirObj.files && dirObj.files[hFile]) {
+            const lines = (dirObj.files[hFile].content || '').split('\n').slice(0, 5);
+            appendLine(escapeHtml(lines.join('\n')), 't-cyan');
+          } else {
+            appendLine(`head: cannot open '${escapeHtml(hFile)}': No such file`, 't-red');
+          }
+          break;
+        }
+
+        case 'tail': {
+          const tParts = (arg || '').split(/\s+/);
+          const tFile = tParts.filter(p => !p.startsWith('-'))[0];
+          if (!tFile) {
+            appendLine(`tail: missing file operand`, 't-yellow');
+            break;
+          }
+          const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          if (dirObj.files && dirObj.files[tFile]) {
+            const lines = (dirObj.files[tFile].content || '').split('\n').slice(-5);
+            appendLine(escapeHtml(lines.join('\n')), 't-cyan');
+          } else {
+            appendLine(`tail: cannot open '${escapeHtml(tFile)}': No such file`, 't-red');
+          }
+          break;
+        }
+
+        case 'find': {
+          const fPattern = (arg || '').replace(/^[^\s]+\s+-name\s+/i, '').replace(/['"]/g, '').trim();
+          let results = [];
+          const scanDir = (pathPrefix, dirObj) => {
+            if (!dirObj || !dirObj.files) return;
+            Object.keys(dirObj.files).forEach(name => {
+              const fullPath = `${pathPrefix}/${name}`;
+              if (!fPattern || fPattern === '.' || name.includes(fPattern.replace(/\*/g, ''))) {
+                results.push(fullPath);
+              }
+              if (dirObj.files[name].type === 'dir') {
+                scanDir(fullPath, dirObj.files[name]);
+              }
+            });
+          };
+          scanDir('/home/kabilan', vfs['/home/kabilan']);
+          appendLine(results.map(r => escapeHtml(r)).join('\n') || `find: no files matching '${escapeHtml(fPattern)}'`, 't-log');
+          break;
+        }
+
+        case 'df':
+          appendLine(`Filesystem     1K-blocks      Used Available Use% Mounted on
+udev             8162744         0   8162744   0% /dev
+tmpfs            1638400      2048   1636352   1% /run
+/dev/nvme0n1p2 500107776  32456208 442152864   7% /
+/dev/vfs-sec     1048576       524   1048052   1% /home/kabilan`, 't-cyan');
+          break;
+
+        case 'free':
+          appendLine(`               total        used        free      shared  buff/cache   available
+Mem:        16325488     4128520     9142800      102400     3054168    11894568
+Swap:        4194300           0     4194300`, 't-cyan');
+          break;
+
+        case 'uptime':
+          appendLine(` ${new Date().toLocaleTimeString()} up 14 days,  3:42,  1 user,  load average: 0.12, 0.08, 0.05`, 't-green');
           break;
 
         case 'grep':
@@ -1472,13 +1829,14 @@
           break;
 
         case 'curl':
-        case 'wget':
-          const targetUrl = escapeHtml(arg || 'https://kabilanportfolio-ab851.web.app/api/health');
+        case 'wget': {
+          const targetUrl = escapeHtml(arg || '/api/health');
           appendLine(`[+] Connecting to ${targetUrl}...`, 't-log');
           setTimeout(() => {
             appendLine(`HTTP/2 200 OK\n<b>content-type:</b> application/json; charset=utf-8\n<b>x-shield-status:</b> VAULT_SECURE\n\n{\n  "status": "healthy",\n  "service": "kabilan-portfolio-production",\n  "ssl": "TLSv1.3",\n  "api_shielding": "ACTIVE"\n}`, 't-green');
           }, 350);
           break;
+        }
 
         case 'ps':
         case 'top':
@@ -1543,7 +1901,7 @@
           break;
 
         case 'resume':
-        case 'cv':
+        case 'cv': {
           const rUrl = getResumeNoPhotoPath();
           appendLine(`<b>[KABILAN M - RESUME (TEXT VERSION / NO PHOTO)]</b>
   - <b>Target Role:</b> Security &amp; Networking Engineer / Java Developer
@@ -1554,10 +1912,29 @@
   [+] Opening Text Resume (No Photo) in new tab: <a href="${rUrl}" target="_blank" rel="noopener noreferrer" class="t-cyan" style="text-decoration: underline;">kabilanm_resume without photo.pdf</a>`, 't-green');
           window.open(rUrl, '_blank', 'noopener,noreferrer');
           break;
+        }
 
         case 'ls':
-        case 'dir':
-          const targetDirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+        case 'dir': {
+          let lsTarget = currentDir;
+          const cleanArg = (arg || '').replace(/-[a-zA-Z0-9]+\s*/g, '').trim();
+          if (cleanArg) {
+            if (cleanArg === '..' || cleanArg === '../') {
+              lsTarget = '/home/kabilan';
+            } else if (cleanArg === '~' || cleanArg === '/home/kabilan') {
+              lsTarget = '/home/kabilan';
+            } else if (cleanArg.startsWith('/')) {
+              lsTarget = cleanArg;
+            } else {
+              const sub = cleanArg.replace(/^\.\//, '').replace(/\/$/, '');
+              lsTarget = currentDir === '/home/kabilan' ? `/home/kabilan/${sub}` : `${currentDir}/${sub}`;
+            }
+          }
+          const targetDirObj = getDirObject(lsTarget) || (lsTarget === '/home/kabilan' ? vfs['/home/kabilan'] : null);
+          if (!targetDirObj) {
+            appendLine(`ls: cannot access '${escapeHtml(cleanArg)}': No such file or directory`, 't-red');
+            break;
+          }
           let outputLines = [];
           outputLines.push(`drwxr-xr-x 4 kabilan kabilan 4096 Jul 26 15:10 .`);
           outputLines.push(`drwxr-xr-x 8 kabilan kabilan 4096 Jul 26 15:10 ..`);
@@ -1582,8 +1959,9 @@
           }
           appendLine(outputLines.join('\n'), 't-log');
           break;
+        }
 
-        case 'cat':
+        case 'cat': {
           if (!arg || arg === 'resume.pdf' || arg === 'resume') {
             const rPath = getResumeNoPhotoPath();
             appendLine(`<b>[cat resume.pdf]</b>
@@ -1593,34 +1971,48 @@ Full Stack Trainee @ e-soft IT Solutions (June 2025)
 Skills: Java, HTML5, CSS3, MySQL, MongoDB, HDFS, Pig, Wireshark, Linux, Git
 [+] Opened: <a href="${rPath}" target="_blank" rel="noopener noreferrer" class="t-cyan">kabilanm_resume without photo.pdf</a> (No Photo)`, 't-green');
             window.open(rPath, '_blank', 'noopener,noreferrer');
-          } else if (arg === 'skills.txt' || arg === 'skills') {
-            handleCommand('skills');
-          } else if (arg === 'about.txt' || arg === 'about') {
-            appendLine(`Kabilan M - B.Tech IT student at Kongunadu College of Engineering &amp; Technology. Passionate about cybersecurity, Java coding, networking, and software development.`, 't-cyan');
-          } else if (arg === 'readme.md') {
-            appendLine(`# Kabilan M Portfolio\nSecurity &amp; Networking Portfolio with Interactive Terminal Shell`, 't-log');
-          } else {
-            const dirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
-            if (dirObj.files && dirObj.files[arg]) {
-              const file = dirObj.files[arg];
-              if (file.url) {
-                appendLine(`<b>[cat ${escapeHtml(arg)}]</b>\n${escapeHtml(file.content)}\n[+] Open original document: <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="t-cyan" style="text-decoration: underline;">${escapeHtml(arg)}</a>`, 't-green');
-                window.open(file.url, '_blank', 'noopener,noreferrer');
-              } else {
-                appendLine(`<b>[cat ${escapeHtml(arg)}]</b>\n${escapeHtml(file.content)}`, 't-cyan');
+            break;
+          }
+
+          // Resolve target file in VFS
+          const cleanCatPath = arg.replace(/^\.\//, '').trim();
+          let fileObj = null;
+          let resolvedName = cleanCatPath;
+
+          // Check current directory first
+          const curDirObj = getDirObject(currentDir) || vfs['/home/kabilan'];
+          if (curDirObj && curDirObj.files && curDirObj.files[cleanCatPath]) {
+            fileObj = curDirObj.files[cleanCatPath];
+            resolvedName = cleanCatPath;
+          } else if (cleanCatPath.includes('/')) {
+            const parts = cleanCatPath.replace(/^\/home\/kabilan\//, '').split('/');
+            if (parts.length === 2) {
+              const subDir = vfs['/home/kabilan'].files[parts[0]];
+              if (subDir && subDir.files && subDir.files[parts[1]]) {
+                fileObj = subDir.files[parts[1]];
+                resolvedName = parts[1];
               }
-            } else {
-              appendLine(`cat: ${escapeHtml(arg)}: No such file or directory`, 't-red');
             }
+          } else if (vfs['/home/kabilan'].files[cleanCatPath]) {
+            fileObj = vfs['/home/kabilan'].files[cleanCatPath];
+            resolvedName = cleanCatPath;
+          }
+
+          if (fileObj) {
+            if (fileObj.url) {
+              appendLine(`<b>[cat ${escapeHtml(resolvedName)}]</b>\n${escapeHtml(fileObj.content)}\n[+] Open original document: <a href="${fileObj.url}" target="_blank" rel="noopener noreferrer" class="t-cyan" style="text-decoration: underline;">${escapeHtml(resolvedName)}</a>`, 't-green');
+              window.open(fileObj.url, '_blank', 'noopener,noreferrer');
+            } else {
+              appendLine(`<b>[cat ${escapeHtml(resolvedName)}]</b>\n${escapeHtml(fileObj.content)}`, 't-cyan');
+            }
+          } else {
+            appendLine(`cat: ${escapeHtml(arg)}: No such file or directory`, 't-red');
           }
           break;
+        }
 
         case 'whoami':
           appendLine(`kabilan_m (Security &amp; Networking Engineer | B.Tech IT Student)`, 't-green');
-          break;
-
-        case 'pwd':
-          appendLine(currentDir, 't-cyan');
           break;
 
         case 'uname':
@@ -1649,13 +2041,14 @@ Skills: Java, HTML5, CSS3, MySQL, MongoDB, HDFS, Pig, Wireshark, Linux, Git
           appendLine(escapeHtml(arg || ''), 't-log');
           break;
 
-        case 'ping':
+        case 'ping': {
           const targetHost = escapeHtml(arg || '8.8.8.8');
           appendLine(`PING ${targetHost} (${targetHost}) 56(84) bytes of data.`, 't-log');
           setTimeout(() => appendLine(`64 bytes from ${targetHost}: icmp_seq=1 ttl=117 time=14.2 ms`, 't-green'), 300);
           setTimeout(() => appendLine(`64 bytes from ${targetHost}: icmp_seq=2 ttl=117 time=13.8 ms`, 't-green'), 600);
           setTimeout(() => appendLine(`--- ${targetHost} ping statistics --- 2 packets transmitted, 2 received, 0% packet loss`, 't-cyan'), 900);
           break;
+        }
 
         case 'ifconfig':
         case 'ip':
@@ -1668,7 +2061,7 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
           break;
 
         case 'sudo':
-          if (arg.startsWith('admin') || arg.startsWith('login') || arg === 'su' || arg.startsWith('su ')) {
+          if (arg.startsWith('admin') || arg.startsWith('login') || arg === 'su' || arg.startsWith('su ') || arg === './admin' || arg === 'admin.html') {
             appendLine(`[sudo] Authenticating root privileges for admin console...`, 't-cyan');
             openAdminPanel();
           } else {
@@ -1777,7 +2170,8 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
           const suggestions = [
             'admin', 'help', 'resume', 'ls', 'cat', 'touch', 'rm', 'delete', 'upload',
             'cd', 'pwd', 'nano', 'update', 'echo', 'grep', 'clear', 'whoami', 'uname',
-            'ping', 'ifconfig', 'sniff', 'hash', 'security', 'vault', 'skills', 'projects'
+            'ping', 'ifconfig', 'sniff', 'hash', 'security', 'vault', 'skills', 'projects',
+            'cp', 'mv', 'man', 'head', 'tail', 'find', 'df', 'free', 'uptime', 'su'
           ];
           const match = suggestions.find(s => s.startsWith(currentVal));
           if (match) tInput.value = match;
@@ -1799,18 +2193,38 @@ eth0: flags=4099&lt;UP,BROADCAST,MULTICAST&gt;  mtu 1500
   }
 
   function initImageFallbacks() {
+    const handleImgFallback = (img) => {
+      if (!img || img.dataset.fallbackApplied) return;
+      img.dataset.fallbackApplied = 'true';
+      const isSub = window.location.pathname.includes('/pages/');
+      const prefix = isSub ? '../' : '';
+      const altText = (img.alt || '').toLowerCase();
+      const srcText = (img.src || '').toLowerCase();
+      if (altText.includes('wifi') || srcText.includes('wifi') || srcText.includes('deauth')) {
+        img.src = prefix + 'assets/projects/wifi_deauth.svg';
+      } else if (altText.includes('fire') || srcText.includes('fire')) {
+        img.src = prefix + 'assets/projects/forest_fire.svg';
+      } else if (altText.includes('photo') || altText.includes('profile')) {
+        img.src = prefix + 'assets/my photo/kabilan m.png';
+      }
+    };
+
+    // Capture-phase error listener catches any <img> failure document-wide immediately
+    window.addEventListener('error', function(e) {
+      if (e && e.target && e.target.tagName === 'IMG') {
+        handleImgFallback(e.target);
+      }
+    }, true);
+
+    // Also check already loaded/failed images
     document.querySelectorAll('img').forEach(img => {
-      img.addEventListener('error', function() {
-        const isSub = window.location.pathname.includes('/pages/');
-        const prefix = isSub ? '../' : '';
-        const altText = (this.alt || '').toLowerCase();
-        const srcText = (this.src || '').toLowerCase();
-        if (altText.includes('wifi') || srcText.includes('wifi') || srcText.includes('deauth')) {
-          this.src = prefix + 'assets/projects/wifi_deauth.svg';
-        } else if (altText.includes('fire') || srcText.includes('fire')) {
-          this.src = prefix + 'assets/projects/forest_fire.svg';
-        }
-      });
+      if (img.complete && img.naturalWidth === 0) {
+        handleImgFallback(img);
+      } else {
+        img.addEventListener('error', function() {
+          handleImgFallback(this);
+        });
+      }
     });
   }
 

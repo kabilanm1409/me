@@ -144,4 +144,35 @@ describe('Interactive Linux Terminal & Security Hardening Suite', () => {
     assert.equal(scriptJs.includes('AIzaSy'), false, 'script.js leaks raw AIza API key');
   });
 
+  // ── 5. Enhanced Linux Commands & Live Portfolio Updating ──
+  test('R5: Extended Linux shell commands and portfolio live updater are registered', () => {
+    const extendedCommands = ['cp', 'mv', 'man', 'head', 'tail', 'find', 'df', 'free', 'uptime', 'su'];
+    for (const cmd of extendedCommands) {
+      const pattern = new RegExp(`case\\s+['"]${cmd}['"]`, 'i');
+      assert.ok(pattern.test(scriptJs), `script.js missing extended Linux command case "${cmd}"`);
+    }
+
+    assert.ok(
+      scriptJs.includes('updatePortfolioDetail'),
+      'script.js missing updatePortfolioDetail live updating engine'
+    );
+    assert.ok(
+      scriptJs.includes('km_custom_portfolio_data'),
+      'script.js missing persistent km_custom_portfolio_data storage'
+    );
+    assert.ok(
+      scriptJs.includes('dataset.fallbackApplied'),
+      'script.js missing image fallback loop prevention guard'
+    );
+    assert.ok(
+      firebaseConfigJs.includes('app.options.authDomain') || firebaseConfigJs.includes('Object.defineProperty(app.options, \'authDomain\''),
+      'firebase-config.js must shield authDomain on app.options'
+    );
+    assert.ok(
+      firebaseConfigJs.includes('app.options.projectId') || firebaseConfigJs.includes('Object.defineProperty(app.options, \'projectId\''),
+      'firebase-config.js must shield projectId on app.options'
+    );
+  });
+
 });
+

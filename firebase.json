@@ -21,7 +21,10 @@
       "package-lock.json",
       "server.js",
       "README.md",
-      "DEPLOY.md"
+      "DEPLOY.md",
+      "**/.agents/**",
+      "tests/**",
+      "*.md"
     ],
     "headers": [
       {

@@ -456,7 +456,9 @@ export async function callGeminiAPI({
   systemInstruction = "",
   model = "gemini-1.5-flash",
   apiKey = "",
-  history = []
+  history = [],
+  temperature = 0.3,
+  maxOutputTokens = 2048
 }) {
   const activeKey = apiKey || getGeminiApiKey();
   if (!activeKey) {
@@ -486,8 +488,8 @@ export async function callGeminiAPI({
   const bodyPayload = {
     contents,
     generationConfig: {
-      temperature: 0.25,
-      maxOutputTokens: 1024,
+      temperature,
+      maxOutputTokens,
       topP: 0.95
     }
   };

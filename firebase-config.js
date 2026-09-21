@@ -166,71 +166,55 @@ export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const firestore = getFirestore(app);
 
-// Mask apiKey and all sensitive properties on app.options and auth so DevTools inspection cannot read raw credentials
+// Shield apiKey and all sensitive properties on app.options via non-enumerable getters and custom toJSON
 try {
   if (app && app.options) {
     Object.defineProperty(app.options, 'apiKey', {
-      value: maskApiKey(_rawConfig.apiKey),
-      writable: false,
-      configurable: true,
-      enumerable: true
+      get: () => _rawConfig.apiKey,
+      enumerable: false,
+      configurable: true
     });
-    if (app.options.databaseURL) {
-      Object.defineProperty(app.options, 'databaseURL', {
-        value: "https://***.firebasedatabase.app",
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
-    if (app.options.authDomain) {
-      Object.defineProperty(app.options, 'authDomain', {
-        value: "kabi••••••••.firebaseapp.com",
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
-    if (app.options.projectId) {
-      Object.defineProperty(app.options, 'projectId', {
-        value: "kabi••••••••",
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
-    if (app.options.storageBucket) {
-      Object.defineProperty(app.options, 'storageBucket', {
-        value: "kabi••••••••.firebasestorage.app",
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
-    if (app.options.messagingSenderId) {
-      Object.defineProperty(app.options, 'messagingSenderId', {
-        value: maskApiKey(_rawConfig.messagingSenderId),
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
-    if (app.options.appId) {
-      Object.defineProperty(app.options, 'appId', {
-        value: maskApiKey(_rawConfig.appId),
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
-    if (app.options.measurementId) {
-      Object.defineProperty(app.options, 'measurementId', {
-        value: "G-••••••••",
-        writable: false,
-        configurable: true,
-        enumerable: true
-      });
-    }
+    Object.defineProperty(app.options, 'authDomain', {
+      get: () => _rawConfig.authDomain,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(app.options, 'databaseURL', {
+      get: () => _rawConfig.databaseURL,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(app.options, 'projectId', {
+      get: () => _rawConfig.projectId,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(app.options, 'storageBucket', {
+      get: () => _rawConfig.storageBucket,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(app.options, 'messagingSenderId', {
+      get: () => _rawConfig.messagingSenderId,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(app.options, 'appId', {
+      get: () => _rawConfig.appId,
+      enumerable: false,
+      configurable: true
+    });
+    Object.defineProperty(app.options, 'measurementId', {
+      get: () => _rawConfig.measurementId,
+      enumerable: false,
+      configurable: true
+    });
+    app.options.toJSON = () => ({
+      status: "vault_shielded",
+      apiKey: maskApiKey(_rawConfig.apiKey),
+      authDomain: "kabi••••••••.firebaseapp.com",
+      projectId: "kabi••••••••"
+    });
   }
 } catch (e) {}
 

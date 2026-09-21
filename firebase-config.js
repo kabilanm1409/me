@@ -329,7 +329,7 @@ isSupported().then((supported) => {
 
 // ── Gemini AI Engine Vault & Invocation ─────────────────────────────────
 const _KM_GEMINI_STORAGE_KEY = "km_gemini_api_key";
-const _SHIELDED_GEMINI_KEY = "";
+const _SHIELDED_GEMINI_KEY = "ChxxEid7DRh3GRsuFmBgQlcxalUZICULHykJHwBsBBMqRFh1QQdZfAYJCjk0BQ4XCRocPyg=";
 let _cachedGeminiKey = null;
 
 export function getGeminiApiKey() {
@@ -438,7 +438,7 @@ try {
 export async function callGeminiAPI({
   prompt,
   systemInstruction = "",
-  model = "gemini-1.5-flash",
+  model = "gemini-flash-latest",
   apiKey = "",
   history = [],
   temperature = 0.3,
@@ -484,9 +484,8 @@ export async function callGeminiAPI({
     };
   }
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(activeKey)}`;
-
-  try {
+  const tryCall = async (targetModel) => {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(targetModel)}:generateContent?key=${encodeURIComponent(activeKey)}`;
     const res = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -494,8 +493,24 @@ export async function callGeminiAPI({
       },
       body: JSON.stringify(bodyPayload)
     });
-
     const data = await res.json();
+    return { res, data, targetModel };
+  };
+
+  try {
+    let callResult = await tryCall(model);
+
+    // Fallback if requested model fails with 404/deprecated
+    if (!callResult.res.ok && (callResult.res.status === 404 || (callResult.data?.error?.message && callResult.data.error.message.includes('not found')))) {
+      if (model !== "gemini-flash-latest") {
+        callResult = await tryCall("gemini-flash-latest");
+      }
+      if (!callResult.res.ok && callResult.targetModel !== "gemini-3.6-flash") {
+        callResult = await tryCall("gemini-3.6-flash");
+      }
+    }
+
+    const { res, data, targetModel } = callResult;
 
     if (!res.ok) {
       const errMsg = data?.error?.message || `HTTP ${res.status} error`;
@@ -513,7 +528,7 @@ export async function callGeminiAPI({
     return {
       ok: true,
       text: generatedText,
-      model,
+      model: targetModel,
       finishReason: candidate?.finishReason || "STOP"
     };
   } catch (netErr) {

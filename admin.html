@@ -3695,7 +3695,7 @@ Timestamp:       ${new Date().toISOString()}
       }
 
       let email = adminEmailInput.value.trim();
-      const password = adminPasswordInput.value;
+      const password = adminPasswordInput.value.trim();
       if (!email || !password) return;
 
       // Automatically map username 'kabilan' to admin email
@@ -3715,13 +3715,22 @@ Timestamp:       ${new Date().toISOString()}
         loginForm.reset();
         showAdminToast('<i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Authenticated successfully!');
       } catch (err) {
+        console.error('Firebase Login Error:', err);
         const failure = await recordFailedAttempt();
         if (failure.isLocked) {
           renderLockoutCountdown(LOCKOUT_DURATION_MS);
           showAdminToast('<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Brute-force lockout triggered (15 min)!');
         } else {
           const remaining = MAX_LOGIN_ATTEMPTS - failure.attempts;
-          loginErrorMsg.innerHTML = `Invalid email or password. <strong>${remaining}</strong> attempt${remaining === 1 ? '' : 's'} remaining before 15-minute security lockout.`;
+          let detail = `Invalid email or password. <strong>${remaining}</strong> attempt${remaining === 1 ? '' : 's'} remaining.`;
+          if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+            detail = `Invalid password for <strong>${escapeHtml(email)}</strong>.<br><span style="font-size:0.8rem; color:var(--text-soft);">Please re-check your password or click <em>"Forgot Password? Reset via Email"</em> below to get a 1-click reset link.</span>`;
+          } else if (err.code === 'auth/too-many-requests') {
+            detail = `Too many failed attempts. Access temporarily blocked. Click <em>"Forgot Password"</em> below to reset immediately.`;
+          } else if (err.message) {
+            detail = `${err.message} (${err.code || 'auth/error'}). <strong>${remaining}</strong> attempt${remaining === 1 ? '' : 's'} remaining.`;
+          }
+          loginErrorMsg.innerHTML = detail;
           loginError.classList.add('show');
         }
       } finally {

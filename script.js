@@ -2594,12 +2594,12 @@ STRICT GUARDRAIL & RESTRICTION RULES:
 
       // Prompt injection / jailbreak attempts
       if (/\b(ignore\s+(all\s+)?(previous|prior|above)\s+(instructions|prompts|rules)|pretend\s+you\s+are|you\s+are\s+now|dan\s+mode|jailbreak|system\s+prompt|reveal\s+instructions)\b/i.test(q)) {
-        return "I am Kabilan's Portfolio AI assistant. I adhere strictly to portfolio safety guidelines and cannot override my specialization. How can I assist you with Kabilan's technical background or projects?";
+        return "I am Kabilan's Portfolio AI assistant. I am strictly specialized to answer questions regarding Kabilan M's projects, technical skills, and background. I adhere strictly to portfolio safety guidelines and cannot override my specialization.\n\nHow can I assist you with Kabilan's technical background or projects?";
       }
 
       // General IT tutorials / how-to unrelated to portfolio
       if (/\b(how\s+to\s+(hack|bake|cook|invest|lose\s+weight|fly|swim|drive)|configure\s+(my|a)\s+(home\s+)?(router|wifi|network))\b/i.test(q)) {
-        return "I am Kabilan's Portfolio AI assistant. I am specialized to provide information on Kabilan M's projects (such as his Wi-Fi De-authentication and Detection systems). I cannot provide general IT support or external tutorials.\n\nWould you like to learn how Kabilan built his wireless security projects?";
+        return "I am Kabilan's Portfolio AI assistant. I am strictly specialized to answer questions regarding Kabilan M's projects (such as his Wi-Fi De-authentication and Detection systems). I cannot provide general hacking guides or external IT tutorials.\n\nWould you like to learn how Kabilan built his wireless security projects?";
       }
 
       // ── 2. Greetings & Salutations ──
@@ -2704,10 +2704,7 @@ STRICT GUARDRAIL & RESTRICTION RULES:
       try {
         // Pre-evaluate query against deterministic knowledge & strict guardrails
         const localKnowledge = evaluateLocalPortfolioKnowledge(userText);
-        const isRefusal = localKnowledge.includes('strictly specialized to answer questions') ||
-                          localKnowledge.includes('cannot write poems') ||
-                          localKnowledge.includes('cannot solve general') ||
-                          localKnowledge.includes('cannot override my specialization');
+        const isRefusal = localKnowledge.includes('strictly specialized');
 
         if (isRefusal) {
           // Off-topic or jailbreak attempt: enforce refusal immediately without model leak

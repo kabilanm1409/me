@@ -70,6 +70,19 @@ function _unshieldString(b64, k) {
   }
 }
 
+function _shieldString(plain, k) {
+  try {
+    if (!plain) return "";
+    let res = "";
+    for (let i = 0; i < plain.length; i++) {
+      res += String.fromCharCode(plain.charCodeAt(i) ^ k.charCodeAt(i % k.length));
+    }
+    return typeof btoa === "function" ? btoa(res) : Buffer.from(res, "binary").toString("base64");
+  } catch (e) {
+    return "";
+  }
+}
+
 // Dynamically unpack sealed configuration at runtime into internal private scope
 const _rawConfig = {
   apiKey: _unshieldString(_SHIELDED_CONFIG.apiKey, _VAULT_KEY),
@@ -332,7 +345,7 @@ isSupported().then((supported) => {
 
 // ── Gemini AI Engine Vault & Invocation ─────────────────────────────────
 const _KM_GEMINI_STORAGE_KEY = "km_gemini_api_key";
-const _SHIELDED_GEMINI_KEY = "CgQlMhY6GyEMMwtnDVB2Ylo8THx+CQ4CBC1sFQh4dB0ra2QEZDdg";
+const _SHIELDED_GEMINI_KEY = "";
 let _cachedGeminiKey = null;
 
 export function getGeminiApiKey() {
@@ -347,9 +360,10 @@ export function getGeminiApiKey() {
     }
   } catch (e) {}
 
-  // Fallback to vault unshielded default key
-  const defaultKey = _unshieldString(_SHIELDED_GEMINI_KEY, _VAULT_KEY);
-  if (defaultKey) return defaultKey;
+  if (_SHIELDED_GEMINI_KEY) {
+    const defaultKey = _unshieldString(_SHIELDED_GEMINI_KEY, _VAULT_KEY);
+    if (defaultKey) return defaultKey;
+  }
   return "";
 }
 
@@ -368,10 +382,16 @@ export async function setGeminiApiKey(key, syncCloud = true) {
 
   if (syncCloud && firestore && doc && setDoc) {
     try {
-      await setDoc(doc(firestore, "portfolioData", "aiConfig"), {
-        geminiApiKey: trimmed,
+      const payload = {
         updatedAt: Date.now()
-      }, { merge: true });
+      };
+      if (trimmed) {
+        payload.shieldedKey = _shieldString(trimmed, _VAULT_KEY);
+      } else {
+        payload.shieldedKey = "";
+      }
+      payload.geminiApiKey = null;
+      await setDoc(doc(firestore, "portfolioData", "aiConfig"), payload, { merge: true });
     } catch (e) {
       // Non-blocking if offline or non-admin
     }
@@ -383,16 +403,22 @@ export async function fetchGeminiApiKeyFromCloud() {
   try {
     if (firestore && doc && getDoc) {
       const snap = await getDoc(doc(firestore, "portfolioData", "aiConfig"));
-      if (snap.exists()) {
+      if (snap && snap.exists()) {
         const data = snap.data();
-        if (data && data.geminiApiKey) {
-          _cachedGeminiKey = data.geminiApiKey;
+        let cloudKey = "";
+        if (data && data.shieldedKey) {
+          cloudKey = _unshieldString(data.shieldedKey, _VAULT_KEY);
+        } else if (data && data.geminiApiKey) {
+          cloudKey = data.geminiApiKey;
+        }
+        if (cloudKey) {
+          _cachedGeminiKey = cloudKey;
           try {
             if (typeof localStorage !== 'undefined') {
-              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, data.geminiApiKey);
+              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, cloudKey);
             }
           } catch (e) {}
-          return data.geminiApiKey;
+          return cloudKey;
         }
       }
     }
@@ -406,11 +432,17 @@ try {
     onSnapshot(doc(firestore, "portfolioData", "aiConfig"), (snap) => {
       if (snap && snap.exists()) {
         const data = snap.data();
-        if (data && data.geminiApiKey) {
-          _cachedGeminiKey = data.geminiApiKey;
+        let cloudKey = "";
+        if (data && data.shieldedKey) {
+          cloudKey = _unshieldString(data.shieldedKey, _VAULT_KEY);
+        } else if (data && data.geminiApiKey) {
+          cloudKey = data.geminiApiKey;
+        }
+        if (cloudKey) {
+          _cachedGeminiKey = cloudKey;
           try {
             if (typeof localStorage !== 'undefined') {
-              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, data.geminiApiKey);
+              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, cloudKey);
             }
           } catch (e) {}
         }

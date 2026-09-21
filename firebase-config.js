@@ -332,8 +332,17 @@ const _KM_GEMINI_STORAGE_KEY = "km_gemini_api_key";
 const _SHIELDED_GEMINI_KEY = "ChxxEid7DRh3GRsuFmBgQlcxalUZICULHykJHwBsBBMqRFh1QQdZfAYJCjk0BQ4XCRocPyg=";
 let _cachedGeminiKey = null;
 
+export function getDefaultGeminiApiKey() {
+  if (_SHIELDED_GEMINI_KEY) {
+    return _unshieldString(_SHIELDED_GEMINI_KEY, _VAULT_KEY);
+  }
+  return "";
+}
+
 export function getGeminiApiKey() {
-  if (_cachedGeminiKey) return _cachedGeminiKey;
+  if (_cachedGeminiKey) {
+    return _cachedGeminiKey;
+  }
   try {
     if (typeof localStorage !== 'undefined') {
       const stored = localStorage.getItem(_KM_GEMINI_STORAGE_KEY);
@@ -344,11 +353,7 @@ export function getGeminiApiKey() {
     }
   } catch (e) {}
 
-  if (_SHIELDED_GEMINI_KEY) {
-    const defaultKey = _unshieldString(_SHIELDED_GEMINI_KEY, _VAULT_KEY);
-    if (defaultKey) return defaultKey;
-  }
-  return "";
+  return getDefaultGeminiApiKey();
 }
 
 export async function setGeminiApiKey(key, syncCloud = true) {
@@ -438,13 +443,13 @@ try {
 export async function callGeminiAPI({
   prompt,
   systemInstruction = "",
-  model = "gemini-flash-latest",
+  model = "gemini-flash-lite-latest",
   apiKey = "",
   history = [],
   temperature = 0.3,
   maxOutputTokens = 2048
 }) {
-  const activeKey = apiKey || getGeminiApiKey();
+  let activeKey = apiKey || getGeminiApiKey();
   if (!activeKey) {
     return {
       ok: false,
@@ -484,8 +489,8 @@ export async function callGeminiAPI({
     };
   }
 
-  const tryCall = async (targetModel) => {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(targetModel)}:generateContent?key=${encodeURIComponent(activeKey)}`;
+  const tryCallWithKey = async (targetModel, keyToUse) => {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(targetModel)}:generateContent?key=${encodeURIComponent(keyToUse)}`;
     const res = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -494,19 +499,46 @@ export async function callGeminiAPI({
       body: JSON.stringify(bodyPayload)
     });
     const data = await res.json();
-    return { res, data, targetModel };
+    return { res, data, targetModel, keyUsed: keyToUse };
   };
 
-  try {
-    let callResult = await tryCall(model);
+  const HIGH_AVAILABILITY_MODELS = [
+    "gemini-flash-lite-latest",
+    "gemini-3.5-flash-lite",
+    "gemini-flash-latest",
+    "gemini-3.6-flash"
+  ];
 
-    // Fallback if requested model fails with 404/deprecated
-    if (!callResult.res.ok && (callResult.res.status === 404 || (callResult.data?.error?.message && callResult.data.error.message.includes('not found')))) {
-      if (model !== "gemini-flash-latest") {
-        callResult = await tryCall("gemini-flash-latest");
+  try {
+    let callResult = await tryCallWithKey(model, activeKey);
+
+    // Automatic self-healing fallback:
+    // If the active key returned 401 (Invalid authentication credentials)
+    // and was different from the default vault key, automatically fallback to the verified default key
+    if (!callResult.res.ok && callResult.res.status === 401 && _SHIELDED_GEMINI_KEY) {
+      const defaultKey = _unshieldString(_SHIELDED_GEMINI_KEY, _VAULT_KEY);
+      if (defaultKey && defaultKey !== activeKey) {
+        callResult = await tryCallWithKey(callResult.targetModel, defaultKey);
+        if (callResult.res.ok) {
+          activeKey = defaultKey;
+          _cachedGeminiKey = defaultKey;
+          try {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, defaultKey);
+            }
+          } catch (e) {}
+        }
       }
-      if (!callResult.res.ok && callResult.targetModel !== "gemini-3.6-flash") {
-        callResult = await tryCall("gemini-3.6-flash");
+    }
+
+    // High availability failover:
+    // If the model failed with 503 (high demand), 429 (rate limit), 404 (deprecated), or 500 (server error),
+    // automatically try the alternate high-availability models in the chain
+    if (!callResult.res.ok && (callResult.res.status === 503 || callResult.res.status === 429 || callResult.res.status === 404 || callResult.res.status >= 500)) {
+      for (const altModel of HIGH_AVAILABILITY_MODELS) {
+        if (altModel === callResult.targetModel) continue;
+        callResult = await tryCallWithKey(altModel, callResult.keyUsed || activeKey);
+        if (callResult.res.ok) break;
       }
     }
 

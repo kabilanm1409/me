@@ -749,6 +749,295 @@
       gap: 10px;
       font-size: 0.8rem;
     }
+
+    /* ── Executive AI Co-Pilot Tab Styles ── */
+    .admin-ai-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ai-toolbar-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding: 16px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+    }
+
+    .ai-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ai-status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-sublabel {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ai-config-drawer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    .admin-ai-prompts-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .prompt-bar-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-right: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .admin-prompt-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .admin-prompt-pill:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+    }
+
+    .admin-chat-workspace {
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .admin-chat-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      scrollbar-width: thin;
+    }
+
+    .admin-msg {
+      display: flex;
+      gap: 12px;
+      max-width: 88%;
+      animation: kmMsgFade 0.22s ease forwards;
+    }
+
+    .ai-msg {
+      align-self: flex-start;
+    }
+
+    .admin-msg.user-msg {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    }
+
+    .admin-msg.user-msg .admin-avatar {
+      background: var(--surface-soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .admin-msg-body {
+      flex: 1;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      word-break: break-word;
+    }
+
+    .admin-msg.user-msg .admin-msg-body {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .admin-msg-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .sender-title {
+      color: var(--primary);
+    }
+
+    .admin-msg.user-msg .sender-title {
+      color: #ffffff;
+    }
+
+    .admin-msg.user-msg .msg-time {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .msg-text {
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .msg-text p {
+      margin: 0 0 8px;
+    }
+
+    .msg-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .msg-text ul, .msg-text ol {
+      margin: 6px 0 8px;
+      padding-left: 20px;
+    }
+
+    .msg-text li {
+      margin-bottom: 3px;
+    }
+
+    .msg-text pre {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-family: var(--admin-mono-font);
+      font-size: 0.84rem;
+      overflow-x: auto;
+      margin: 10px 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .msg-text code {
+      font-family: var(--admin-mono-font);
+      background: rgba(0, 0, 0, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    body[data-theme='dark'] .msg-text code {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .admin-msg.user-msg .msg-text code {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    .admin-chat-input-card {
+      padding: 14px 20px;
+      background: var(--surface-soft);
+      border-top: 1px solid var(--border);
+    }
+
+    .admin-chat-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .admin-chat-textarea {
+      width: 100%;
+      min-height: 56px;
+      max-height: 140px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.94rem;
+      outline: none;
+      resize: vertical;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .admin-chat-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    }
+
+    .admin-input-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
@@ -890,6 +1179,9 @@
         </button>
         <button type="button" class="main-tab-btn" id="tabCmsBtn">
           <i class="fa-solid fa-pen-to-square"></i> Portfolio Content Editor (CMS)
+        </button>
+        <button type="button" class="main-tab-btn" id="tabAiChatBtn">
+          <i class="fa-solid fa-brain"></i> Executive AI Co-Pilot <span class="badge-count" style="background: linear-gradient(135deg, #10b981, #06b6d4); font-size: 0.72rem; padding: 1px 6px;">UNRESTRICTED</span>
         </button>
       </nav>
 
@@ -1263,6 +1555,129 @@
         </section>
       </div>
 
+      <!-- ══════════════ TAB 5: EXECUTIVE AI CO-PILOT (UNRESTRICTED) ══════════════ -->
+      <div id="viewAiChatSection" class="hidden">
+        <div class="admin-ai-container">
+          <!-- Top Control Toolbar -->
+          <div class="ai-toolbar-card">
+            <div class="ai-toolbar-left">
+              <div class="ai-status-indicator">
+                <span class="pulse-dot"></span>
+                <div>
+                  <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700;">Executive AI Co-Pilot</h3>
+                  <span class="ai-sublabel"><i class="fa-solid fa-unlock-keyhole" style="color: #10b981;"></i> Full Unrestricted Admin Access &bull; Gemini Engine Active</span>
+                </div>
+              </div>
+            </div>
+            <div class="ai-toolbar-right">
+              <div class="ai-model-picker">
+                <label for="adminAiModelSelect" style="font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-right: 6px;">Model:</label>
+                <select id="adminAiModelSelect" class="cms-input" style="padding: 6px 10px; font-size: 0.84rem; width: auto;">
+                  <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash (Recommended)</option>
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                  <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                </select>
+              </div>
+              <button type="button" id="adminAiConfigToggleBtn" class="btn btn-secondary" style="padding: 7px 14px; font-size: 0.84rem;">
+                <i class="fa-solid fa-key"></i> Gemini API Key
+              </button>
+              <button type="button" id="adminAiClearBtn" class="btn btn-secondary" style="padding: 7px 14px; font-size: 0.84rem;" title="Clear conversation">
+                <i class="fa-solid fa-trash-can"></i> Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Collapsible Gemini API Key Settings Panel -->
+          <div id="adminAiConfigDrawer" class="ai-config-drawer hidden">
+            <div class="ai-config-inner">
+              <div class="config-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700;"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Gemini API Configuration</h4>
+                  <p style="margin: 3px 0 0; font-size: 0.8rem; color: var(--muted);">Configure your Google Gemini API key. Stored securely and synced to your portfolio cloud configuration.</p>
+                </div>
+                <span id="apiKeyStatusBadge" class="key-status-badge badge-active" style="padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; background: rgba(34, 197, 94, 0.15); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.3);">Active</span>
+              </div>
+              <div class="form-group" style="margin-top: 12px;">
+                <label for="adminGeminiApiKeyInput">Gemini API Key</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-key prefix-icon"></i>
+                  <input type="password" id="adminGeminiApiKeyInput" class="cms-input" placeholder="Enter Gemini API key..." autocomplete="off" />
+                  <button type="button" id="toggleGeminiKeyVisibility" class="password-toggle-btn" title="Toggle visibility">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+                <small style="color: var(--muted); font-size: 0.78rem; margin-top: 4px; display: block;">
+                  Obtain a key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">Google AI Studio</a>. Keys are masked and shielded against console inspection.
+                </small>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
+                <button type="button" id="saveGeminiApiKeyBtn" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Key
+                </button>
+                <button type="button" id="testGeminiApiKeyBtn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;">
+                  <i class="fa-solid fa-bolt"></i> Test Connection
+                </button>
+              </div>
+              <div id="aiTestResultBox" class="alert-box" style="margin-top: 10px;"></div>
+            </div>
+          </div>
+
+          <!-- Quick Action Prompt Bar -->
+          <div class="admin-ai-prompts-bar">
+            <span class="prompt-bar-label"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--primary);"></i> Quick Actions:</span>
+            <button type="button" class="admin-prompt-pill" data-prompt="Analyze my current live visitor telemetry and provide an executive summary of active visitors, top pages, and device distribution.">
+              <i class="fa-solid fa-chart-line"></i> Analyze Live Telemetry
+            </button>
+            <button type="button" class="admin-prompt-pill" data-prompt="Review my recent inbox messages and summarize each inquiry with recommended reply drafts.">
+              <i class="fa-solid fa-inbox"></i> Summarize Inquiries &amp; Drafts
+            </button>
+            <button type="button" class="admin-prompt-pill" data-prompt="Brainstorm 3 innovative networking or cybersecurity project ideas combining ESP32, Python, and AI that will enhance my portfolio.">
+              <i class="fa-solid fa-lightbulb"></i> Project Ideas &amp; Architecture
+            </button>
+            <button type="button" class="admin-prompt-pill" data-prompt="Audit my portfolio's technical skills and projects against industry standards for Security Engineers and Full Stack Developers, and suggest high-impact improvements.">
+              <i class="fa-solid fa-shield-halved"></i> Security &amp; Career Audit
+            </button>
+            <button type="button" class="admin-prompt-pill" data-prompt="Write a concise, high-converting professional bio highlighting my transition from Mechanical Engineering to B.Tech IT and my Wi-Fi security research.">
+              <i class="fa-solid fa-pen-nib"></i> Polish Bio &amp; Content
+            </button>
+          </div>
+
+          <!-- Main Chat Workspace -->
+          <div class="admin-chat-workspace">
+            <div id="adminChatFeed" class="admin-chat-feed" role="log" aria-live="polite">
+              <div class="admin-msg ai-msg">
+                <div class="admin-avatar"><i class="fa-solid fa-brain"></i></div>
+                <div class="admin-msg-body">
+                  <div class="admin-msg-header">
+                    <span class="sender-title">Executive AI Co-Pilot</span>
+                    <span class="msg-time">Ready &bull; Unrestricted</span>
+                  </div>
+                  <div class="msg-text">
+                    <p>Welcome, <strong>Kabilan</strong>! 👋 Your Executive AI Co-Pilot is online with <strong>full, unrestricted access</strong>.</p>
+                    <p>I have direct awareness of your live visitor telemetry, inbox inquiries, and CMS baseline. How can I assist your portfolio operations today?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin Chat Input Bar -->
+            <div class="admin-chat-input-card">
+              <form id="adminChatForm" class="admin-chat-form">
+                <textarea id="adminChatTextarea" class="admin-chat-textarea" placeholder="Ask anything, analyze telemetry, draft code, or execute admin duties... (Press Enter to send, Shift+Enter for newline)" rows="2"></textarea>
+                <div class="admin-input-actions">
+                  <button type="button" id="adminAttachContextBtn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" title="Attach live telemetry snapshot">
+                    <i class="fa-solid fa-paperclip"></i> Attach Telemetry Context
+                  </button>
+                  <button type="submit" id="adminChatSendBtn" class="btn btn-primary" style="padding: 8px 20px;">
+                    <i class="fa-solid fa-paper-plane"></i> Send
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Permission Notice -->
       <div class="rule-alert" id="permissionAlert">
         <h4><i class="fa-solid fa-shield-halved"></i> Firebase Security Rules Notice</h4>
@@ -1358,7 +1773,10 @@
       sha256,
       maskApiKey,
       analytics,
-      logEvent
+      logEvent,
+      callGeminiAPI,
+      getGeminiApiKey,
+      setGeminiApiKey
     } from "./firebase-config.js";
 
     // ── Elements & State References ──
@@ -1389,10 +1807,12 @@
     const tabHistoryBtn = document.getElementById('tabHistoryBtn');
     const tabMessagesBtn = document.getElementById('tabMessagesBtn');
     const tabCmsBtn = document.getElementById('tabCmsBtn');
+    const tabAiChatBtn = document.getElementById('tabAiChatBtn');
     const viewLiveSection = document.getElementById('viewLiveSection');
     const viewHistorySection = document.getElementById('viewHistorySection');
     const viewMessagesSection = document.getElementById('viewMessagesSection');
     const viewCmsSection = document.getElementById('viewCmsSection');
+    const viewAiChatSection = document.getElementById('viewAiChatSection');
 
     // Messages / Inquiries Elements
     const messagesBadgeCount = document.getElementById('messagesBadgeCount');
@@ -1592,8 +2012,8 @@
 
     // ── Main Tabs ──
     function switchMainTab(activeTab) {
-      [tabLiveBtn, tabHistoryBtn, tabMessagesBtn, tabCmsBtn].forEach(b => b?.classList.remove('active'));
-      [viewLiveSection, viewHistorySection, viewMessagesSection, viewCmsSection].forEach(s => s?.classList.add('hidden'));
+      [tabLiveBtn, tabHistoryBtn, tabMessagesBtn, tabCmsBtn, tabAiChatBtn].forEach(b => b?.classList.remove('active'));
+      [viewLiveSection, viewHistorySection, viewMessagesSection, viewCmsSection, viewAiChatSection].forEach(s => s?.classList.add('hidden'));
 
       if (activeTab === 'live') {
         tabLiveBtn?.classList.add('active');
@@ -1610,6 +2030,10 @@
         tabCmsBtn?.classList.add('active');
         viewCmsSection?.classList.remove('hidden');
         loadCMSData();
+      } else if (activeTab === 'aiChat') {
+        tabAiChatBtn?.classList.add('active');
+        viewAiChatSection?.classList.remove('hidden');
+        initAdminAiChat();
       }
     }
 
@@ -1617,6 +2041,7 @@
     tabHistoryBtn?.addEventListener('click', () => switchMainTab('history'));
     tabMessagesBtn?.addEventListener('click', () => switchMainTab('messages'));
     tabCmsBtn?.addEventListener('click', () => switchMainTab('cms'));
+    tabAiChatBtn?.addEventListener('click', () => switchMainTab('aiChat'));
 
     // ── Helper: HTML Entity Escaping ──
     function escapeHtml(s) {
@@ -3345,6 +3770,430 @@ Timestamp:       ${new Date().toISOString()}
         adminPasswordInput.type = isPass ? 'text' : 'password';
         passwordEyeIcon.className = isPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
       });
+    }
+
+    // ── EXECUTIVE AI CO-PILOT (FULL UNRESTRICTED ADMIN ASSISTANT) ──
+    let adminChatInitialized = false;
+    let adminChatHistory = [];
+    let adminAiProcessing = false;
+    let isContextAttached = false;
+
+    function initAdminAiChat() {
+      if (adminChatInitialized) return;
+      adminChatInitialized = true;
+
+      const aiModelSelect = document.getElementById('adminAiModelSelect');
+      const configToggleBtn = document.getElementById('adminAiConfigToggleBtn');
+      const configDrawer = document.getElementById('adminAiConfigDrawer');
+      const apiKeyInput = document.getElementById('adminGeminiApiKeyInput');
+      const toggleKeyVisibilityBtn = document.getElementById('toggleGeminiKeyVisibility');
+      const saveKeyBtn = document.getElementById('saveGeminiApiKeyBtn');
+      const testKeyBtn = document.getElementById('testGeminiApiKeyBtn');
+      const statusBadge = document.getElementById('apiKeyStatusBadge');
+      const testResultBox = document.getElementById('aiTestResultBox');
+      const promptsBar = document.querySelector('.admin-ai-prompts-bar');
+      const clearBtn = document.getElementById('adminAiClearBtn');
+      const chatFeed = document.getElementById('adminChatFeed');
+      const chatForm = document.getElementById('adminChatForm');
+      const chatTextarea = document.getElementById('adminChatTextarea');
+      const attachContextBtn = document.getElementById('adminAttachContextBtn');
+      const chatSendBtn = document.getElementById('adminChatSendBtn');
+
+      // Populate current key if available
+      const currentKey = getGeminiApiKey();
+      if (currentKey && apiKeyInput) {
+        apiKeyInput.value = currentKey;
+        if (statusBadge) {
+          statusBadge.textContent = 'Active & Configured';
+          statusBadge.style.background = 'rgba(34, 197, 94, 0.15)';
+          statusBadge.style.color = '#16a34a';
+        }
+      }
+
+      configToggleBtn?.addEventListener('click', () => {
+        configDrawer?.classList.toggle('hidden');
+      });
+
+      toggleKeyVisibilityBtn?.addEventListener('click', () => {
+        if (!apiKeyInput) return;
+        const isPass = apiKeyInput.type === 'password';
+        apiKeyInput.type = isPass ? 'text' : 'password';
+        const icon = toggleKeyVisibilityBtn.querySelector('i');
+        if (icon) icon.className = isPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+
+      saveKeyBtn?.addEventListener('click', async () => {
+        if (!apiKeyInput) return;
+        const val = apiKeyInput.value.trim();
+        saveKeyBtn.disabled = true;
+        saveKeyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+        try {
+          await setGeminiApiKey(val, true);
+          showAdminToast('<i class="fa-solid fa-floppy-disk" style="color:#10b981;"></i> Gemini API Key saved & synced to cloud!');
+          if (statusBadge) {
+            statusBadge.textContent = val ? 'Active & Configured' : 'Key Required';
+            statusBadge.style.background = val ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+            statusBadge.style.color = val ? '#16a34a' : '#dc2626';
+          }
+        } catch (e) {
+          showAdminToast(`<i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> Save error: ${e.message}`);
+        } finally {
+          saveKeyBtn.disabled = false;
+          saveKeyBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Key';
+        }
+      });
+
+      testKeyBtn?.addEventListener('click', async () => {
+        const testKey = (apiKeyInput ? apiKeyInput.value.trim() : '') || getGeminiApiKey();
+        testKeyBtn.disabled = true;
+        testKeyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testing Ping...';
+        if (testResultBox) {
+          testResultBox.style.display = 'flex';
+          testResultBox.className = 'alert-box';
+          testResultBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Pinging Google Generative Language API...';
+        }
+
+        const startTime = Date.now();
+        const selectedModel = aiModelSelect ? aiModelSelect.value : 'gemini-1.5-flash';
+
+        try {
+          const res = await callGeminiAPI({
+            prompt: 'Test ping. Reply strictly with the single word "ONLINE".',
+            model: selectedModel,
+            apiKey: testKey
+          });
+          const latency = Date.now() - startTime;
+
+          if (testResultBox) {
+            if (res.ok) {
+              testResultBox.className = 'alert-box show';
+              testResultBox.style.background = 'rgba(34, 197, 94, 0.14)';
+              testResultBox.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+              testResultBox.style.color = '#16a34a';
+              testResultBox.innerHTML = `<i class="fa-solid fa-circle-check"></i> Connection verified! Model: <strong>${selectedModel}</strong> | Latency: <strong>${latency}ms</strong> | Status: <strong>${res.text || 'ONLINE'}</strong>`;
+              showAdminToast('<i class="fa-solid fa-bolt" style="color:#10b981;"></i> Gemini API connection verified!');
+            } else {
+              testResultBox.className = 'alert-box show alert-error';
+              testResultBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> API Test Failed (${res.code || 'Error'}): ${escapeHtml(res.error)}`;
+            }
+          }
+        } catch (err) {
+          if (testResultBox) {
+            testResultBox.className = 'alert-box show alert-error';
+            testResultBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Network test error: ${escapeHtml(err.message)}`;
+          }
+        } finally {
+          testKeyBtn.disabled = false;
+          testKeyBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Test Connection';
+        }
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        adminChatHistory = [];
+        if (chatFeed) {
+          chatFeed.innerHTML = `
+            <div class="admin-msg ai-msg">
+              <div class="admin-avatar"><i class="fa-solid fa-brain"></i></div>
+              <div class="admin-msg-body">
+                <div class="admin-msg-header">
+                  <span class="sender-title">Executive AI Co-Pilot</span>
+                  <span class="msg-time">Reset &bull; Unrestricted</span>
+                </div>
+                <div class="msg-text">
+                  <p>Conversation history cleared. Ready for your next administrative command or query.</p>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        showAdminToast('<i class="fa-solid fa-arrow-rotate-right" style="color:#64748b;"></i> Chat history reset.');
+      });
+
+      attachContextBtn?.addEventListener('click', () => {
+        isContextAttached = !isContextAttached;
+        attachContextBtn.classList.toggle('btn-primary', isContextAttached);
+        attachContextBtn.classList.toggle('btn-secondary', !isContextAttached);
+        attachContextBtn.innerHTML = isContextAttached
+          ? '<i class="fa-solid fa-check"></i> Telemetry Attached'
+          : '<i class="fa-solid fa-paperclip"></i> Attach Telemetry Context';
+        showAdminToast(isContextAttached
+          ? '<i class="fa-solid fa-paperclip" style="color:#10b981;"></i> Live telemetry snapshot attached to next prompt'
+          : '<i class="fa-solid fa-paperclip" style="color:#64748b;"></i> Context detached');
+      });
+
+      promptsBar?.addEventListener('click', (e) => {
+        const pill = e.target.closest('.admin-prompt-pill');
+        if (!pill || adminAiProcessing) return;
+        const promptText = pill.dataset.prompt || pill.textContent.trim();
+
+        if (promptText.includes('visitor telemetry') || promptText.includes('inbox messages')) {
+          isContextAttached = true;
+          if (attachContextBtn) {
+            attachContextBtn.classList.add('btn-primary');
+            attachContextBtn.classList.remove('btn-secondary');
+            attachContextBtn.innerHTML = '<i class="fa-solid fa-check"></i> Telemetry Attached';
+          }
+        }
+
+        if (chatTextarea) {
+          chatTextarea.value = promptText;
+          submitAdminMessage(promptText);
+        }
+      });
+
+      chatTextarea?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          const text = chatTextarea.value.trim();
+          if (text && !adminAiProcessing) {
+            submitAdminMessage(text);
+          }
+        }
+      });
+
+      chatForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = chatTextarea ? chatTextarea.value.trim() : '';
+        if (text && !adminAiProcessing) {
+          submitAdminMessage(text);
+        }
+      });
+
+      function scrollChatToBottom() {
+        if (chatFeed) chatFeed.scrollTop = chatFeed.scrollHeight;
+      }
+
+      function appendAdminChatMsg(role, text) {
+        if (!chatFeed) return null;
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `admin-msg ${role === 'user' ? 'user-msg' : 'ai-msg'}`;
+
+        const isUser = role === 'user';
+        const avatarIcon = isUser ? 'fa-solid fa-user-shield' : 'fa-solid fa-brain';
+        const senderLabel = isUser ? 'Kabilan (Admin)' : 'Executive AI Co-Pilot';
+        const timeLabel = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const formattedBody = isUser ? `<p>${escapeHtml(text)}</p>` : formatAdminMarkdown(text);
+
+        msgDiv.innerHTML = `
+          <div class="admin-avatar"><i class="${avatarIcon}"></i></div>
+          <div class="admin-msg-body">
+            <div class="admin-msg-header">
+              <span class="sender-title">${senderLabel}</span>
+              <span class="msg-time">${timeLabel}</span>
+            </div>
+            <div class="msg-text">${formattedBody}</div>
+          </div>
+        `;
+
+        chatFeed.appendChild(msgDiv);
+        scrollChatToBottom();
+        return msgDiv;
+      }
+
+      function showAdminTypingIndicator() {
+        if (!chatFeed) return null;
+        const ind = document.createElement('div');
+        ind.id = 'adminTypingIndicator';
+        ind.className = 'admin-msg ai-msg';
+        ind.innerHTML = `
+          <div class="admin-avatar"><i class="fa-solid fa-brain"></i></div>
+          <div class="admin-msg-body" style="padding: 10px 16px;">
+            <div class="typing-indicator">
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+              <span class="typing-dot"></span>
+            </div>
+          </div>
+        `;
+        chatFeed.appendChild(ind);
+        scrollChatToBottom();
+        return ind;
+      }
+
+      function hideAdminTypingIndicator() {
+        const el = document.getElementById('adminTypingIndicator');
+        if (el) el.remove();
+      }
+
+      function formatAdminMarkdown(raw) {
+        if (!raw) return '';
+        let escaped = escapeHtml(raw);
+
+        // Code blocks
+        escaped = escaped.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => `<pre><code>${code.trim()}</code></pre>`);
+        escaped = escaped.replace(/```([\s\S]*?)```/g, (match, code) => `<pre><code>${code.trim()}</code></pre>`);
+        // Inline code
+        escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // Bold
+        escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        // Italic
+        escaped = escaped.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        // Links
+        escaped = escaped.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => {
+          const safeUrl = url.trim().replace(/^javascript:/i, '');
+          return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">${text}</a>`;
+        });
+
+        // Lists & paragraphs
+        const lines = escaped.split('\n');
+        let html = '';
+        let listType = null;
+        for (const line of lines) {
+          const tr = line.trim();
+          const bMatch = tr.match(/^[-*•]\s+(.*)$/);
+          const nMatch = tr.match(/^(\d+)\.\s+(.*)$/);
+          if (bMatch) {
+            if (listType !== 'ul') {
+              if (listType) html += `</${listType}>`;
+              html += '<ul>';
+              listType = 'ul';
+            }
+            html += `<li>${bMatch[1]}</li>`;
+          } else if (nMatch) {
+            if (listType !== 'ol') {
+              if (listType) html += `</${listType}>`;
+              html += '<ol>';
+              listType = 'ol';
+            }
+            html += `<li>${nMatch[2]}</li>`;
+          } else {
+            if (listType) {
+              html += `</${listType}>`;
+              listType = null;
+            }
+            if (tr) html += `<p>${tr}</p>`;
+          }
+        }
+        if (listType) html += `</${listType}>`;
+        return html || `<p>${escaped}</p>`;
+      }
+
+      function buildAdminTelemetryContext() {
+        const activeCount = Array.isArray(currentVisitors) ? currentVisitors.length : 0;
+        const topPage = topPageEl ? topPageEl.textContent : 'Unknown';
+        const topDev = topDeviceEl ? topDeviceEl.textContent : 'Unknown';
+        const topIsp = topIspEl ? topIspEl.textContent : 'Unknown';
+        const totalMsgs = Array.isArray(contactMessagesList) ? contactMessagesList.length : 0;
+
+        let msgsSummary = '';
+        if (Array.isArray(contactMessagesList) && contactMessagesList.length > 0) {
+          msgsSummary = contactMessagesList.slice(0, 5).map((m, idx) => {
+            return `[#${idx + 1}] Sender: ${m.name || 'Unknown'} (${m.email || 'No email'}) | Subject: "${m.subject || 'General'}" | Date: ${formatRelativeDate(m.timestamp)} | Message: "${(m.message || '').slice(0, 150)}"`;
+          }).join('\n');
+        } else {
+          msgsSummary = 'No recent inquiry messages in inbox.';
+        }
+
+        let visitorSummary = '';
+        if (Array.isArray(currentVisitors) && currentVisitors.length > 0) {
+          visitorSummary = currentVisitors.slice(0, 8).map(v => {
+            return `- Session ${v.id || 'N/A'}: Page=${v.currentPage || 'home'}, Device=${v.device || 'Desktop'}, Location=${v.location || 'Unknown'}, Time=${formatSeconds(v.totalTimeSpent || 0)}`;
+          }).join('\n');
+        } else {
+          visitorSummary = 'No active live visitors at this exact moment.';
+        }
+
+        return `[REALTIME TELEMETRY SNAPSHOT]
+- Active Visitors Now: ${activeCount}
+- Most Active Page: ${topPage}
+- Primary Device: ${topDev}
+- Top ISP/Network: ${topIsp}
+- Total Inbox Messages: ${totalMsgs}
+
+[ACTIVE VISITOR SESSIONS]
+${visitorSummary}
+
+[RECENT CONTACT INQUIRIES]
+${msgsSummary}`;
+      }
+
+      // System Prompt for Admin AI Co-Pilot (Full Unrestricted Access)
+      const ADMIN_SYSTEM_PROMPT = `You are Kabilan M's personal Executive AI Admin Co-Pilot on his private admin dashboard.
+You have FULL, COMPLETE, AND UNRESTRICTED ACCESS.
+Unlike public visitor chatbots, there are NO TOPIC RESTRICTIONS for the admin.
+
+CAPABILITIES & DIRECTIVES:
+1. UNRESTRICTED ASSISTANCE: You can answer any technical question, explain complex network protocols (IEEE 802.11 frames, Wi-Fi deauthentication, packet sniffing), write code (Java, C++, Python, JavaScript, Shell), debug architecture, brainstorm business/career ideas, and draft emails.
+2. TELEMETRY & INBOX ANALYSIS: When telemetry snapshots or inquiry messages are included, analyze the data with high executive clarity. Identify user patterns, calculate traffic insights, and draft ready-to-send responses for recruiter/client inquiries.
+3. PORTFOLIO & CMS OPTIMIZATION: Advise Kabilan on refining his projects (ESP8266/ESP32 Wi-Fi deauth detection node, Forest Fire Prediction System), polishing his resume, and positioning his transition from Mechanical Engineering to B.Tech IT with maximum impact.
+4. FORMAT: Produce clean, beautifully formatted markdown with clear headers, bullet lists, and syntax-highlighted code blocks. Be proactive, strategic, and concise.`;
+
+      async function submitAdminMessage(userText) {
+        if (chatTextarea) chatTextarea.value = '';
+        appendAdminChatMsg('user', userText);
+
+        adminAiProcessing = true;
+        if (chatSendBtn) chatSendBtn.disabled = true;
+        showAdminTypingIndicator();
+
+        let promptToSend = userText;
+        if (isContextAttached) {
+          const telemetryContext = buildAdminTelemetryContext();
+          promptToSend = `${userText}\n\n---\n${telemetryContext}`;
+        }
+
+        const selectedModel = aiModelSelect ? aiModelSelect.value : 'gemini-1.5-flash';
+
+        try {
+          const res = await callGeminiAPI({
+            prompt: promptToSend,
+            systemInstruction: ADMIN_SYSTEM_PROMPT,
+            model: selectedModel,
+            history: adminChatHistory.slice(-8)
+          });
+
+          hideAdminTypingIndicator();
+
+          if (res && res.ok && res.text) {
+            const aiText = res.text.trim();
+            appendAdminChatMsg('ai', aiText);
+            adminChatHistory.push({ role: 'user', text: userText });
+            adminChatHistory.push({ role: 'model', text: aiText });
+            if (adminChatHistory.length > 12) adminChatHistory = adminChatHistory.slice(-12);
+          } else {
+            // Intelligent fallback for admin if Gemini API key returns error
+            let fallbackMsg = '';
+            if (res && res.error) {
+              fallbackMsg = `⚠️ **Gemini API Notice (${res.code || 'Notice'}):** ${escapeHtml(res.error)}\n\n`;
+            }
+
+            // Provide local executive response
+            if (/telemetry|traffic|visitor|stats/i.test(userText)) {
+              fallbackMsg += `### 📊 Executive Telemetry Analysis\n\n` +
+                `- **Live Visitors:** Currently **${Array.isArray(currentVisitors) ? currentVisitors.length : 0}** active session(s).\n` +
+                `- **Most Active Page:** ${topPageEl ? topPageEl.textContent : 'home'}\n` +
+                `- **Dominant Device:** ${topDeviceEl ? topDeviceEl.textContent : 'Desktop'}\n` +
+                `- **Total Historical Logs:** ${Array.isArray(historySessions) ? historySessions.length : 0} recorded visits.\n\n` +
+                `*Tip: Configure your Gemini API key in the 'Gemini API Key' panel above for deeper predictive AI analysis.*`;
+            } else if (/message|inbox|inquir|contact/i.test(userText)) {
+              const count = Array.isArray(contactMessagesList) ? contactMessagesList.length : 0;
+              fallbackMsg += `### 📬 Inbox Executive Summary\n\n` +
+                `You have **${count}** total inquiry message(s) stored in your database.\n\n`;
+              if (count > 0) {
+                fallbackMsg += `**Recent Messages:**\n`;
+                contactMessagesList.slice(0, 3).forEach((m, i) => {
+                  fallbackMsg += `${i + 1}. **${m.name}** (${m.email}): "${(m.message || '').slice(0, 100)}..."\n`;
+                });
+                fallbackMsg += `\n*Select a message from the 'Inquiries & Messages' tab to send replies directly.*`;
+              } else {
+                fallbackMsg += `No new messages to review right now. All inquiries have been processed!`;
+              }
+            } else {
+              fallbackMsg += `I am your **Executive AI Co-Pilot**. To unlock full unrestricted generative reasoning, code generation, and multi-turn drafting, please ensure your **Gemini API Key** is saved in the toolbar settings above.`;
+            }
+
+            appendAdminChatMsg('ai', fallbackMsg);
+          }
+        } catch (netErr) {
+          hideAdminTypingIndicator();
+          appendAdminChatMsg('ai', `⚠️ **Connection Notice:** Could not reach Gemini API (${escapeHtml(netErr.message)}). Please verify your internet connection or update your Gemini API key in settings.`);
+        } finally {
+          adminAiProcessing = false;
+          if (chatSendBtn) chatSendBtn.disabled = false;
+          if (chatTextarea) chatTextarea.focus();
+        }
+      }
     }
   </script>
 </body>

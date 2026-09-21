@@ -74,6 +74,7 @@ require('./tier2_boundaries.test');
 require('./tier3_combinations.test');
 require('./tier4_scenarios.test');
 require('./terminal_and_security_features.test');
+require('./chatbot_features.test');
 
 // ── Run Test Suite ─────────────────────────────────────────────────────
 (async () => {

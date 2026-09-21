@@ -330,6 +330,183 @@ isSupported().then((supported) => {
   }
 }).catch(() => {});
 
+// ── Gemini AI Engine Vault & Invocation ─────────────────────────────────
+const _KM_GEMINI_STORAGE_KEY = "km_gemini_api_key";
+const _SHIELDED_GEMINI_KEY = "CgQlMhY6GyEMMwtnDVB2Ylo8THx+CQ4CBC1sFQh4dB0ra2QEZDdg";
+let _cachedGeminiKey = null;
+
+export function getGeminiApiKey() {
+  if (_cachedGeminiKey) return _cachedGeminiKey;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem(_KM_GEMINI_STORAGE_KEY);
+      if (stored && stored.trim()) {
+        _cachedGeminiKey = stored.trim();
+        return _cachedGeminiKey;
+      }
+    }
+  } catch (e) {}
+
+  // Fallback to vault unshielded default key
+  const defaultKey = _unshieldString(_SHIELDED_GEMINI_KEY, _VAULT_KEY);
+  if (defaultKey) return defaultKey;
+  return "";
+}
+
+export async function setGeminiApiKey(key, syncCloud = true) {
+  const trimmed = (key || "").trim();
+  _cachedGeminiKey = trimmed;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      if (trimmed) {
+        localStorage.setItem(_KM_GEMINI_STORAGE_KEY, trimmed);
+      } else {
+        localStorage.removeItem(_KM_GEMINI_STORAGE_KEY);
+      }
+    }
+  } catch (e) {}
+
+  if (syncCloud && firestore && doc && setDoc) {
+    try {
+      await setDoc(doc(firestore, "portfolioData", "aiConfig"), {
+        geminiApiKey: trimmed,
+        updatedAt: Date.now()
+      }, { merge: true });
+    } catch (e) {
+      // Non-blocking if offline or non-admin
+    }
+  }
+  return true;
+}
+
+export async function fetchGeminiApiKeyFromCloud() {
+  try {
+    if (firestore && doc && getDoc) {
+      const snap = await getDoc(doc(firestore, "portfolioData", "aiConfig"));
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data && data.geminiApiKey) {
+          _cachedGeminiKey = data.geminiApiKey;
+          try {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, data.geminiApiKey);
+            }
+          } catch (e) {}
+          return data.geminiApiKey;
+        }
+      }
+    }
+  } catch (e) {}
+  return getGeminiApiKey();
+}
+
+// Auto-listen to cloud AI config in Firestore if available
+try {
+  if (firestore && doc && onSnapshot) {
+    onSnapshot(doc(firestore, "portfolioData", "aiConfig"), (snap) => {
+      if (snap && snap.exists()) {
+        const data = snap.data();
+        if (data && data.geminiApiKey) {
+          _cachedGeminiKey = data.geminiApiKey;
+          try {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem(_KM_GEMINI_STORAGE_KEY, data.geminiApiKey);
+            }
+          } catch (e) {}
+        }
+      }
+    }, () => {});
+  }
+} catch (e) {}
+
+export async function callGeminiAPI({
+  prompt,
+  systemInstruction = "",
+  model = "gemini-1.5-flash",
+  apiKey = "",
+  history = []
+}) {
+  const activeKey = apiKey || getGeminiApiKey();
+  if (!activeKey) {
+    return {
+      ok: false,
+      error: "No Gemini API Key configured. Please set your key in Admin AI Settings.",
+      code: "NO_API_KEY"
+    };
+  }
+
+  // Format contents array including previous conversation turns
+  const contents = [];
+  if (Array.isArray(history)) {
+    for (const msg of history) {
+      if (!msg || !msg.text) continue;
+      contents.push({
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: String(msg.text) }]
+      });
+    }
+  }
+  contents.push({
+    role: "user",
+    parts: [{ text: String(prompt || "") }]
+  });
+
+  const bodyPayload = {
+    contents,
+    generationConfig: {
+      temperature: 0.25,
+      maxOutputTokens: 1024,
+      topP: 0.95
+    }
+  };
+
+  if (systemInstruction) {
+    bodyPayload.systemInstruction = {
+      parts: [{ text: String(systemInstruction) }]
+    };
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(activeKey)}`;
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(bodyPayload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const errMsg = data?.error?.message || `HTTP ${res.status} error`;
+      return {
+        ok: false,
+        error: errMsg,
+        code: data?.error?.code || res.status,
+        status: res.status
+      };
+    }
+
+    const candidate = data.candidates?.[0];
+    const generatedText = candidate?.content?.parts?.[0]?.text || "";
+
+    return {
+      ok: true,
+      text: generatedText,
+      model,
+      finishReason: candidate?.finishReason || "STOP"
+    };
+  } catch (netErr) {
+    return {
+      ok: false,
+      error: netErr.message || "Network connection error",
+      code: "NETWORK_ERROR"
+    };
+  }
+}
+
 // Re-export modular methods for clean imports across tracker and admin pages
 export {
   signInAnonymously,

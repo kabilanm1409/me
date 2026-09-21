@@ -92,6 +92,75 @@
     <p><a href="about.html">About</a> · <a href="projects.html">Projects</a></p>
   </footer>
  
+  <!-- Kabilan's Portfolio AI Chatbot (Guardrailed Visitor Assistant) -->
+  <div id="kmChatbotContainer" class="km-chatbot-container">
+    <!-- Floating Launcher Button -->
+    <button id="kmChatbotLauncher" class="km-chatbot-launcher" type="button" aria-label="Open Kabilan's Portfolio AI Assistant" aria-expanded="false">
+      <span class="launcher-pulse"></span>
+      <span class="launcher-icon"><i class="fa-solid fa-robot" aria-hidden="true"></i></span>
+      <span class="launcher-tooltip">Ask Kabilan's AI</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="kmChatbotWindow" class="km-chatbot-window" aria-hidden="true" role="dialog" aria-modal="false" aria-label="Portfolio AI Assistant">
+      <div class="chatbot-header">
+        <div class="chatbot-header-brand">
+          <div class="bot-avatar">
+            <i class="fa-solid fa-robot" aria-hidden="true"></i>
+            <span class="status-dot"></span>
+          </div>
+          <div class="bot-meta">
+            <h3 class="bot-title">Kabilan's Portfolio AI</h3>
+            <span class="bot-status"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Portfolio Guardrailed</span>
+          </div>
+        </div>
+        <div class="chatbot-header-actions">
+          <button id="kmChatClearBtn" class="chat-tool-btn" type="button" title="Clear conversation history" aria-label="Clear chat">
+            <i class="fa-solid fa-arrow-rotate-right" aria-hidden="true"></i>
+          </button>
+          <button id="kmChatCloseBtn" class="chat-tool-btn" type="button" title="Close AI Assistant" aria-label="Close chat">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Suggestions Bar -->
+      <div class="chatbot-chips-bar" aria-label="Quick questions">
+        <button type="button" class="chat-chip" data-query="What projects has Kabilan built?">🛠️ Key Projects</button>
+        <button type="button" class="chat-chip" data-query="What are Kabilan's core technical skills?">💻 Technical Skills</button>
+        <button type="button" class="chat-chip" data-query="Tell me about Kabilan's education background">🎓 Education</button>
+        <button type="button" class="chat-chip" data-query="What certifications and hackathon awards does Kabilan hold?">🏆 Certifications</button>
+        <button type="button" class="chat-chip" data-query="How can I contact or hire Kabilan?">📬 Contact Info</button>
+      </div>
+
+      <!-- Messages Container -->
+      <div id="kmChatMessages" class="chatbot-messages" role="log" aria-live="polite">
+        <!-- Default Greeting -->
+        <div class="chat-msg bot-msg">
+          <div class="msg-avatar"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+          <div class="msg-content">
+            <p>Hello! 👋 I'm <strong>Kabilan M's Portfolio AI Assistant</strong>.</p>
+            <p>I am strictly specialized to assist you with questions about Kabilan's <strong>projects, skills, education, publications, and contact info</strong>.</p>
+            <p class="msg-footnote"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Off-topic queries are restricted by guardrail policy.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Footer -->
+      <div class="chatbot-footer">
+        <form id="kmChatForm" class="chatbot-input-form" autocomplete="off">
+          <input type="text" id="kmChatInput" class="chatbot-input" placeholder="Ask about Kabilan's portfolio..." aria-label="Chat input" maxlength="400" />
+          <button type="submit" id="kmChatSendBtn" class="chatbot-send-btn" aria-label="Send message">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+          </button>
+        </form>
+        <div class="chatbot-disclaimer">
+          <span>Powered by Gemini AI &bull; Strictly Guardrailed to Portfolio Scope</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Screenshot Shield Overlay -->
   <div id="screenshotShield" class="screenshot-shield" aria-hidden="true">
     <div class="shield-message">

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="globalBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#040812" />
+      <stop offset="100%" stop-color="#091426" />
+    </linearGradient>
+    <radialGradient id="globeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="900" height="600" fill="url(#globalBg)" />
+
+  <!-- Global Header -->
+  <rect x="30" y="30" width="840" height="60" rx="6" fill="#081426" stroke="#00ff9d" stroke-width="1.5" opacity="0.9" />
+  <text x="50" y="68" fill="#00ff9d" font-family="'Fira Code', monospace" font-size="20" font-weight="700">GLOBAL SATELLITE THERMAL HOTSPOT MONITOR</text>
+  <text x="710" y="68" fill="#00f0ff" font-family="'Fira Code', monospace" font-size="14">ORBIT TELEMETRY: 24/7</text>
+
+  <!-- Globe Rings -->
+  <circle cx="450" cy="300" r="180" fill="url(#globeGlow)" stroke="#00f0ff" stroke-width="1" stroke-dasharray="6 4" opacity="0.4" />
+  <circle cx="450" cy="300" r="140" fill="none" stroke="#38bdf8" stroke-width="0.8" opacity="0.3" />
+  <ellipse cx="450" cy="300" rx="180" ry="70" fill="none" stroke="#00ff9d" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.35" />
+
+  <!-- Global Hotspot Markers -->
+  <circle cx="420" cy="270" r="5" fill="#ef4444" />
+  <circle cx="420" cy="270" r="12" fill="none" stroke="#ef4444" stroke-width="1.5" />
+  <text x="435" y="265" fill="#ef4444" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Amazon Basin: 12 Fires</text>
+
+  <circle cx="510" cy="310" r="5" fill="#f59e0b" />
+  <circle cx="510" cy="310" r="12" fill="none" stroke="#f59e0b" stroke-width="1.5" />
+  <text x="525" y="305" fill="#f59e0b" font-family="'Inter', sans-serif" font-size="12" font-weight="600">Western Ghats: Monitored</text>
+
+  <!-- Bottom Analytics Bar -->
+  <rect x="30" y="500" width="840" height="65" rx="6" fill="#081426" stroke="#00ff9d" stroke-width="1" opacity="0.9" />
+  <text x="50" y="538" fill="#e2e8f0" font-family="'Inter', sans-serif" font-size="13">Continuous planetary monitoring combining MODIS and VIIRS satellite thermal bands with edge neural risk calculation.</text>
+</svg>

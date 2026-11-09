@@ -1076,14 +1076,23 @@ body[data-theme='dark'] .tag-row span:hover {
   overflow: hidden;
 }
 
-.project-card img {
+/* Standalone project card image */
+.project-image-wrap > img {
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
   object-fit: cover;
+  object-position: center;
   border-radius: 16px;
   border: 1px solid var(--glass-border);
-  transition: transform 0.4s ease;
+  display: block;
+  background: var(--surface-soft);
+  cursor: zoom-in;
+  transition: transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover .project-image-wrap > img {
+  transform: scale(1.03);
 }
 
 /* =====================================================
@@ -1092,39 +1101,56 @@ body[data-theme='dark'] .tag-row span:hover {
 .project-carousel {
   position: relative;
   width: 100%;
-  height: auto;
   aspect-ratio: 16 / 10;
   border-radius: 16px;
   border: 1px solid var(--glass-border);
   overflow: hidden;
   background-color: var(--surface-soft);
+  display: block;
+  isolation: isolate;
 }
 
 .carousel-track {
   width: 100%;
   height: 100%;
   position: relative;
+  overflow: hidden;
+  border-radius: 15px;
 }
 
 .carousel-img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: unset !important;
+  border: none !important;
+  border-radius: 0 !important;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
 }
 
 .carousel-img.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+  cursor: zoom-in;
+  z-index: 2;
+}
+
+.project-card:hover .carousel-img.active {
+  transform: scale(1.03);
 }
 
 .carousel-img.fit-contain {
   object-fit: contain;
-  background-color: #ffffff;
-  padding: 6px;
+  background-color: var(--surface-soft);
+  padding: 8px;
 }
 
 .carousel-img.fit-cover {
@@ -1197,9 +1223,7 @@ body[data-theme='dark'] .carousel-control {
   transform: scale(1.25);
 }
 
-.project-card:hover img {
-  transform: scale(1.03);
-}
+/* project card hover handled above */
 
 .project-content {
   padding: 22px 20px 24px;
@@ -2071,7 +2095,7 @@ body[data-theme='dark'] .filter-btn:hover {
     justify-content: center;
   }
 
-  .project-card img,
+  .project-image-wrap > img,
   .project-carousel {
     height: auto;
     aspect-ratio: 16 / 10;
@@ -2496,8 +2520,8 @@ body[data-theme='dark'] .filter-btn:hover {
 }
 
 /* Cursor pointer style for zoomable images */
-.project-card img,
-.carousel-img {
+.project-image-wrap > img,
+.carousel-img.active {
   cursor: zoom-in;
 }
 

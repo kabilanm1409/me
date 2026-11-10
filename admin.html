@@ -4169,7 +4169,7 @@ Timestamp:       ${new Date().toISOString()}
         if (!apiKeyInput) return;
         const val = apiKeyInput.value.trim();
         if (val.startsWith('AQ.')) {
-          showAdminToast('<i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Warning: Google AI Studio Gemini API keys begin with "AIzaSy...". The entered key appears to be a GCP OAuth token.', 6000);
+          showAdminToast('<i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Warning: Google AI Studio Gemini API keys begin with standard API format (starts with "AIza..."). The entered key appears to be a GCP OAuth token.', 6000);
         }
         saveKeyBtn.disabled = true;
         saveKeyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -4211,7 +4211,7 @@ Timestamp:       ${new Date().toISOString()}
             testResultBox.style.background = 'rgba(239, 68, 68, 0.14)';
             testResultBox.style.borderColor = 'rgba(239, 68, 68, 0.4)';
             testResultBox.style.color = '#ef4444';
-            testResultBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <strong>Invalid Key Format:</strong> The provided credential starts with "AQ." which is a GCP OAuth/Service Account access token. Google Gemini API requires an API key starting with "AIzaSy..." generated from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:underline;">Google AI Studio</a>.';
+            testResultBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <strong>Invalid Key Format:</strong> The provided credential starts with "AQ." which is a GCP OAuth/Service Account access token. Google Gemini API requires a standard API key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:underline;">Google AI Studio</a>.';
           }
           return;
         }
@@ -4536,7 +4536,7 @@ CAPABILITIES & DIRECTIVES:
                 `- **Live Visitors:** Currently **${Array.isArray(currentVisitors) ? currentVisitors.length : 0}** active session(s).\n` +
                 `- **Total Inquiries:** **${Array.isArray(contactMessagesList) ? contactMessagesList.length : 0}** message(s) stored.\n` +
                 `- **System Health:** Telemetry listeners, database sync, and cyber protections are operational.\n\n` +
-                `*Tip: To enable full generative AI replies, enter your Google AI Studio Gemini API key (starts with 'AIzaSy...') in the toolbar panel above.*`;
+                `*Tip: To enable full generative AI replies, enter your Google AI Studio Gemini API key in the toolbar panel above.*`;
             } else if (/telemetry|traffic|visitor|stats/i.test(userText)) {
               fallbackMsg += `### 📊 Executive Telemetry Analysis\n\n` +
                 `- **Live Visitors:** Currently **${Array.isArray(currentVisitors) ? currentVisitors.length : 0}** active session(s).\n` +
@@ -4560,7 +4560,7 @@ CAPABILITIES & DIRECTIVES:
             } else if (res && (res.code === 503 || res.status === 503)) {
               fallbackMsg += `Google's Gemini servers are currently experiencing high demand. Please try sending your message again, or switch models in the dropdown above for instant response.`;
             } else if (res && (res.code === 401 || res.status === 401)) {
-              fallbackMsg += `I am your **Executive AI Co-Pilot**. Please ensure you have entered a valid Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey) (starts with **AIzaSy...**). OAuth tokens or Service Account keys starting with 'AQ.' are rejected by Google's direct Generative Language API.`;
+              fallbackMsg += `I am your **Executive AI Co-Pilot**. Please ensure you have entered a valid Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey). OAuth tokens or Service Account keys starting with 'AQ.' are rejected by Google's direct Generative Language API.`;
             } else {
               fallbackMsg += `I am your **Executive AI Co-Pilot**. To unlock full unrestricted generative reasoning, code generation, and multi-turn drafting, please ensure your **Gemini API Key** is saved in the toolbar settings above.`;
             }

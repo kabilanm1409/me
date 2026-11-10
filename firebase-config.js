@@ -462,7 +462,7 @@ export async function callGeminiAPI({
   if (activeKey.startsWith("AQ.")) {
     return {
       ok: false,
-      error: "Invalid API Key format: The supplied credential appears to be an OAuth/GCP access token (starts with 'AQ.'). Google Gemini API requires an API key starting with 'AIzaSy...' from Google AI Studio (https://aistudio.google.com/app/apikey). Please generate a free Gemini key in Google AI Studio.",
+      error: "Invalid API Key format: The supplied credential appears to be an OAuth/GCP access token (starts with 'AQ.'). Google Gemini API requires an API key from Google AI Studio (https://aistudio.google.com/app/apikey). Please generate a free Gemini key in Google AI Studio.",
       code: 401,
       status: 401
     };

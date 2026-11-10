@@ -214,6 +214,12 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
     });
 
     projectGrid.innerHTML = html;
+    if (typeof window.__initProjectCarousels === 'function') {
+      window.__initProjectCarousels();
+    }
+    if (typeof window.__initLightbox === 'function') {
+      window.__initLightbox();
+    }
   }
 
   // ── Sync Education Section ──
@@ -265,19 +271,23 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
     if (pubGrid && Array.isArray(data.publications) && data.publications.length > 0) {
       let html = '';
       data.publications.forEach(pub => {
+        const pdfSrc = pub.pdfUrl || 'assets/publications/WiFi_Deauthentication_Device_IARJSET_2025.pdf';
         html += `
-          <article class="publication-card card">
+          <article class="publication-card card" data-cert-src="${pdfSrc}" data-cert-title="${pub.title || 'Publication'}" data-cert-type="pdf">
             <div class="publication-tag">
               <i class="fa-solid fa-file-pdf"></i>
               <span>${pub.tag || 'Publication'}</span>
             </div>
             <h4>${pub.title || ''}</h4>
             <p>${pub.description || ''}</p>
-            ${pub.pdfUrl ? `<a class="btn btn-secondary" href="${pub.pdfUrl}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> Read Publication</a>` : ''}
+            ${pdfSrc ? `<a class="btn btn-secondary btn-pub-preview" href="${pdfSrc}" target="_blank" rel="noopener noreferrer" data-cert-src="${pdfSrc}" data-cert-title="${pub.title || 'Publication'}" data-cert-type="pdf"><i class="fa-solid fa-arrow-up-right-from-square"></i> Read Publication</a>` : ''}
           </article>
         `;
       });
       pubGrid.innerHTML = html;
+      if (typeof window.__initLightbox === 'function') {
+        window.__initLightbox();
+      }
     }
   }
 

@@ -443,7 +443,7 @@ try {
 export async function callGeminiAPI({
   prompt,
   systemInstruction = "",
-  model = "gemini-flash-lite-latest",
+  model = "gemini-1.5-flash",
   apiKey = "",
   history = [],
   temperature = 0.3,
@@ -455,6 +455,16 @@ export async function callGeminiAPI({
       ok: false,
       error: "No Gemini API Key configured. Please set your key in Admin AI Settings.",
       code: "NO_API_KEY"
+    };
+  }
+
+  // Pre-check for GCP OAuth / Service Account token format instead of AI Studio API key
+  if (activeKey.startsWith("AQ.")) {
+    return {
+      ok: false,
+      error: "Invalid API Key format: The supplied credential appears to be an OAuth/GCP access token (starts with 'AQ.'). Google Gemini API requires an API key starting with 'AIzaSy...' from Google AI Studio (https://aistudio.google.com/app/apikey). Please generate a free Gemini key in Google AI Studio.",
+      code: 401,
+      status: 401
     };
   }
 
@@ -503,10 +513,11 @@ export async function callGeminiAPI({
   };
 
   const HIGH_AVAILABILITY_MODELS = [
-    "gemini-flash-lite-latest",
-    "gemini-3.5-flash-lite",
-    "gemini-flash-latest",
-    "gemini-3.6-flash"
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-1.5-pro"
   ];
 
   try {

@@ -1593,10 +1593,10 @@
               <div class="ai-model-picker">
                 <label for="adminAiModelSelect" style="font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-right: 6px;">Model:</label>
                 <select id="adminAiModelSelect" class="cms-input" style="padding: 6px 10px; font-size: 0.84rem; width: auto;">
-                  <option value="gemini-flash-lite-latest" selected>Gemini Flash-Lite (Fastest &bull; High Availability)</option>
-                  <option value="gemini-flash-latest">Gemini Flash Latest</option>
-                  <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite</option>
-                  <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+                  <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash (Recommended &bull; Fast &amp; Reliable)</option>
+                  <option value="gemini-1.5-flash-8b">Gemini 1.5 Flash-8B (Ultra High-Speed)</option>
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash (Next-Gen High Throughput)</option>
+                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (Deep Reasoning)</option>
                 </select>
               </div>
               <button type="button" id="adminAiConfigToggleBtn" class="btn btn-secondary" style="padding: 7px 14px; font-size: 0.84rem;">
@@ -3215,7 +3215,7 @@ Timestamp:       ${new Date().toISOString()}
       ],
       publications: [
         { tag: "2026 Paper", title: "Detecting Deauthentication Attacks in Wireless Networks", description: "Published academic research paper analyzing deauthentication attack vectors, packet capture logs, and real-time mitigation rulesets.", pdfUrl: "assets/publications/69d600f9a94a4P10-issue 1-2026 Detecting Deauthentication.pdf" },
-        { tag: "Research Model", title: "Wireless Detection Model & Analysis", description: "Detailed technical documentation introducing frame sniffing signatures and building responsive alerting systems for open Wi-Fi infrastructures.", pdfUrl: "assets/publications/wireless detect model.pdf" }
+        { tag: "Research Model", title: "Wireless Detection Model & Analysis", description: "Detailed technical documentation introducing frame sniffing signatures and building responsive alerting systems for open Wi-Fi infrastructures.", pdfUrl: "assets/publications/WiFi_Deauthentication_Device_IARJSET_2025.pdf" }
       ],
       contact: {
         email: "mkabilan1409@gmail.com",
@@ -4168,6 +4168,9 @@ Timestamp:       ${new Date().toISOString()}
       saveKeyBtn?.addEventListener('click', async () => {
         if (!apiKeyInput) return;
         const val = apiKeyInput.value.trim();
+        if (val.startsWith('AQ.')) {
+          showAdminToast('<i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Warning: Google AI Studio Gemini API keys begin with "AIzaSy...". The entered key appears to be a GCP OAuth token.', 6000);
+        }
         saveKeyBtn.disabled = true;
         saveKeyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
         try {
@@ -4201,6 +4204,18 @@ Timestamp:       ${new Date().toISOString()}
 
       testKeyBtn?.addEventListener('click', async () => {
         const testKey = (apiKeyInput ? apiKeyInput.value.trim() : '') || getGeminiApiKey();
+        if (testKey.startsWith('AQ.')) {
+          if (testResultBox) {
+            testResultBox.style.display = 'flex';
+            testResultBox.className = 'alert-box show';
+            testResultBox.style.background = 'rgba(239, 68, 68, 0.14)';
+            testResultBox.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+            testResultBox.style.color = '#ef4444';
+            testResultBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <strong>Invalid Key Format:</strong> The provided credential starts with "AQ." which is a GCP OAuth/Service Account access token. Google Gemini API requires an API key starting with "AIzaSy..." generated from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:underline;">Google AI Studio</a>.';
+          }
+          return;
+        }
+
         testKeyBtn.disabled = true;
         testKeyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testing Ping...';
         if (testResultBox) {
@@ -4210,7 +4225,7 @@ Timestamp:       ${new Date().toISOString()}
         }
 
         const startTime = Date.now();
-        const selectedModel = aiModelSelect ? aiModelSelect.value : 'gemini-flash-lite-latest';
+        const selectedModel = aiModelSelect ? aiModelSelect.value : 'gemini-1.5-flash';
 
         try {
           const res = await callGeminiAPI({
@@ -4490,7 +4505,7 @@ CAPABILITIES & DIRECTIVES:
           promptToSend = `${userText}\n\n---\n${telemetryContext}`;
         }
 
-        const selectedModel = aiModelSelect ? aiModelSelect.value : 'gemini-flash-lite-latest';
+        const selectedModel = aiModelSelect ? aiModelSelect.value : 'gemini-1.5-flash';
 
         try {
           const res = await callGeminiAPI({
@@ -4516,7 +4531,13 @@ CAPABILITIES & DIRECTIVES:
             }
 
             // Provide local executive response
-            if (/telemetry|traffic|visitor|stats/i.test(userText)) {
+            if (/^(hi|hii|hello|hey|greetings|hola)\b/i.test(userText.trim())) {
+              fallbackMsg += `Welcome back, **Kabilan**! 👋 Your Executive AI Co-Pilot is online and standing by.\n\n` +
+                `- **Live Visitors:** Currently **${Array.isArray(currentVisitors) ? currentVisitors.length : 0}** active session(s).\n` +
+                `- **Total Inquiries:** **${Array.isArray(contactMessagesList) ? contactMessagesList.length : 0}** message(s) stored.\n` +
+                `- **System Health:** Telemetry listeners, database sync, and cyber protections are operational.\n\n` +
+                `*Tip: To enable full generative AI replies, enter your Google AI Studio Gemini API key (starts with 'AIzaSy...') in the toolbar panel above.*`;
+            } else if (/telemetry|traffic|visitor|stats/i.test(userText)) {
               fallbackMsg += `### 📊 Executive Telemetry Analysis\n\n` +
                 `- **Live Visitors:** Currently **${Array.isArray(currentVisitors) ? currentVisitors.length : 0}** active session(s).\n` +
                 `- **Most Active Page:** ${topPageEl ? topPageEl.textContent : 'home'}\n` +
@@ -4537,7 +4558,9 @@ CAPABILITIES & DIRECTIVES:
                 fallbackMsg += `No new messages to review right now. All inquiries have been processed!`;
               }
             } else if (res && (res.code === 503 || res.status === 503)) {
-              fallbackMsg += `Google's Gemini servers are currently experiencing a brief global traffic surge. Please send your message again, or switch to **Gemini Flash-Lite** in the model dropdown above for instant high-speed response.`;
+              fallbackMsg += `Google's Gemini servers are currently experiencing high demand. Please try sending your message again, or switch models in the dropdown above for instant response.`;
+            } else if (res && (res.code === 401 || res.status === 401)) {
+              fallbackMsg += `I am your **Executive AI Co-Pilot**. Please ensure you have entered a valid Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey) (starts with **AIzaSy...**). OAuth tokens or Service Account keys starting with 'AQ.' are rejected by Google's direct Generative Language API.`;
             } else {
               fallbackMsg += `I am your **Executive AI Co-Pilot**. To unlock full unrestricted generative reasoning, code generation, and multi-turn drafting, please ensure your **Gemini API Key** is saved in the toolbar settings above.`;
             }

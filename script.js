@@ -562,53 +562,85 @@
     setYear();
   }
 
+  let _carouselDelegationAttached = false;
+
   function initProjectCarousels() {
+    // 1. Ensure initial active classes on any newly rendered project carousels
     const carousels = document.querySelectorAll('.project-carousel');
     carousels.forEach(carousel => {
       const images = carousel.querySelectorAll('.carousel-img');
-      const prevBtn = carousel.querySelector('.carousel-control.prev');
-      const nextBtn = carousel.querySelector('.carousel-control.next');
       const dots = carousel.querySelectorAll('.carousel-dot');
-      
       if (!images.length) return;
-      
-      let currentIndex = 0;
-      
-      const updateCarousel = (index) => {
-        images.forEach((img, idx) => {
-          img.classList.toggle('active', idx === index);
-        });
-        dots.forEach((dot, idx) => {
-          dot.classList.toggle('active', idx === index);
-        });
-        currentIndex = index;
-      };
-      
-      if (prevBtn && nextBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          let nextIndex = currentIndex - 1;
-          if (nextIndex < 0) nextIndex = images.length - 1;
-          updateCarousel(nextIndex);
-        });
-        
-        nextBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          let nextIndex = currentIndex + 1;
-          if (nextIndex >= images.length) nextIndex = 0;
-          updateCarousel(nextIndex);
-        });
+      const hasActive = Array.from(images).some(img => img.classList.contains('active'));
+      if (!hasActive) {
+        images[0].classList.add('active');
+        if (dots[0]) dots[0].classList.add('active');
       }
-      
-      dots.forEach((dot, idx) => {
-        dot.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          updateCarousel(idx);
-        });
-      });
+    });
+
+    // 2. Attach global delegated event listener once
+    if (_carouselDelegationAttached) return;
+    _carouselDelegationAttached = true;
+
+    document.addEventListener('click', (e) => {
+      // Prev button
+      const prevBtn = e.target.closest ? e.target.closest('.carousel-control.prev') : null;
+      if (prevBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const carousel = prevBtn.closest('.project-carousel');
+        if (!carousel) return;
+        const images = carousel.querySelectorAll('.carousel-img');
+        const dots = carousel.querySelectorAll('.carousel-dot');
+        if (!images.length) return;
+        let curr = Array.from(images).findIndex(img => img.classList.contains('active'));
+        if (curr < 0) curr = 0;
+        let next = curr - 1;
+        if (next < 0) next = images.length - 1;
+        images.forEach((img, idx) => img.classList.toggle('active', idx === next));
+        dots.forEach((dot, idx) => dot.classList.toggle('active', idx === next));
+        return;
+      }
+
+      // Next button
+      const nextBtn = e.target.closest ? e.target.closest('.carousel-control.next') : null;
+      if (nextBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const carousel = nextBtn.closest('.project-carousel');
+        if (!carousel) return;
+        const images = carousel.querySelectorAll('.carousel-img');
+        const dots = carousel.querySelectorAll('.carousel-dot');
+        if (!images.length) return;
+        let curr = Array.from(images).findIndex(img => img.classList.contains('active'));
+        if (curr < 0) curr = 0;
+        let next = curr + 1;
+        if (next >= images.length) next = 0;
+        images.forEach((img, idx) => img.classList.toggle('active', idx === next));
+        dots.forEach((dot, idx) => dot.classList.toggle('active', idx === next));
+        return;
+      }
+
+      // Indicator dots
+      const dot = e.target.closest ? e.target.closest('.carousel-dot') : null;
+      if (dot) {
+        e.preventDefault();
+        e.stopPropagation();
+        const carousel = dot.closest('.project-carousel');
+        if (!carousel) return;
+        const images = carousel.querySelectorAll('.carousel-img');
+        const dots = carousel.querySelectorAll('.carousel-dot');
+        if (!images.length) return;
+        let targetIndex = parseInt(dot.getAttribute('data-slide'), 10);
+        if (isNaN(targetIndex)) {
+          targetIndex = Array.from(dots).indexOf(dot);
+        }
+        if (targetIndex >= 0 && targetIndex < images.length) {
+          images.forEach((img, idx) => img.classList.toggle('active', idx === targetIndex));
+          dots.forEach((d, idx) => d.classList.toggle('active', idx === targetIndex));
+        }
+        return;
+      }
     });
   }
 
@@ -684,6 +716,8 @@
     if (closeBtn) closeBtn.focus();
   }
 
+  let _lightboxDelegationAttached = false;
+
   function initLightbox() {
     const modal = document.getElementById('lightboxModal');
     const modalImg = document.getElementById('lightboxImage');
@@ -692,13 +726,14 @@
 
     if (!modal) return;
 
-    const clickableElements = document.querySelectorAll('.project-card img, .carousel-img, a.cert-link, .btn-cert-preview');
+    if (_lightboxDelegationAttached) return;
+    _lightboxDelegationAttached = true;
 
     const handleTrigger = (e, el) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const card = el.closest ? el.closest('.cert-card') : (el.parentNode || null);
+      const card = el.closest ? (el.closest('.cert-card') || el.closest('.publication-card')) : (el.parentNode || null);
       const src = el.tagName === 'A' 
         ? el.getAttribute('href') 
         : (el.dataset.certSrc !== undefined 
@@ -711,16 +746,21 @@
       openLightbox(src, alt, type, el);
     };
 
-    clickableElements.forEach(el => {
-      el.addEventListener('click', (e) => {
-        handleTrigger(e, el);
-      });
+    // Global document-level click delegation for project carousels, cards, certificates, and publications
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest ? e.target.closest('.project-card img, .carousel-img, a.cert-link, .btn-cert-preview, .btn-pub-preview') : null;
+      if (trigger) {
+        handleTrigger(e, trigger);
+      }
+    });
 
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleTrigger(e, el);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        const trigger = e.target.closest ? e.target.closest('.project-card img, .carousel-img, a.cert-link, .btn-cert-preview, .btn-pub-preview') : null;
+        if (trigger && (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.getAttribute('role') === 'button' || e.target.tabIndex >= 0)) {
+          handleTrigger(e, trigger);
         }
-      });
+      }
     });
 
     const closeModal = () => {
@@ -2817,6 +2857,11 @@ STRICT GUARDRAIL & RESTRICTION RULES:
     `;
     document.body.appendChild(container);
   }
+
+  // Expose hooks for dynamic CMS and interactive preview synchronization
+  window.__initProjectCarousels = initProjectCarousels;
+  window.__initLightbox = initLightbox;
+  window.__openLightbox = openLightbox;
 
   initPortfolio();
 })();

@@ -1481,6 +1481,18 @@
               <div class="form-group"><label>Projects Count Metric</label><input type="text" id="heroStatProjects" class="cms-input" /></div>
               <div class="form-group"><label>Achievements Count Metric</label><input type="text" id="heroStatAchievements" class="cms-input" /></div>
             </div>
+
+            <div class="section-heading" style="margin: 24px 0 16px;"><h3>Hero Action Buttons (Cyber Portfolio, Resume, Contact)</h3></div>
+            <div id="heroButtonsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addHeroActionBtn"><i class="fa-solid fa-plus"></i> Add Hero Action Button</button>
+
+            <div class="section-heading" style="margin: 24px 0 16px;"><h3>Hero Social Links</h3></div>
+            <div id="heroSocialsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addHeroSocialBtn"><i class="fa-solid fa-plus"></i> Add Social Link</button>
+
+            <div class="section-heading" style="margin: 24px 0 16px;"><h3>Hero Metric Statistics Pills</h3></div>
+            <div id="heroStatsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addHeroStatBtn"><i class="fa-solid fa-plus"></i> Add Metric Pill</button>
           </div>
 
           <!-- About -->
@@ -1493,6 +1505,10 @@
               <div class="form-group"><label>Internship Summary</label><input type="text" id="aboutInternshipDesc" class="cms-input" /></div>
               <div class="form-group"><label>Internship Certificate URL</label><input type="text" id="aboutInternshipCertUrl" class="cms-input" /></div>
             </div>
+
+            <div class="section-heading" style="margin: 24px 0 16px;"><h3>Custom About &amp; Highlight Cards</h3></div>
+            <div id="aboutCardsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addAboutCardBtn"><i class="fa-solid fa-plus"></i> Add About Highlight Card</button>
           </div>
 
           <!-- Skills -->
@@ -1529,13 +1545,17 @@
 
           <!-- Contact -->
           <div class="cms-tab-content hidden" id="cmsTab_contact">
-            <div class="section-heading" style="margin-bottom: 16px;"><h3>Contact Channels</h3></div>
+            <div class="section-heading" style="margin-bottom: 16px;"><h3>Contact Channels &amp; Profiles</h3></div>
             <div class="cms-form-grid">
               <div class="form-group"><label>Primary Email</label><input type="email" id="contactEmailInput" class="cms-input" /></div>
               <div class="form-group"><label>Phone Number</label><input type="text" id="contactPhoneInput" class="cms-input" /></div>
               <div class="form-group"><label>LinkedIn URL</label><input type="url" id="contactLinkedinInput" class="cms-input" /></div>
               <div class="form-group"><label>GitHub URL</label><input type="url" id="contactGithubInput" class="cms-input" /></div>
             </div>
+
+            <div class="section-heading" style="margin: 24px 0 16px;"><h3>Direct Communication Channels &amp; Links</h3></div>
+            <div id="contactChannelsListContainer"></div>
+            <button type="button" class="cms-add-btn" id="addContactChannelBtn"><i class="fa-solid fa-plus"></i> Add Contact Channel / Direct Link</button>
           </div>
 
           <!-- Footer -->
@@ -3141,13 +3161,36 @@ Timestamp:       ${new Date().toISOString()}
         profileTitle: "Information Technology Student",
         profileBio: "Passionate about creating polished interfaces, dependable tools, and projects that demonstrate technical depth.",
         stats: { cgpa: "7.08", projects: "3", achievements: "4" },
-        socials: { github: "https://github.com/kabilanm1409/", linkedin: "https://www.linkedin.com/in/kabilan-m-790801330/", email: "mkabilan1409@gmail.com" }
+        socials: { github: "https://github.com/kabilanm1409/", linkedin: "https://www.linkedin.com/in/kabilan-m-790801330/", email: "mkabilan1409@gmail.com" },
+        actionButtons: [
+          { text: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved", style: "primary", target: "_blank" },
+          { text: "Download PDF", url: "assets/resume/kabilanm_resume_c2c.pdf?v=4.0", icon: "fa-solid fa-file-arrow-down", style: "secondary", download: true },
+          { text: "View PDF", url: "assets/resume/kabilanm_resume_c2c.pdf?v=4.0", icon: "fa-solid fa-eye", style: "secondary", target: "_blank" },
+          { text: "Contact Me", url: "#contact", icon: "fa-solid fa-paper-plane", style: "secondary", target: "_self" }
+        ],
+        socialLinks: [
+          { platform: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved" },
+          { platform: "GitHub", url: "https://github.com/kabilanm1409/", icon: "fa-brands fa-github" },
+          { platform: "LinkedIn", url: "https://www.linkedin.com/in/kabilan-m-790801330/", icon: "fa-brands fa-linkedin-in" },
+          { platform: "Email", url: "mailto:mkabilan1409@gmail.com", icon: "fa-solid fa-envelope" }
+        ],
+        statsList: [
+          { value: "7.08", label: "CGPA", suffix: "" },
+          { value: "3", label: "Projects", suffix: "+" },
+          { value: "4", label: "Achievements", suffix: "+" }
+        ]
       },
       about: {
         whoIAm: "A motivated IT student who enjoys software development, clean UI design, and security-focused problem solving.",
         careerObjective: "Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.",
         workStyle: "Organized, curious, and focused on clarity, practical outcomes, and continuous improvement.",
-        internship: { desc: "Full Stack Trainee at e-soft IT Solutions (June 2025).", certUrl: "assets/cerificates/internship/IMG_20260701_185232887.jpg" }
+        internship: { desc: "Full Stack Trainee at e-soft IT Solutions (June 2025).", certUrl: "assets/cerificates/internship/IMG_20260701_185232887.jpg" },
+        cards: [
+          { title: "Who I Am", desc: "A motivated IT student who enjoys software development, clean UI design, and security-focused problem solving.", icon: "fa-solid fa-user", certUrl: "" },
+          { title: "Career Objective", desc: "Transitioned from Mechanical Engineering to IT with a passion for software development, networking, and security, aiming to build innovative solutions.", icon: "fa-solid fa-bullseye", certUrl: "" },
+          { title: "Work Style", desc: "Organized, curious, and focused on clarity, practical outcomes, and continuous improvement.", icon: "fa-solid fa-laptop-code", certUrl: "" },
+          { title: "Internship & Practical Experience", desc: "Full Stack Trainee at e-soft IT Solutions (June 2025).", icon: "fa-solid fa-briefcase", certUrl: "assets/cerificates/internship/IMG_20260701_185232887.jpg" }
+        ]
       },
       skills: [
         { category: "Programming & Web", tags: [{ name: "Java", icon: "fa-brands fa-java" }, { name: "HTML", icon: "fa-brands fa-html5" }, { name: "CSS", icon: "fa-brands fa-css3-alt" }, { name: "Bootstrap", icon: "" }] },
@@ -3174,8 +3217,224 @@ Timestamp:       ${new Date().toISOString()}
         { tag: "2026 Paper", title: "Detecting Deauthentication Attacks in Wireless Networks", description: "Published academic research paper analyzing deauthentication attack vectors, packet capture logs, and real-time mitigation rulesets.", pdfUrl: "assets/publications/69d600f9a94a4P10-issue 1-2026 Detecting Deauthentication.pdf" },
         { tag: "Research Model", title: "Wireless Detection Model & Analysis", description: "Detailed technical documentation introducing frame sniffing signatures and building responsive alerting systems for open Wi-Fi infrastructures.", pdfUrl: "assets/publications/wireless detect model.pdf" }
       ],
-      contact: { email: "mkabilan1409@gmail.com", phone: "+91 76049 59955", linkedin: "https://www.linkedin.com/in/kabilan-m-790801330/", github: "https://github.com/kabilanm1409/" }
+      contact: {
+        email: "mkabilan1409@gmail.com",
+        phone: "+91 76049 59955",
+        linkedin: "https://www.linkedin.com/in/kabilan-m-790801330/",
+        github: "https://github.com/kabilanm1409/",
+        channels: [
+          { name: "Primary Email", url: "mailto:mkabilan1409@gmail.com", icon: "fa-solid fa-envelope" },
+          { name: "Phone Number", url: "tel:+917604959955", icon: "fa-solid fa-phone" },
+          { name: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved" },
+          { name: "LinkedIn Profile", url: "https://www.linkedin.com/in/kabilan-m-790801330/", icon: "fa-brands fa-linkedin" },
+          { name: "GitHub Profile", url: "https://github.com/kabilanm1409/", icon: "fa-brands fa-github" }
+        ]
+      }
     };
+
+    // ── Hero Action Buttons Manager ──
+    function renderHeroButtonsUI(buttonsData) {
+      const container = document.getElementById('heroButtonsListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      (buttonsData || []).forEach((btn, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Button #${idx + 1}: ${escapeHtml(btn.text || 'Action')}</h4><button type="button" class="cms-delete-btn" data-del-herobtn="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid">
+            <div class="form-group"><label>Button Text</label><input type="text" class="cms-input herobtn-text" value="${escapeHtml(btn.text || '')}" /></div>
+            <div class="form-group"><label>Target URL / Link</label><input type="text" class="cms-input herobtn-url" value="${escapeHtml(btn.url || '')}" /></div>
+          </div>
+          <div class="cms-form-grid">
+            <div class="form-group"><label>FontAwesome Icon Class (e.g. fa-solid fa-shield-halved)</label><input type="text" class="cms-input herobtn-icon" value="${escapeHtml(btn.icon || '')}" /></div>
+            <div class="form-group"><label>Style Theme</label><select class="cms-input herobtn-style"><option value="primary"${btn.style === 'primary' ? ' selected' : ''}>Primary (Glowing)</option><option value="secondary"${btn.style !== 'primary' ? ' selected' : ''}>Secondary (Glass)</option></select></div>
+          </div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-herobtn]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!portfolioData.hero) portfolioData.hero = JSON.parse(JSON.stringify(baselineData.hero));
+          if (!Array.isArray(portfolioData.hero.actionButtons)) portfolioData.hero.actionButtons = JSON.parse(JSON.stringify(baselineData.hero.actionButtons));
+          portfolioData.hero.actionButtons.splice(parseInt(btn.dataset.delHerobtn, 10), 1);
+          renderHeroButtonsUI(portfolioData.hero.actionButtons);
+        });
+      });
+    }
+
+    const addHeroActionBtnEl = document.getElementById('addHeroActionBtn');
+    if (addHeroActionBtnEl) {
+      addHeroActionBtnEl.addEventListener('click', () => {
+        if (!portfolioData.hero) portfolioData.hero = JSON.parse(JSON.stringify(baselineData.hero));
+        if (!Array.isArray(portfolioData.hero.actionButtons)) {
+          portfolioData.hero.actionButtons = JSON.parse(JSON.stringify(baselineData.hero.actionButtons));
+        }
+        portfolioData.hero.actionButtons.push({ text: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved", style: "primary", target: "_blank" });
+        renderHeroButtonsUI(portfolioData.hero.actionButtons);
+      });
+    }
+
+    // ── Hero Social Links Manager ──
+    function renderHeroSocialsUI(socialsData) {
+      const container = document.getElementById('heroSocialsListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      (socialsData || []).forEach((soc, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Social Link #${idx + 1}: ${escapeHtml(soc.platform || 'Platform')}</h4><button type="button" class="cms-delete-btn" data-del-herosoc="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid">
+            <div class="form-group"><label>Platform Name</label><input type="text" class="cms-input herosoc-platform" value="${escapeHtml(soc.platform || '')}" /></div>
+            <div class="form-group"><label>Profile URL / mailto</label><input type="text" class="cms-input herosoc-url" value="${escapeHtml(soc.url || '')}" /></div>
+          </div>
+          <div class="form-group"><label>Icon Class (e.g. fa-solid fa-shield-halved, fa-brands fa-github)</label><input type="text" class="cms-input herosoc-icon" value="${escapeHtml(soc.icon || '')}" /></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-herosoc]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!portfolioData.hero) portfolioData.hero = JSON.parse(JSON.stringify(baselineData.hero));
+          if (!Array.isArray(portfolioData.hero.socialLinks)) portfolioData.hero.socialLinks = JSON.parse(JSON.stringify(baselineData.hero.socialLinks));
+          portfolioData.hero.socialLinks.splice(parseInt(btn.dataset.delHerosoc, 10), 1);
+          renderHeroSocialsUI(portfolioData.hero.socialLinks);
+        });
+      });
+    }
+
+    const addHeroSocialBtnEl = document.getElementById('addHeroSocialBtn');
+    if (addHeroSocialBtnEl) {
+      addHeroSocialBtnEl.addEventListener('click', () => {
+        if (!portfolioData.hero) portfolioData.hero = JSON.parse(JSON.stringify(baselineData.hero));
+        if (!Array.isArray(portfolioData.hero.socialLinks)) {
+          portfolioData.hero.socialLinks = JSON.parse(JSON.stringify(baselineData.hero.socialLinks));
+        }
+        portfolioData.hero.socialLinks.push({ platform: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved" });
+        renderHeroSocialsUI(portfolioData.hero.socialLinks);
+      });
+    }
+
+    // ── Hero Metric Stats Manager ──
+    function renderHeroStatsUI(statsData) {
+      const container = document.getElementById('heroStatsListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      (statsData || []).forEach((st, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Metric #${idx + 1}: ${escapeHtml(st.label || 'Metric')}</h4><button type="button" class="cms-delete-btn" data-del-herostat="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid">
+            <div class="form-group"><label>Value (e.g. 7.08, 3)</label><input type="text" class="cms-input herostat-val" value="${escapeHtml(st.value || '')}" /></div>
+            <div class="form-group"><label>Label (e.g. CGPA, Projects)</label><input type="text" class="cms-input herostat-lbl" value="${escapeHtml(st.label || '')}" /></div>
+          </div>
+          <div class="form-group"><label>Suffix (e.g. +, %)</label><input type="text" class="cms-input herostat-suf" value="${escapeHtml(st.suffix || '')}" /></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-herostat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!portfolioData.hero) portfolioData.hero = JSON.parse(JSON.stringify(baselineData.hero));
+          if (!Array.isArray(portfolioData.hero.statsList)) portfolioData.hero.statsList = JSON.parse(JSON.stringify(baselineData.hero.statsList));
+          portfolioData.hero.statsList.splice(parseInt(btn.dataset.delHerostat, 10), 1);
+          renderHeroStatsUI(portfolioData.hero.statsList);
+        });
+      });
+    }
+
+    const addHeroStatBtnEl = document.getElementById('addHeroStatBtn');
+    if (addHeroStatBtnEl) {
+      addHeroStatBtnEl.addEventListener('click', () => {
+        if (!portfolioData.hero) portfolioData.hero = JSON.parse(JSON.stringify(baselineData.hero));
+        if (!Array.isArray(portfolioData.hero.statsList)) {
+          portfolioData.hero.statsList = JSON.parse(JSON.stringify(baselineData.hero.statsList));
+        }
+        portfolioData.hero.statsList.push({ value: "10", label: "Certifications", suffix: "+" });
+        renderHeroStatsUI(portfolioData.hero.statsList);
+      });
+    }
+
+    // ── About Highlight Cards Manager ──
+    function renderAboutCardsUI(cardsData) {
+      const container = document.getElementById('aboutCardsListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      (cardsData || []).forEach((c, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>About Card #${idx + 1}: ${escapeHtml(c.title || 'Card')}</h4><button type="button" class="cms-delete-btn" data-del-aboutcard="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid">
+            <div class="form-group"><label>Card Title</label><input type="text" class="cms-input aboutcard-title" value="${escapeHtml(c.title || '')}" /></div>
+            <div class="form-group"><label>FontAwesome Icon Class (e.g. fa-solid fa-user)</label><input type="text" class="cms-input aboutcard-icon" value="${escapeHtml(c.icon || '')}" /></div>
+          </div>
+          <div class="form-group" style="margin-bottom: 12px;"><label>Description</label><textarea class="cms-textarea aboutcard-desc">${escapeHtml(c.desc || '')}</textarea></div>
+          <div class="form-group"><label>Certificate URL (Optional)</label><input type="text" class="cms-input aboutcard-cert" value="${escapeHtml(c.certUrl || '')}" /></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-aboutcard]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!portfolioData.about) portfolioData.about = JSON.parse(JSON.stringify(baselineData.about));
+          if (!Array.isArray(portfolioData.about.cards)) portfolioData.about.cards = JSON.parse(JSON.stringify(baselineData.about.cards));
+          portfolioData.about.cards.splice(parseInt(btn.dataset.delAboutcard, 10), 1);
+          renderAboutCardsUI(portfolioData.about.cards);
+        });
+      });
+    }
+
+    const addAboutCardBtnEl = document.getElementById('addAboutCardBtn');
+    if (addAboutCardBtnEl) {
+      addAboutCardBtnEl.addEventListener('click', () => {
+        if (!portfolioData.about) portfolioData.about = JSON.parse(JSON.stringify(baselineData.about));
+        if (!Array.isArray(portfolioData.about.cards)) {
+          portfolioData.about.cards = JSON.parse(JSON.stringify(baselineData.about.cards));
+        }
+        portfolioData.about.cards.push({ title: "Cybersecurity Focus", desc: "Hands-on experience in wireless frame sniffing, network traffic analysis, and hardware defense modules.", icon: "fa-solid fa-shield-halved", certUrl: "" });
+        renderAboutCardsUI(portfolioData.about.cards);
+      });
+    }
+
+    // ── Contact Channels Manager ──
+    function renderContactChannelsUI(channelsData) {
+      const container = document.getElementById('contactChannelsListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      (channelsData || []).forEach((ch, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cms-card-item';
+        itemDiv.innerHTML = `
+          <div class="cms-card-header"><h4>Channel #${idx + 1}: ${escapeHtml(ch.name || 'Channel')}</h4><button type="button" class="cms-delete-btn" data-del-contactch="${idx}"><i class="fa-solid fa-trash"></i> Remove</button></div>
+          <div class="cms-form-grid">
+            <div class="form-group"><label>Channel Name</label><input type="text" class="cms-input contactch-name" value="${escapeHtml(ch.name || '')}" /></div>
+            <div class="form-group"><label>Target URL / Link (mailto:, tel:, https://)</label><input type="text" class="cms-input contactch-url" value="${escapeHtml(ch.url || '')}" /></div>
+          </div>
+          <div class="form-group"><label>Icon Class (e.g. fa-solid fa-shield-halved, fa-solid fa-envelope, fa-brands fa-whatsapp)</label><input type="text" class="cms-input contactch-icon" value="${escapeHtml(ch.icon || '')}" /></div>
+        `;
+        container.appendChild(itemDiv);
+      });
+      container.querySelectorAll('[data-del-contactch]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!portfolioData.contact) portfolioData.contact = JSON.parse(JSON.stringify(baselineData.contact));
+          if (!Array.isArray(portfolioData.contact.channels)) portfolioData.contact.channels = JSON.parse(JSON.stringify(baselineData.contact.channels));
+          portfolioData.contact.channels.splice(parseInt(btn.dataset.delContactch, 10), 1);
+          renderContactChannelsUI(portfolioData.contact.channels);
+        });
+      });
+    }
+
+    const addContactChannelBtnEl = document.getElementById('addContactChannelBtn');
+    if (addContactChannelBtnEl) {
+      addContactChannelBtnEl.addEventListener('click', () => {
+        if (!portfolioData.contact) portfolioData.contact = JSON.parse(JSON.stringify(baselineData.contact));
+        if (!Array.isArray(portfolioData.contact.channels)) {
+          portfolioData.contact.channels = JSON.parse(JSON.stringify(baselineData.contact.channels));
+        }
+        portfolioData.contact.channels.push({ name: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved" });
+        renderContactChannelsUI(portfolioData.contact.channels);
+      });
+    }
 
     function renderSkillsUI(skillsData) {
       const container = document.getElementById('skillsListContainer');
@@ -3369,15 +3628,43 @@ Timestamp:       ${new Date().toISOString()}
       document.getElementById('contactLinkedinInput').value = contact.linkedin || '';
       document.getElementById('contactGithubInput').value = contact.github || '';
 
+      renderHeroButtonsUI(portfolioData.hero?.actionButtons || baselineData.hero.actionButtons);
+      renderHeroSocialsUI(portfolioData.hero?.socialLinks || baselineData.hero.socialLinks);
+      renderHeroStatsUI(portfolioData.hero?.statsList || baselineData.hero.statsList);
+      renderAboutCardsUI(portfolioData.about?.cards || baselineData.about.cards);
       renderSkillsUI(portfolioData.skills || baselineData.skills);
       renderProjectsUI(portfolioData.projects || baselineData.projects);
       renderEducationUI(portfolioData.education || baselineData.education);
       renderAchievementsUI(portfolioData.achievements || baselineData.achievements, portfolioData.publications || baselineData.publications);
+      renderContactChannelsUI(portfolioData.contact?.channels || baselineData.contact.channels);
     }
 
     saveCmsBtn.addEventListener('click', async () => {
       saveCmsBtn.disabled = true;
       saveCmsBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+      const heroBtnItems = document.querySelectorAll('#heroButtonsListContainer .cms-card-item');
+      const actionButtons = Array.from(heroBtnItems).map(item => ({
+        text: item.querySelector('.herobtn-text').value.trim(),
+        url: item.querySelector('.herobtn-url').value.trim(),
+        icon: item.querySelector('.herobtn-icon').value.trim(),
+        style: item.querySelector('.herobtn-style').value,
+        target: item.querySelector('.herobtn-url').value.trim().startsWith('http') ? '_blank' : '_self'
+      }));
+
+      const heroSocItems = document.querySelectorAll('#heroSocialsListContainer .cms-card-item');
+      const socialLinks = Array.from(heroSocItems).map(item => ({
+        platform: item.querySelector('.herosoc-platform').value.trim(),
+        url: item.querySelector('.herosoc-url').value.trim(),
+        icon: item.querySelector('.herosoc-icon').value.trim()
+      }));
+
+      const heroStatItems = document.querySelectorAll('#heroStatsListContainer .cms-card-item');
+      const statsList = Array.from(heroStatItems).map(item => ({
+        value: item.querySelector('.herostat-val').value.trim(),
+        label: item.querySelector('.herostat-lbl').value.trim(),
+        suffix: item.querySelector('.herostat-suf').value.trim()
+      }));
 
       portfolioData.hero = {
         eyebrow: document.getElementById('heroEyebrow').value.trim(),
@@ -3387,14 +3674,26 @@ Timestamp:       ${new Date().toISOString()}
         profileTitle: document.getElementById('heroProfileTitle').value.trim(),
         profileBio: document.getElementById('heroProfileBio').value.trim(),
         stats: { cgpa: document.getElementById('heroStatCgpa').value.trim(), projects: document.getElementById('heroStatProjects').value.trim(), achievements: document.getElementById('heroStatAchievements').value.trim() },
-        socials: { github: document.getElementById('contactGithubInput').value.trim(), linkedin: document.getElementById('contactLinkedinInput').value.trim(), email: document.getElementById('contactEmailInput').value.trim() }
+        socials: { github: document.getElementById('contactGithubInput').value.trim(), linkedin: document.getElementById('contactLinkedinInput').value.trim(), email: document.getElementById('contactEmailInput').value.trim() },
+        actionButtons: actionButtons.length ? actionButtons : baselineData.hero.actionButtons,
+        socialLinks: socialLinks.length ? socialLinks : baselineData.hero.socialLinks,
+        statsList: statsList.length ? statsList : baselineData.hero.statsList
       };
+
+      const aboutCardItems = document.querySelectorAll('#aboutCardsListContainer .cms-card-item');
+      const aboutCards = Array.from(aboutCardItems).map(item => ({
+        title: item.querySelector('.aboutcard-title').value.trim(),
+        desc: item.querySelector('.aboutcard-desc').value.trim(),
+        icon: item.querySelector('.aboutcard-icon').value.trim(),
+        certUrl: item.querySelector('.aboutcard-cert').value.trim()
+      }));
 
       portfolioData.about = {
         whoIAm: document.getElementById('aboutWhoIAm').value.trim(),
         careerObjective: document.getElementById('aboutCareerObjective').value.trim(),
         workStyle: document.getElementById('aboutWorkStyle').value.trim(),
-        internship: { desc: document.getElementById('aboutInternshipDesc').value.trim(), certUrl: document.getElementById('aboutInternshipCertUrl').value.trim() }
+        internship: { desc: document.getElementById('aboutInternshipDesc').value.trim(), certUrl: document.getElementById('aboutInternshipCertUrl').value.trim() },
+        cards: aboutCards.length ? aboutCards : baselineData.about.cards
       };
 
       const skillItems = document.querySelectorAll('#skillsListContainer .cms-card-item');
@@ -3439,11 +3738,19 @@ Timestamp:       ${new Date().toISOString()}
         pdfUrl: item.querySelector('.pub-pdf').value.trim()
       }));
 
+      const contactChItems = document.querySelectorAll('#contactChannelsListContainer .cms-card-item');
+      const contactChannels = Array.from(contactChItems).map(item => ({
+        name: item.querySelector('.contactch-name').value.trim(),
+        url: item.querySelector('.contactch-url').value.trim(),
+        icon: item.querySelector('.contactch-icon').value.trim()
+      }));
+
       portfolioData.contact = {
         email: document.getElementById('contactEmailInput').value.trim(),
         phone: document.getElementById('contactPhoneInput').value.trim(),
         linkedin: document.getElementById('contactLinkedinInput').value.trim(),
-        github: document.getElementById('contactGithubInput').value.trim()
+        github: document.getElementById('contactGithubInput').value.trim(),
+        channels: contactChannels.length ? contactChannels : baselineData.contact.channels
       };
 
       try {

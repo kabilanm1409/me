@@ -135,8 +135,37 @@ import {
     };
   }
 
+  // ── Helper: Cookie Consent Status ──
+  function getCookieConsent() {
+    try {
+      return localStorage.getItem('km_cookie_consent') || 'pending';
+    } catch (e) {
+      return 'pending';
+    }
+  }
+
+  function setCookieConsent(val) {
+    try {
+      localStorage.setItem('km_cookie_consent', val);
+    } catch (e) {}
+  }
+
   // ── Helper: Geolocation & Service Provider (ISP) Resolver ──
   async function resolveGeoAndISP() {
+    // Check if user has explicitly declined cookie / analytics telemetry
+    if (getCookieConsent() === 'declined') {
+      return {
+        country: 'Opted Out',
+        countryCode: '',
+        region: 'Private',
+        city: 'Private',
+        isp: 'Private',
+        flag: '🛡️',
+        ip: '',
+        ipHash: ''
+      };
+    }
+
     const cached = sessionStorage.getItem('km_visitor_geo');
     if (cached) {
       try {
@@ -259,7 +288,48 @@ import {
     const connectedRef = ref(db, ".info/connected");
 
     const device = getDeviceInfo();
-    const geoInfo = await resolveGeoAndISP();
+    let geoInfo = await resolveGeoAndISP();
+
+    // ── Cookie Consent UI Controller ──
+    function initCookieConsent(onConsentChange) {
+      if (typeof document === 'undefined') return;
+      const banner = document.getElementById('cookieConsentBanner');
+      if (!banner) return;
+
+      const consent = getCookieConsent();
+      if (consent === 'pending') {
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+      }
+
+      const acceptBtn = document.getElementById('cookieAcceptBtn');
+      const declineBtn = document.getElementById('cookieDeclineBtn');
+
+      if (acceptBtn && !acceptBtn.__km_bound) {
+        acceptBtn.__km_bound = true;
+        acceptBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          setCookieConsent('accepted');
+          banner.style.display = 'none';
+          if (typeof onConsentChange === 'function') {
+            await onConsentChange(true);
+          }
+        });
+      }
+
+      if (declineBtn && !declineBtn.__km_bound) {
+        declineBtn.__km_bound = true;
+        declineBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          setCookieConsent('declined');
+          banner.style.display = 'none';
+          if (typeof onConsentChange === 'function') {
+            await onConsentChange(false);
+          }
+        });
+      }
+    }
 
     // Session integrity hash (SHA-256)
     let sessionHash = '';
@@ -365,6 +435,27 @@ import {
           })
           .catch(() => {});
       }
+    });
+
+    // Bind cookie consent listener to dynamically handle live user permission updates
+    initCookieConsent(async (accepted) => {
+      if (accepted) {
+        sessionStorage.removeItem('km_visitor_geo');
+        geoInfo = await resolveGeoAndISP();
+      } else {
+        sessionStorage.removeItem('km_visitor_geo');
+        geoInfo = {
+          country: 'Opted Out',
+          countryCode: '',
+          region: 'Private',
+          city: 'Private',
+          isp: 'Private',
+          flag: '🛡️',
+          ip: '',
+          ipHash: ''
+        };
+      }
+      syncToDatabase(false);
     });
 
     // Handle Page / Section Navigation

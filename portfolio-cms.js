@@ -29,18 +29,48 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
       if (hero.subtitle) setText(heroCopy.querySelector('.hero-subtitle'), hero.subtitle);
     }
 
-    if (hero.resumeUrl) {
+    // Dynamic Action Buttons (e.g. Cyber Portfolio, Resume, Contact)
+    const heroActionsEl = document.querySelector('.hero-actions');
+    if (heroActionsEl && Array.isArray(hero.actionButtons) && hero.actionButtons.length > 0) {
+      heroActionsEl.innerHTML = hero.actionButtons.map(btn => {
+        const cls = btn.style === 'primary' ? 'btn btn-primary' : 'btn btn-secondary';
+        const icon = btn.icon ? `<i class="${btn.icon}"></i> ` : '';
+        const target = btn.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '';
+        const download = btn.download ? ' download' : '';
+        const targetAttr = btn.dataTarget ? ` data-target="${btn.dataTarget}"` : '';
+        const idAttr = btn.id ? ` id="${btn.id}"` : '';
+        return `<a class="${cls}" href="${btn.url || '#'}"${target}${download}${targetAttr}${idAttr}>${icon}${btn.text || 'Action'}</a>`;
+      }).join('\n');
+    } else if (hero.resumeUrl) {
       setAttr(document.getElementById('downloadResumeBtn'), 'href', hero.resumeUrl);
       setAttr(document.getElementById('viewResumeBtn'), 'href', hero.resumeUrl);
     }
 
-    if (hero.socials) {
+    // Dynamic Social Links
+    const socialLinksEl = document.querySelector('.social-links');
+    if (socialLinksEl && Array.isArray(hero.socialLinks) && hero.socialLinks.length > 0) {
+      socialLinksEl.innerHTML = hero.socialLinks.map(s => {
+        const icon = s.icon ? `<i class="${s.icon}"></i>` : '';
+        const isExternal = s.url && !s.url.startsWith('mailto:') && !s.url.startsWith('#');
+        const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return `<a href="${s.url || '#'}"${target} aria-label="${s.platform || 'Social'}" title="${s.platform || 'Social'}">${icon}</a>`;
+      }).join('\n');
+    } else if (hero.socials) {
       if (hero.socials.github) setAttr(document.getElementById('heroGithubLink'), 'href', hero.socials.github);
       if (hero.socials.linkedin) setAttr(document.getElementById('heroLinkedinLink'), 'href', hero.socials.linkedin);
       if (hero.socials.email) setAttr(document.getElementById('heroEmailLink'), 'href', `mailto:${hero.socials.email}`);
     }
 
-    if (hero.stats) {
+    // Dynamic Metric Stats Pills
+    const heroStatsEl = document.querySelector('.hero-stats');
+    if (heroStatsEl && Array.isArray(hero.statsList) && hero.statsList.length > 0) {
+      heroStatsEl.innerHTML = hero.statsList.map(st => `
+        <article class="stat-pill card" data-counter="${st.value || '0'}" data-suffix="${st.suffix || ''}">
+          <strong>${st.value || '0'}${st.suffix || ''}</strong>
+          <span>${st.label || 'Metric'}</span>
+        </article>
+      `).join('\n');
+    } else if (hero.stats) {
       const cgpaEl = document.getElementById('stat-cgpa');
       if (cgpaEl && hero.stats.cgpa) {
         cgpaEl.textContent = hero.stats.cgpa;
@@ -70,6 +100,26 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
   // ── Sync About Section ──
   function syncAbout(about) {
     if (!about) return;
+
+    // Dynamic Highlight Cards if present
+    const overviewGrid = document.querySelector('#about .overview-grid');
+    if (overviewGrid && Array.isArray(about.cards) && about.cards.length > 0) {
+      overviewGrid.innerHTML = about.cards.map(c => {
+        const icon = c.icon ? `<i class="${c.icon}" style="font-size: 1.6rem; color: var(--primary); margin-bottom: 12px; display: inline-block;"></i>` : '';
+        const certLink = c.certUrl
+          ? ` <a class="cert-link" href="${c.certUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;"><i class="fa-solid fa-image"></i> View Certificate</a>`
+          : '';
+        return `
+          <article class="overview-card card">
+            ${icon}
+            <h3>${c.title || 'Highlight'}</h3>
+            <p>${c.desc || ''}${certLink}</p>
+          </article>
+        `;
+      }).join('\n');
+      return;
+    }
+
     const cards = document.querySelectorAll('#about .overview-card');
     if (cards.length >= 4) {
       if (about.whoIAm) setText(cards[0].querySelector('p'), about.whoIAm);
@@ -234,6 +284,20 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
   // ── Sync Contact Section ──
   function syncContact(contact) {
     if (!contact) return;
+
+    // Dynamic Contact Channels if present
+    const contactInfoEl = document.querySelector('#contact .contact-info');
+    if (contactInfoEl && Array.isArray(contact.channels) && contact.channels.length > 0) {
+      const channelsHtml = contact.channels.map(ch => {
+        const icon = ch.icon ? `<i class="${ch.icon}" aria-hidden="true"></i> ` : '';
+        const isExternal = ch.url && !ch.url.startsWith('mailto:') && !ch.url.startsWith('tel:') && !ch.url.startsWith('#');
+        const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return `<a href="${ch.url || '#'}"${target}>${icon}${ch.name || ch.value || 'Contact'}</a>`;
+      }).join('\n');
+      contactInfoEl.innerHTML = `<h3>Reach Out</h3>\n${channelsHtml}`;
+      return;
+    }
+
     if (contact.email) {
       const emailEl = document.getElementById('contactEmail');
       if (emailEl) {
@@ -247,6 +311,10 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
         phoneEl.href = `tel:${contact.phone.replace(/\s+/g, '')}`;
         phoneEl.innerHTML = `<i class="fa-solid fa-phone"></i> ${contact.phone}`;
       }
+    }
+    if (contact.cyberPortfolio || contact.cyberPortfolioUrl) {
+      const cpEl = document.getElementById('contactCyberPortfolio');
+      if (cpEl) cpEl.href = contact.cyberPortfolio || contact.cyberPortfolioUrl;
     }
     if (contact.linkedin) {
       const linkEl = document.getElementById('contactLinkedin');

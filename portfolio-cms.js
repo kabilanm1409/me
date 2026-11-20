@@ -37,8 +37,14 @@ import { db, ref, onValue, firestore, doc, onSnapshot } from "./firebase-config.
         const icon = btn.icon ? `<i class="${btn.icon}"></i> ` : '';
         const target = btn.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '';
         const download = btn.download ? ' download' : '';
-        const targetAttr = btn.dataTarget ? ` data-target="${btn.dataTarget}"` : '';
-        const idAttr = btn.id ? ` id="${btn.id}"` : '';
+        let targetSection = btn.dataTarget || '';
+        if (!targetSection && btn.url && btn.url.startsWith('#') && btn.url.length > 1) {
+          targetSection = btn.url.substring(1);
+        } else if (!targetSection && /contact/i.test(btn.text || '')) {
+          targetSection = 'contact';
+        }
+        const targetAttr = targetSection ? ` data-target="${targetSection}"` : '';
+        const idAttr = btn.id ? ` id="${btn.id}"` : (targetSection === 'contact' ? ' id="contactHeroBtn"' : '');
         return `<a class="${cls}" href="${btn.url || '#'}"${target}${download}${targetAttr}${idAttr}>${icon}${btn.text || 'Action'}</a>`;
       }).join('\n');
     } else if (hero.resumeUrl) {

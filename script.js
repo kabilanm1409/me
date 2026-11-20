@@ -54,7 +54,10 @@
   }
 
   function showSection(targetId, updateHistory = true) {
-    if (targetId === currentSection) return;
+    if (targetId === currentSection) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     const navTerminal = document.getElementById('nav-terminal');
     if (navTerminal) {
@@ -63,7 +66,7 @@
 
     allSections.forEach(sec => (sec.hidden = true));
 
-    const targetNode = document.querySelector(`[data-section="${targetId}"]`);
+    const targetNode = document.querySelector(`[data-section="${targetId}"]`) || document.getElementById(targetId);
     if (!targetNode) return;
 
     targetNode.hidden = false;
@@ -92,6 +95,14 @@
       animatedSections.add('home-counted');
       setTimeout(() => animateCounters(), 200);
     }
+    if (targetId === 'contact') {
+      setTimeout(() => {
+        const firstField = document.getElementById('contactName') || document.querySelector('#contact input, #contact textarea');
+        if (firstField) {
+          firstField.focus({ preventScroll: true });
+        }
+      }, 150);
+    }
 
     if (updateHistory) {
       try {
@@ -103,19 +114,36 @@
 
   function initSectionNav() {
     document.addEventListener('click', (e) => {
-      const link = e.target.closest('[data-target]');
+      const link = e.target.closest('[data-target], a[href^="#"], a[href*="#"]');
       if (!link) return;
 
-      const target = link.dataset.target;
+      let target = link.dataset.target;
+      if (!target) {
+        const href = link.getAttribute('href') || '';
+        const hashIdx = href.indexOf('#');
+        if (hashIdx !== -1 && href.length > hashIdx + 1) {
+          target = href.substring(hashIdx + 1);
+        }
+      }
       if (!target) return;
 
-      e.preventDefault();
-      showSection(target);
+      const targetSection = document.querySelector(`[data-section="${target}"]`) || document.getElementById(target);
+      if (targetSection) {
+        e.preventDefault();
+        showSection(target);
 
-      if (siteNav && navToggle) {
-        siteNav.classList.remove('open');
-        navToggle.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
+        if (siteNav && navToggle) {
+          siteNav.classList.remove('open');
+          navToggle.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && (document.querySelector(`[data-section="${hash}"]`) || document.getElementById(hash))) {
+        showSection(hash, false);
       }
     });
 
@@ -125,7 +153,7 @@
     });
 
     const hash = window.location.hash.replace('#', '');
-    if (hash && document.querySelector(`[data-section="${hash}"]`)) {
+    if (hash && (document.querySelector(`[data-section="${hash}"]`) || document.getElementById(hash))) {
       showSection(hash, false);
       return;
     }
@@ -2862,6 +2890,7 @@ STRICT GUARDRAIL & RESTRICTION RULES:
   window.__initProjectCarousels = initProjectCarousels;
   window.__initLightbox = initLightbox;
   window.__openLightbox = openLightbox;
+  window.__showSection = showSection;
 
   initPortfolio();
 })();

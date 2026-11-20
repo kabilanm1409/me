@@ -3166,7 +3166,7 @@ Timestamp:       ${new Date().toISOString()}
           { text: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved", style: "primary", target: "_blank" },
           { text: "Download PDF", url: "assets/resume/kabilanm_resume_c2c.pdf?v=4.0", icon: "fa-solid fa-file-arrow-down", style: "secondary", download: true },
           { text: "View PDF", url: "assets/resume/kabilanm_resume_c2c.pdf?v=4.0", icon: "fa-solid fa-eye", style: "secondary", target: "_blank" },
-          { text: "Contact Me", url: "#contact", icon: "fa-solid fa-paper-plane", style: "secondary", target: "_self" }
+          { text: "Contact Me", url: "#contact", dataTarget: "contact", icon: "fa-solid fa-paper-plane", style: "secondary", target: "_self" }
         ],
         socialLinks: [
           { platform: "Cyber Portfolio", url: "https://kabilanmcyberportfolio.web.app", icon: "fa-solid fa-shield-halved" },
@@ -3644,13 +3644,17 @@ Timestamp:       ${new Date().toISOString()}
       saveCmsBtn.innerHTML = '<span class="spinner"></span> Saving...';
 
       const heroBtnItems = document.querySelectorAll('#heroButtonsListContainer .cms-card-item');
-      const actionButtons = Array.from(heroBtnItems).map(item => ({
-        text: item.querySelector('.herobtn-text').value.trim(),
-        url: item.querySelector('.herobtn-url').value.trim(),
-        icon: item.querySelector('.herobtn-icon').value.trim(),
-        style: item.querySelector('.herobtn-style').value,
-        target: item.querySelector('.herobtn-url').value.trim().startsWith('http') ? '_blank' : '_self'
-      }));
+      const actionButtons = Array.from(heroBtnItems).map(item => {
+        const url = item.querySelector('.herobtn-url').value.trim();
+        return {
+          text: item.querySelector('.herobtn-text').value.trim(),
+          url: url,
+          icon: item.querySelector('.herobtn-icon').value.trim(),
+          style: item.querySelector('.herobtn-style').value,
+          target: url.startsWith('http') ? '_blank' : '_self',
+          dataTarget: url.startsWith('#') ? url.substring(1) : ''
+        };
+      });
 
       const heroSocItems = document.querySelectorAll('#heroSocialsListContainer .cms-card-item');
       const socialLinks = Array.from(heroSocItems).map(item => ({

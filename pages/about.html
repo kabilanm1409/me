@@ -13,12 +13,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-  <link rel="stylesheet" href="../style.css?v=2.1.0" />
+  <link rel="stylesheet" href="../style.css?v=2.2.0" />
+  <script>
+    if (window.location.pathname.includes('/pages/about') || window.location.pathname.includes('about.html')) {
+      window.location.replace('../#about');
+    }
+  </script>
+  <meta http-equiv="refresh" content="0; url=../#about" />
   <script defer src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script defer src="../script.js?v=2.1.0"></script>
-  <script type="module" src="../tracker.js"></script>
-  <script type="module" src="../portfolio-cms.js"></script>
+  <script defer src="../script.js?v=2.2.0"></script>
+  <script type="module" src="../tracker.js?v=2.2.0"></script>
+  <script type="module" src="../portfolio-cms.js?v=2.2.0"></script>
 </head>
 <body>
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
@@ -75,9 +81,10 @@
           <p>Hi, I'm <strong>Kabilan M</strong>, a B.Tech Information Technology student passionate about software development, web technologies, networking, and cybersecurity. I enjoy building real-world projects and continuously improving my technical skills.</p>
           <p>My goal is to contribute to a team where I can solve practical problems, learn from experienced professionals, and build software that is clean, dependable, and useful.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="../assets/resume/kabilanm_resume_c2c.pdf?v=4.0" download><i class="fa-solid fa-file-arrow-down"></i> Download PDF</a>
+            <a class="btn btn-primary" href="https://kabilanmcyberportfolio.web.app" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-shield-halved"></i> Cyber Portfolio</a>
+            <a class="btn btn-secondary" href="../assets/resume/kabilanm_resume_c2c.pdf?v=4.0" download><i class="fa-solid fa-file-arrow-down"></i> Download PDF</a>
             <a class="btn btn-secondary" href="../assets/resume/kabilanm_resume_c2c.pdf?v=4.0" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-eye"></i> View PDF</a>
-            <a class="btn btn-secondary" href="contact.html"><i class="fa-solid fa-paper-plane"></i> Contact Me</a>
+            <a class="btn btn-secondary" href="../index.html#contact"><i class="fa-solid fa-paper-plane"></i> Contact Me</a>
           </div>
         </article>
       </div>
@@ -179,7 +186,7 @@
             <p class="timeline-year">2024 - 2027</p>
             <h3>B.Tech Information Technology</h3>
             <p class="timeline-institution">Kongunadu College of Engineering and Technology, Thottiyam, Trichy</p>
-            <p>CGPA: 7.08 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.</p>
+            <p>CGPA: 7.16 up to 6th sem. Passionate about software development, emerging web technologies, network security, and AI-based applications.</p>
           </div>
         </article>
         <article class="timeline-item card">

@@ -9,6 +9,14 @@
     "site": "kabilanportfolio-ab851",
     "public": ".",
     "cleanUrls": true,
+    "redirects": [
+      { "source": "/pages/about", "destination": "/#about", "type": 301 },
+      { "source": "/pages/about.html", "destination": "/#about", "type": 301 },
+      { "source": "/pages/projects", "destination": "/#projects", "type": 301 },
+      { "source": "/pages/projects.html", "destination": "/#projects", "type": 301 },
+      { "source": "/pages/contact", "destination": "/#contact", "type": 301 },
+      { "source": "/pages/contact.html", "destination": "/#contact", "type": 301 }
+    ],
     "ignore": [
       "firebase.json",
       "firestore.rules",
